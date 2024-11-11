@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="profile-container">
+
+        <div class="profile-left-content">
+
+            <div class="profile-image-container">
+
+                {% if user_profile.image %}
+                    
+                    <img src="{{ user_profile.image.url }}" alt="{{ user_profile.image.url }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/200" alt="User Profile Picture">
+                {% endif %}
+            </div>
+
+
+            <div class="profile-info">
+                {% if user.is_authenticated %}
+                        {% if user_profile.completed %}
+                        <h2><img src="{% static 'images/app2.png' %}" height="18"> {{ user.username }}</h2>
+
+                            <span><a href="{% url 'profile edit view' user_profile.pk %}">Edit Profile</a></span>
+                        {% else %}
+                        <h2> {{ user.username }} </h2>
+                            <p>Please, complete your profile to start the adoption process.</p>
+                            <span><a href="{% url 'profile edit view' user_profile.pk %}">Complete Profile</a></span>
+                        {% endif %}
+
+                {% endif %}
+
+                <p>{{ user_profile.first_name }} {{ user_profile.last_name }}</p>
+            <p>{{ user.email }}</p>
+            </div>
+        
+
+        </div>
+
+        <div class="right-content">
+            <form method="post" action="{% url 'profile edit view' user_profile.pk %}"  enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+    <div class="container">
+
+        <h1>Frequently Asked Questions (FAQ)</h1>
+        <div class="faq-item">
+        <p>Welcome to our FAQ page! Below are answers to some common questions about pet adoption,
+            fostering, and how we work with shelters to help animals find their forever homes.
+            If you have further questions, please don’t hesitate to <a href="{% url 'contact' %}">contact us</a>.</p>
+        </div>
+        <h2>General Questions</h2>
+        <br>
+        <div class="faq-item">
+            <h3>What is PetAdoption?</h3>
+            <p>PetAdoption is an online platform dedicated to helping animals find loving homes.
+                We connect adopters with shelters and rescue organizations across the country to make adoption
+                easy, safe, and accessible for everyone.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>How do I get started with adopting a pet?</h3>
+            <p>Simply browse our available pets, click on any pet that interests you,
+                and follow the steps to start the adoption process.
+                You’ll be asked to complete an application form,
+                and our team or the partnering shelter will reach out to guide you through the next steps.</p>
+        </div>
+
+        <h2>Adoption Process</h2>
+
+        <div class="faq-item">
+            <h3>What is included in the adoption fee?</h3>
+            <p>The adoption fee usually covers initial vaccinations, spaying/neutering, and a health checkup.
+                Some shelters may also provide additional resources or items,
+                such as a starter kit of food or a collar. Check the specific pet's listing for details.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Can I meet the pet before deciding?</h3>
+            <p>Yes! Most of our partner shelters encourage meet-and-greet sessions to ensure a
+                good match between you and the pet. Once your application is reviewed,
+                you’ll be able to schedule a visit with the shelter.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Can I adopt if I live out of state?</h3>
+            <p>Many shelters allow out-of-state adoptions, but transportation arrangements may vary.
+                Please check with the specific shelter for their out-of-state policies,
+                or contact us for assistance.</p>
+        </div>
+
+        <h2>Fostering and Volunteering</h2>
+
+        <div class="faq-item">
+            <h3>How can I become a foster parent?</h3>
+            <p>Fostering is a wonderful way to help animals without a long-term commitment.
+                You can start by filling out a foster application on our <a href="#">foster page</a>
+                Once approved, we’ll help match you with a pet in need of a temporary home.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>What are the requirements for fostering?</h3>
+            <p>Requirements vary by shelter but typically include being at least 18 years old,
+                having a safe environment for the pet, and committing to the foster period.
+                Some pets may have additional needs, which will be communicated before placement.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Are there other ways I can help besides adoption or fostering?</h3>
+            <p>Absolutely! Volunteers play a crucial role in our mission.
+                You can help by volunteering at shelters, promoting animals online, donating,
+                or helping with transportation.
+                Visit our <a href="#">volunteer page</a> for more information.</p>
+        </div>
+
+        <h2>Pet Care and Resources</h2>
+
+        <div class="faq-item">
+            <h3>What if I have questions about caring for my adopted pet?</h3>
+            <p>We’re here to support you! You can access our <a href="#">Pet Care Resources</a> page,
+                which includes tips on feeding, training, and health care.
+                You can also contact our support team for additional guidance.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Are there resources available for first-time pet owners?</h3>
+            <p>Yes! Our <a href="#">Pet Care Resources</a> section includes articles and videos
+                tailored for new pet parents. From house training to nutrition, we’ve got you covered!</p>
+        </div>
+
+        <h2>Other Questions</h2>
+
+        <div class="faq-item">
+            <h3>What if I can no longer care for my adopted pet?</h3>
+            <p>If circumstances change and you’re unable to care for your adopted pet,
+                please reach out to the shelter where you adopted the animal.
+                They can provide guidance on the next steps, including rehoming options.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>How can I stay updated on new pets available for adoption?</h3>
+            <p>Sign up for our newsletter or follow us on social media to stay updated on new pets
+                looking for homes, adoption events, and more.</p>
+        </div>
+        <div class="faq-item">
+            <p>If you didn’t find the answer you were looking for,
+                feel free to <a href="{% url 'contact' %}">contact us directly</a>.
+                Our team is always here to help!</p>
+        </div>
+    
+        <div class="faq-item">
+            <p>Thank you for visiting PetAdoption! We look forward to connecting with you and helping you find your new furry friend.</p>
+        </div>
+    
+        <div class="chatgpt">
+            <br><br><p>This text is generated by <a href="https://chat.openai.com">ChatGPT</a> </p>
+        </div>
+    </div>
+
+{% endblock %}

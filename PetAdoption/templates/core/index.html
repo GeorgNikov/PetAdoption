@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+
+        <div class="container">
+            <!-- Left side: Steps to adopt a pet -->
+            <div class="left-content">
+                {% include 'core/left-content.html' %}
+            </div>
+    
+            <!-- Right side: Login / Registration or Profile form -->
+            <div class="right-content">
+                {% include 'core/right-content.html' %}
+            </div>
+        </div>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+/* Pet Box */
+.dashboard-container {
+    width: 90%;
+    max-width: 850px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.pet-box {
+    width: 400px;
+    height: 200px;
+    margin-top: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    margin-left: 0;
+    padding: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: #fff 1px 1px 1px;
+    display: inline-block;
+}
+
+.pet-box p {
+    line-height: 15px;
+    margin: 15px 0;
+}
+
+.pet-box div:nth-child(1) {
+    width: 130px;
+    height: 130px;
+    float: left;
+}
+
+.pet-box div:nth-child(2) {
+    width: 250px;
+    float: left;
+    height: 150px;
+    padding-left: 5px;
+    margin-left: 5px;
+    text-indent: inherit;
+}
+
+.pet-box div:nth-child(3) {
+    width: 380px;
+    height: 30px;
+    float: left;
+    margin-top: 5px;
+    padding-top: 2px;
+    display: block;
+}
+
+.pet-box-image {
+    max-width: 130px;
+    height: 125px;
+    border-radius: 5px;
+    margin-top: 0;
+    margin-left: 0;
+    box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Button */
+
+.pet-box a:link, a:visited {
+    background-color: #4CAF50;
+    color: white;
+    padding: 3px 15px;
+    margin-top: -4px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    border: 1px solid #45a049;
+    text-shadow: none;
+
+}
+
+.pet-box a:hover {
+    background-color: #45a049;
+    text-shadow: none;
+}
+
+/* Box styling */
+.box {
+    flex: 1 1 48%; /* In desktop mode, each box takes 48% of the width, with some space between */
+}
+
+/* Hidden boxes by default */
+.hidden {
+    display: none;
+}

@@ -1,0 +1,86 @@
+{% load static %}
+
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <a href="{% url 'index' %}">Pet Adoption</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'dashboard' %}">Find Pets</a></li>
+            <li><a href="#">Shelters</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'contact' %}">Contacts</a></li>
+            <li><a href="{% url 'faq' %}">FAQ</a></li>
+        </ul>
+
+        <div class="profile">
+            {% if user.is_authenticated %}
+{#                <div class="user-info">#}
+{#                    <span class="">#}
+{#                        <a href="{% url 'profile details view' request.user.pk %}">#}
+{#                            <p><img src="{% static 'images/profile-icon.png' %}" alt="User Profile" class="icon">#}
+{#                                {{ user.username }}#}
+{#                            </p>#}
+{#                        </a>#}
+{#                    </span>#}
+{#                </div>#}
+                
+                 <div class="dropdown">
+  <button class="dropbtn">{{ user.username }}</button>
+  <div class="dropdown-content">
+    <a href="{% url 'profile details view' request.user.pk %}">My Profile</a>
+    <a href="#">Settings</a>
+    <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>
+  </div>
+</div> 
+                
+                <span>
+                     <form method="post" action="{% url 'logout' %}" id="logout-form" style="display: none;">
+                        {% csrf_token %}
+                        <button class="button" type="submit">Logout</button>
+                    </form>
+                </span>
+            {% endif %}
+        </div>
+
+        <div class="menu-icon" id="menu-icon">
+            &#9776;
+        </div>
+
+    </div>
+</nav>
+
+<!-- Dropdown Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+    <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'dashboard' %}">Find Pets</a></li>
+        <li><a href="#">Shelters</a></li>
+        <li><a href="{% url 'about' %}">About</a></li>
+        <li><a href="{% url 'contact' %}">Contacts</a></li>
+        <li><a href="{% url 'faq' %}">FAQ</a></li>
+
+
+        {% if user.is_authenticated %}
+            <li>&nbsp;</li>
+            <li>
+                <a href="{% url 'profile details view' request.user.pk %}">
+                    My Profile
+                </a>
+            </li>
+
+            <li>
+                <a href="#">Settings</a>
+            </li>
+   
+            <li>
+            <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>
+            </li>
+
+
+        {% endif %}
+    </ul>
+</div>
+

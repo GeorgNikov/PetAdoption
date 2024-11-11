@@ -1,0 +1,92 @@
+
+/* Register form styles */
+.register-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.register-form label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.register-form input, .register-form select {
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.register-form button {
+    padding: 10px 15px;
+    background-color: green;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.register-form button:hover {
+    background-color: green;
+}
+
+
+/* styles.css */
+.container {
+    width: 80%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+form label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+form input, form select {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form button {
+    padding: 10px 15px;
+    background-color: #f39c12;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+form button:hover {
+    background-color: #e67e22;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.messages .message {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #e7f7e7;
+    border-left: 4px solid #4CAF50;
+}

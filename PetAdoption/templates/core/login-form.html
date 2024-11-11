@@ -1,0 +1,28 @@
+<h2>Login</h2>
+{% if form.errors %}
+    <div class="error">
+        <p>Invalid username or password. Please try again.</p>
+    </div>
+{% endif %}
+
+<form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+
+    <label for="login-password">Password</label>
+    <div class="password-container">
+        <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
+        <span class="show-password" onclick="togglePasswordVisibility('login-password', this)">
+            <img src="https://img.icons8.com/ios-filled/24/000000/visible.png" alt="Show Password"/>
+        </span>
+    </div>
+
+    <div class="forgot-password">
+        <span>Don't have an account? <a href="{% url 'register' %}">Register Now</a></span>
+        <span><a href="#">Forgot Password?</a> </span>
+    </div>
+
+    <button type="submit">Login</button>
+</form>
+

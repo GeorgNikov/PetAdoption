@@ -1,0 +1,57 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Adoption</title>
+    <link rel="stylesheet" href="{%  static 'css/styles.css' %}">
+    <script src="{%  static 'js/script.js' %}"></script>
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}" >
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+        {% include 'core/navigation.html'%}
+    
+    <!-- Filter & search bar -->
+    <!--
+    <section>
+        <p>Filter here</p>
+    </section>
+    -->
+    
+    <!-- Main Content -->
+    <main class="main-content">
+    
+        {% block content %}
+        {% endblock %}
+    
+   </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <p>&copy; 2024 Pet Adoption is a <a href="https://softuni.bg" target="_blank" rel="SoftUni.bg">SoftUni</a>
+            Student Project. All rights reserved.</p>
+
+    </footer>
+    <!-- JavaScript for mobile menu toggle -->
+    <script>
+        const menuIcon = document.getElementById('menu-icon');
+        const mobileMenu = document.getElementById('mobile-menu');
+    
+        menuIcon.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+        });
+    
+        // Ensure mobile menu hides when resizing to desktop view
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

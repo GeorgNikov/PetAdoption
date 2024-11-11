@@ -1,0 +1,202 @@
+/* Navigation bar styling */
+.nav-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar {
+    background-color: #343a40;
+    color: #fff;
+    padding: 10px 0;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Align logo and nav links close together */
+.logo,
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+/* Logo remains on the left */
+.logo {
+    margin-right: 20px;
+}
+
+.logo a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 22px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    flex: 3;
+    justify-content: left; /* Center menu links */
+    text-align: left;
+}
+
+.nav-links li a {
+    color: rgb(172, 170, 170);
+    text-decoration: none;
+    font-size: 16px;
+    padding: 5px 10px;
+    transition: background 0.3s;
+}
+
+.nav-links li a:hover {
+    color: rgb(223, 221, 221);
+    border-radius: 4px;
+}
+
+.login {
+    flex: 1;
+    text-align: right;
+
+}
+
+.login a {
+    color: #fff;
+    font-family: 'Lato', sans-serif, monospace;
+    text-decoration: none;
+    font-size: 18px;
+    background-color: #f39c12;
+    padding: 5px 15px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.login a:hover {
+    background-color: #e67e22;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+}
+
+/* Profile link */
+.profile {
+    float: right;
+    color: rgb(172, 170, 170);
+    margin-top: -5px;
+}
+.profile span:first-child a {
+    text-decoration: none;
+    color: rgb(172, 170, 170);
+}
+
+.profile span:first-child a:hover {
+    text-decoration: none;
+    color: rgb(223, 221, 221);
+}
+
+/* Hamburger menu icon */
+.menu-icon {
+    display: none; /* Hide by default for larger screens */
+    position: absolute; /* Position relative to parent */
+    right: 20px; /* Adjust distance from right edge */
+    top: 5px; /* Align vertically with the nav */
+    cursor: pointer;
+    font-size: 30px;
+}
+
+.user-info {
+    display: block;
+    background: none;
+    text-align: center;
+    padding: 2px 15px;
+/*    border-bottom: 1px solid #f39c12; */
+    color: rgb(172, 170, 170);;
+    font-size: 18px;
+
+}
+
+.user-info span p a {
+    color: rgb(172, 170, 170);;
+    text-align: center;
+    text-decoration: none;
+}
+
+.user-info span p a:hover {
+    color: rgb(223, 221, 221);
+    text-align: center;
+    text-decoration: none;
+}
+
+.user-info .icon {
+    height: 26px;
+    padding-top: 5px;
+    margin-bottom: -5px;
+    font-size: 10px; /* Smaller icon size */
+    margin-right: 6px; /* Space between icon and text */
+    color: rgb(172, 170, 170); /* Matches text color */
+    float: left;
+}
+
+
+ /* Dropdown Button */
+.dropbtn {
+  background-color: #343a40;
+  color: rgb(172, 170, 170);
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  transition: background 0.3s;
+  min-width: 120px;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #343a40;
+  min-width: 120px;
+  color: #e7f7e7;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 0 0 3px 3px;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  border-radius: 0 0 3px 3px;
+
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+    background-color: #5c6670;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #343a40;
+
+}
