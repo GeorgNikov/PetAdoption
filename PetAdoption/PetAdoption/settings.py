@@ -16,7 +16,11 @@ SECRET_KEY = 'django-insecure-19l38u+)i@))3l7+k=_dwl#c24l)#%!#eva)3iqowkefbq@z32
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# To view from local network USE: python manage.py runserver 192.168.1.104:800
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*', '0.0.0.0', '192.168.1.*']
+
+# Only localhost
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -45,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'PetAdoption.middlewares.MeasureTimeMiddleware',
 ]
 
 ROOT_URLCONF = 'PetAdoption.urls'
@@ -110,8 +115,12 @@ USE_I18N = True
 
 USE_TZ = True
 
+CSRF_COOKIE_SECURE = False
+
 SITE_NAME = 'Pet Adoption'
 SITE_URL = 'http://127.0.0.1:8000'
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 

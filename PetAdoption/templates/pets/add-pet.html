@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <!-- Left side: Steps to adopt a pet -->
+        <div class="left-content">
+            <h2>Add Pet</h2>
+            <form action="{% url 'add pet' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+{#                <div class="form-group">#}
+{#                    <label for="name">Pet Name</label>#}
+{#                    <input type="text" id="name" name="name" placeholder="Enter pet's name" required>#}
+{#                </div>#}
+{#                                #}
+{#                <label for="type">Select Pet Type</label>#}
+{#                <select id="type" name="type" required>#}
+{#                    <option value="Dog">Dog</option>#}
+{#                    <option value="Cat">Cat</option>#}
+{#                    <option value="Bird">Bird</option>#}
+{#                    <option value="Reptile">Reptile</option>#}
+{#                    <option value="Fish">Fish</option>#}
+{#                    <option value="Other">Other</option>#}
+{#                </select>#}
+{##}
+{#                <div class="form-group">#}
+{#                    <label for="breed">Breed</label>#}
+{#                    <input type="text" id="breed" name="breed" placeholder="Enter pet's breed" required>#}
+{#                </div>#}
+{##}
+{#                <div class="form-group">#}
+{#                    <label for="age">Age</label>#}
+{#                    <input type="number" id="age" name="age" placeholder="Enter pet's age in months" min="0" required>#}
+{#                </div>#}
+{##}
+{#                <div class="form-group">#}
+{#                    <label for="image">Pet Image</label>#}
+{#                    <input type="file" id="image" name="image" accept="image/*" >#}
+{#                </div>#}
+
+                <button type="submit">Add Pet</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

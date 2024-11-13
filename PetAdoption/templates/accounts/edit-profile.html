@@ -21,9 +21,25 @@
             <div class="profile-info">
                 {% if user.is_authenticated %}
                         {% if user_profile.completed %}
-                        <h2><img src="{% static 'images/app2.png' %}" height="18"> {{ user.username }}</h2>
+                            <div class="user-username-email">
+                            <span>
+                               
+                                <a href="{% url 'profile details view' user_profile.pk %}">My Profile</a>
+                            </span>
 
-                            <span><a href="{% url 'profile edit view' user_profile.pk %}">Edit Profile</a></span>
+                            <span>
+                                <i class="fas fa-user"></i>
+                                <b>{{ user.username }}</b>
+                                &nbsp; ( {{ user_profile.full_name|truncatechars:15 }} ) &nbsp;
+                            </span>
+                            
+                            <span>
+                                <i class="fas fa-arrow-left"></i>
+                                <a href="{% url 'profile details view' user_profile.pk %}">&nbsp; Back to Profile</a>
+                            </span>
+                            </div>
+
+                        
                         {% else %}
                         <h2> {{ user.username }} </h2>
                             <p>Please, complete your profile to start the adoption process.</p>
@@ -32,8 +48,6 @@
 
                 {% endif %}
 
-                <p>{{ user_profile.first_name }} {{ user_profile.last_name }}</p>
-            <p>{{ user.email }}</p>
             </div>
         
 

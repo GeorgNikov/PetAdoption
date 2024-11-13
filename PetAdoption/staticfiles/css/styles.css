@@ -2,6 +2,7 @@
 @import "form.css";
 @import "details.css";
 @import "navigation.css";
+@import "pets.css";
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;1,300&display=swap');
 
 .lato-regular {
@@ -44,60 +45,7 @@ body {
 
 }
 
-/* Container class to center content */
-.profile-left-content {
-    width: 50%;
-}
 
-.profile-container {
-    margin: 1px auto auto auto;
-    width: 90%;
-    max-width: 1200px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-}
-
-.profile-image-container {
-    background-color: #343a40;
-    float: left;
-    margin-right: 20px;
-    border-radius: 5px;
-    width: 200px;
-    height: 200px;
-    flex: 1;
-}
-
-.profile-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 5px;
-}
-
-.profile-info {
-    float: left;
-    margin-right: 20px;
-    border-radius: 5px;
-    width: 300px;
-    height: 200px;
-}
-
-.profile-info span {
-    display: block;
-    margin: 10px 5px 10px 5px;
-
-    background-color: #f39c12;
-    text-align: center;
-    border-radius: 3px;
-}
-
-.profile-info a {
-    font-size: 20px;
-    text-decoration: none;
-    color: #fff;
-}
 
 /* Left content with steps */
 .left-content {
@@ -458,37 +406,112 @@ body {
 
 }
 
+/* Container class to center content */
+.profile-left-content {
+    width: 50%;
+}
 
+.profile-container {
+    margin: 1px auto auto auto;
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+}
+
+.profile-image-container {
+    background-color: #343a40;
+    float: left;
+    margin-right: 20px;
+    border-radius: 5px;
+    min-width: 150px;
+    height: 150px;
+    flex: 1;
+}
+
+.profile-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.profile-info {
+    float: left;
+    margin-right: 20px;
+    border-radius: 5px;
+    width: 300px;
+    height: 200px;
+}
+
+.profile-info span {
+    display: block;
+    margin: 10px 5px 10px 5px;
+
+    background-color: #f39c12;
+    text-align: center;
+    border-radius: 3px;
+}
+
+.profile-info a {
+    font-size: 20px;
+    text-decoration: none;
+    color: #fff;
+}
+
+.custom-icon {
+    color: #f39c12; /* Your desired color */
+    font-size: 18px;
+}
 
 .user-username-email {
     vertical-align: middle;
     font-size: 22px;
 }
 
-.user-username-email span:first-child {
+.user-username-email span:nth-child(1) {
+    background-color: #343a40;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.user-username-email span:nth-child(2) {
     background: none;
     text-align: left;
 }
 
-.user-username-email span:last-child {
-    text-align: left;
-    background: none;
+
+.user-username-email span:nth-child(3) {
     text-decoration: none;
-    color: #000;
-    font-size: 14px;
+    color: #fff;
+    font-size: 20px;
 }
 
-.profile-image-container span {
-    width: 200px;
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #f39c12;
-}
 
 .edit-profile a {
     margin: 10px 0;
     text-decoration: none;
     color: #fff;
+}
+
+.user-edit-logout {
+    vertical-align: middle;
+    font-size: 22px;
+}
+
+.user-edit-logout span:nth-child(1) {
+    float: left;
+    background-color: #f39c12;
+    text-align: left;
+    padding: 0 10px 0 10px;
+}
+
+.user-edit-logout span:nth-child(2) {
+    float: left;
+    background-color: #b23b3b;
+    text-align: left;
+    width: auto;
+    padding: 0 20px 0 20px;
 }

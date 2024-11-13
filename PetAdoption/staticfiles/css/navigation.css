@@ -156,8 +156,9 @@
   border: none;
   border-radius: 4px;
   transition: background 0.3s;
-  min-width: 120px;
+  min-width: 150px;
 }
+
 
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
@@ -170,11 +171,12 @@
   display: none;
   position: absolute;
   background-color: #343a40;
-  min-width: 120px;
+  min-width: 150px;
   color: #e7f7e7;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
   z-index: 1;
   border-radius: 0 0 3px 3px;
+    padding-top: 10px;
 }
 
 /* Links inside the dropdown */
@@ -199,4 +201,40 @@
 .dropdown:hover .dropbtn {
     background-color: #343a40;
 
+}
+
+
+/* Message banner container */
+.message-banner {
+    background: none;
+    color: #721c24;
+    padding: 5px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Alert styling for messages */
+.alert {
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 5px;
+    padding: 5px;
+    display: inline-block;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Success message styling */
+.alert.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Error message styling */
+.alert.error {
+    background-color: #f8d7da;
+    color: #721c24;
 }

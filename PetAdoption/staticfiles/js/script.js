@@ -58,5 +58,17 @@ function previewImage(event) {
 }
 
 
+    // Wait 3 seconds, then fade out the error banner
+    setTimeout(function() {
+        const errorBanner = document.getElementById('message-banner');
+        if (errorBanner) {
+            errorBanner.style.transition = 'opacity 1s ease-out';
+            errorBanner.style.opacity = '0';
 
+            // Remove the element from the DOM after the fade-out effect
+            setTimeout(function() {
+                errorBanner.style.display = 'none';
+            }, 1000); // Matches the fade duration
+        }
+    }, 4000); // 3 seconds
 

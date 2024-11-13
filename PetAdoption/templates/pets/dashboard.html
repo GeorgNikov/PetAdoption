@@ -1,0 +1,217 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="add-pet">
+        {% if user.is_authenticated %}
+            {% if user_profile.completed %}
+            <a href="{% url 'add pet' %}" class="add-pet-link">
+                <i class="fas fa-plus"></i>&nbsp; Add Pet for Adoption</a>
+                {% else %}
+                <a href="{% url 'profile details view' user.pk %}" class="add-pet-link">
+                    Complete Your Profile</a>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="dashboard-container">
+        {% for pet in pets %}
+
+                <div class="box">
+                    <main class="pet-box">
+                        <div>
+                            {% if pet.image %}
+                                <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="pet-box-image">
+                            {% else %}
+                                <img src="{% static 'images/dogs.jpg' %}" alt="Pet" class="pet-box-image">
+                            {% endif %}
+                        </div>
+                        <div>
+                            <p>Name: <b>{{ pet.name|capfirst }}</b></p>
+                            <p>Breed: <b>{{ pet.bread }}</b></p>
+                            <p>Age: <b>{{ pet.age }} months</b></p>
+                            <p>Owner: <b>{{ pet.owner.username }} </b></p>
+                        </div>
+
+                        <div>
+                            &nbsp;from: <b>{{ pet.created_at|date:"d.m.Y" }}</b>
+                            <a href="#" class="" style="float: right">Preview</a>
+                        </div>
+                    </main>
+                </div>
+        {% endfor %}
+
+{##}
+{#        <div class="box">#}
+{#            <main class="pet-box">#}
+{#                <div>#}
+{#                    <img src="{% static 'images/two_dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
+{#                </div>#}
+{#                <div>#}
+{#                    <p>Name: <b>Rex</b></p>#}
+{#                    <p>Breed: Uknown</p>#}
+{#                    <p>Age: 12 months</p>#}
+{#                    <p>Shelter: Sofia Pet Center</p>#}
+{##}
+{#                </div>#}
+{#                <div>#}
+{#                    &nbsp;Added: <b>12.09.2023</b>#}
+{#                    <a href="#" class="" style="float: right">Preview</a>#}
+{#                </div>#}
+{#            </main>#}
+{#        </div>#}
+{##}
+{#        <div class="box">#}
+{#            <main class="pet-box">#}
+{#                <div>#}
+{#                    <img src="{% static 'images/no.png' %}" alt="Pet" class="pet-box-image">#}
+{##}
+{#                </div>#}
+{#                <div>#}
+{#                    <p>Name: <b>Buddy</b></p>#}
+{#                    <p>Breed: Golden Retriever</p>#}
+{#                    <p>Age: 3 years old</p>#}
+{#                    <p>Shelter: Plovdiv Animal Shelter</p>#}
+{#                </div>#}
+{#                <div>#}
+{#                    &nbsp;Added: <b>12.09.2023</b>#}
+{#                    <a href="#" class="" style="float: right">Preview</a>#}
+{#                </div>#}
+{#            </main>#}
+{#        </div>#}
+{##}
+{#        <div class="box">#}
+{#            <main class="pet-box">#}
+{#                <div>#}
+{#                    <img src="{% static 'images/cat.jpg' %}" alt="Pet" class="pet-box-image">#}
+{#                </div>#}
+{#                <div>#}
+{#                    <p>Name: <b>Rexona</b></p>#}
+{#                    <p>Breed: Uknown</p>#}
+{#                    <p>Age: 2 years old</p>#}
+{#                    <p>Shelter: EU Pet Center</p>#}
+{##}
+{#                </div>#}
+{#                <div>#}
+{#                    &nbsp;Added: <b>12.09.2023</b>#}
+{#                    <a href="#" class="" style="float: right">Preview</a>#}
+{#                </div>#}
+{##}
+{#            </main>#}
+{#        </div>#}
+{##}
+{#        <div class="box hidden">#}
+{#            <main class="pet-box">#}
+{#                <div>#}
+{#                    <img src="{% static 'images/dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
+{##}
+{#                </div>#}
+{#                <div>#}
+{#                    <p>Name: <b>Buddy Hidden</b></p>#}
+{#                    <p>Breed: Golden Retriever</p>#}
+{#                    <p>Age: 3 years old</p>#}
+{#                    <p>Shelter: Plovdiv Animal Shelter</p>#}
+{#                </div>#}
+{#                <div>#}
+{#                    &nbsp;Added: <b>12.09.2023</b>#}
+{#                    <a href="#" class="" style="float: right">Preview</a>#}
+{#                </div>#}
+{#            </main>#}
+{#        </div>#}
+{##}
+{#        <div class="box hidden">#}
+{#            <main class="pet-box">#}
+{#                <div>#}
+{#                    <img src="{% static 'images/two_dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
+{#                </div>#}
+{#                <div>#}
+{#                    <p>Name: <b>Rex Hidden</b></p>#}
+{#                    <p>Breed: Uknown</p>#}
+{#                    <p>Age: 1 years old</p>#}
+{#                    <p>Shelter: Sofia Pet Center</p>#}
+{#                </div>#}
+{#                <div>#}
+{#                    &nbsp;Added: <b>12.09.2023</b>#}
+{#                    <a href="#" class="" style="float: right">Preview</a>#}
+{#                </div>#}
+{#            </main>#}
+{#        </div>#}
+{##}
+{#        <div class="box hidden">#}
+{#            <main class="pet-box">#}
+{#                <div>#}
+{#                    <img src="{% static 'images/dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
+{##}
+{#                </div>#}
+{#                <div>#}
+{#                    <p>Name: <b>Buddy Hidden</b></p>#}
+{#                    <p>Breed: Golden Retriever</p>#}
+{#                    <p>Age: 3 years old</p>#}
+{#                    <p>Shelter: Plovdiv Animal Shelter</p>#}
+{#                </div>#}
+{#                <div>#}
+{#                    &nbsp;Added: <b>12.09.2023</b>#}
+{#                    <a href="#" class="" style="float: right">Preview</a>#}
+{#                </div>#}
+{#            </main>#}
+{#        </div>#}
+{##}
+{#        <div class="box hidden">#}
+{#            <main class="pet-box">#}
+{#                <div>#}
+{#                    <img src="{% static 'images/two_dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
+{#                </div>#}
+{#                <div>#}
+{#                    <p>Name: <b>Rex Hidden</b></p>#}
+{#                    <p>Breed: Uknown</p>#}
+{#                    <p>Age: 1 years old</p>#}
+{#                    <p>Shelter: Sofia Pet Center</p>#}
+{#                </div>#}
+{#                <div>#}
+{#                    &nbsp;Added: <b>12.09.2023</b>#}
+{#                    <a href="#" class="" style="float: right">Preview</a>#}
+{#                </div>#}
+{#            </main>#}
+{#        </div>#}
+{##}
+{#        <div class="box hidden">#}
+{#            <main class="pet-box">#}
+{#                <div>#}
+{#                    <img src="{% static 'images/dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
+{##}
+{#                </div>#}
+{#                <div>#}
+{#                    <p>Name: <b>Buddy Hidden</b></p>#}
+{#                    <p>Breed: Golden Retriever</p>#}
+{#                    <p>Age: 3 years old</p>#}
+{#                    <p>Shelter: Plovdiv Animal Shelter</p>#}
+{#                </div>#}
+{#                <div>#}
+{#                    &nbsp;Added: <b>12.09.2023</b>#}
+{#                    <a href="#" class="" style="float: right">Preview</a>#}
+{#                </div>#}
+{#            </main>#}
+{#        </div>#}
+{##}
+{#        <div class="box hidden">#}
+{#            <main class="pet-box">#}
+{#                <div>#}
+{#                    <img src="{% static 'images/two_dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
+{#                </div>#}
+{#                <div>#}
+{#                    <p>Name: <b>Rex Hidden</b></p>#}
+{#                    <p>Breed: Uknown</p>#}
+{#                    <p>Age: 1 years old</p>#}
+{#                    <p>Shelter: Sofia Pet Center</p>#}
+{#                </div>#}
+{#                <div>#}
+{#                    &nbsp;Added: <b>12.09.2023</b>#}
+{#                    <a href="#" class="" style="float: right">Preview</a>#}
+{#                </div>#}
+{#            </main>#}
+{#        </div>#}
+
+    </div>
+
+{% endblock %}

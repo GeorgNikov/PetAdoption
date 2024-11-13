@@ -1,0 +1,26 @@
+.add-pet {
+    width: 100%;
+    max-width: 820px;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: right;
+    margin: -30px auto 0;
+}
+
+.add-pet-link {
+    background-color: #f39c12;
+    border: none;
+    color: white;
+    padding: 5px 22px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
+    cursor: pointer;
+}
+
+
+.add-pet-link:hover {
+    background-color: #e67e22;
+}
