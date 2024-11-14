@@ -6,13 +6,17 @@ from PetAdoption.pets.models import Pet
 
 class PetBaseForm(forms.ModelForm):
     owner = forms.HiddenInput()
+    slug = forms.HiddenInput()
 
     class Meta:
         model = Pet
-        fields = ('name', 'type', 'bread', 'age', 'image')
+        fields = ('name', 'type', 'breed', 'age', 'description', 'image')
 
 
 class AddPetForm(PetBaseForm):
+    pass
+
+class EditPetForm(PetBaseForm):
     pass
 
 

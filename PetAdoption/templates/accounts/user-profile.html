@@ -39,11 +39,11 @@
                                     <i class="fas fa-user-edit"></i>
                                     <a href="{% url 'profile edit view' user_profile.pk %}">Edit Profile</a>
                                 </span>
-{#                                <span>#}
-{#                                    <i class="fas fa-sign-out-alt"></i>#}
-{#                                    <a href="#"#}
-{#                                       onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>#}
-{#                                </span>#}
+                                {#                                <span>#}
+                                {#                                    <i class="fas fa-sign-out-alt"></i>#}
+                                {#                                    <a href="#"#}
+                                {#                                       onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>#}
+                                {#                                </span>#}
                             </div>
 
                         </div>
@@ -61,13 +61,21 @@
 
             </div>
 
+
         </div>
 
-        {#        <div class="right-content">#}
-        {#            11.10.2024 - Adoption request: {{ adoption_request_status }} Approved <a href="#"> View details</a><br>#}
-        {#            09.10.2024 - Adoption request: {{ adoption_request_status }} Pending <br>#}
-        {#            08.10.2024 - New Adoption request to: <a href="#">SofiaPetShelter</a> for <a href="#"><b>Shih-Tzu</b></a>#}
-        {#        </div>#}
+        <div class="right-content">
+            11.10.2024 - Adoption request: {{ adoption_request_status }} Approved <a href="#"> View details</a><br>
+            09.10.2024 - Adoption request: {{ adoption_request_status }} Pending <br>
+            08.10.2024 - New Adoption request to: <a href="#">SofiaPetShelter</a> for <a href="#"><b>Shih-Tzu</b></a>
+        </div>
+
+
+{% include 'accounts/my_pets.html' %}
+
+
     </div>
+
+
 
 {% endblock %}

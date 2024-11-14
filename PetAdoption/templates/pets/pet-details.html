@@ -1,0 +1,40 @@
+
+{% extends 'core/base.html' %}
+
+{% block content %}
+    <div class="container">
+  <div class="pet-detail-container">
+    <h1>Pet Details</h1>
+    
+    <div class="pet-info">
+      <div class="pet-image">
+        <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="pet-img">
+      </div>
+      
+      <div class="pet-details">
+        <h2>{{ pet.name }}</h2>
+        <p><strong>Breed:</strong> {{ pet.breed }}</p>
+        <p><strong>Age:</strong> {{ pet.age }} months</p>
+        <p><strong>Type:</strong> {{ pet.type }}</p>
+        <p><strong>Status:</strong> {{ pet.status }}</p>
+        <p><strong>Description:</strong> {{ pet.description }}</p>
+      </div>
+    </div>
+    
+    <div class="pet-owner-info">
+      <h3>Owner Information</h3>
+
+      <p><strong>Owner:</strong> {{ pet.owner.username }} - {{ pet.owner.userprofile.full_name }}</p>
+      <p><strong>Email:</strong> {{ pet.owner.email }}</p>
+      <p><strong>Phone:</strong> {{ pet.owner.userprofile.phone_number }}</p> 
+    </div>
+
+    <div class="action-buttons">
+        {% if request.user == pet.owner %}
+      <a href="{% url 'edit pet' pet.slug %}" class="button">Edit Pet Details</a>
+      {% endif %}
+      <a href="#" class="button">Adopt this Pet</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

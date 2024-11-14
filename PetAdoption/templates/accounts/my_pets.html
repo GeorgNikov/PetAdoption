@@ -1,0 +1,28 @@
+{% load static %}
+<div>
+    <h2>My Pets</h2>
+</div>
+<div class="my-pets">
+
+    {% for pet in pets %}
+        <div class="box-profile">
+            <main class="pet-box-profile">
+                <div>
+                    {% if pet.image %}
+                        <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="pet-box-image-profile">
+                    {% else %}
+                        <img src="{% static 'images/no.png' %}" alt="Pet" class="pet-box-image-profile">
+                    {% endif %}
+                </div>
+                <div>
+                    <p><b>{{ pet.name|capfirst }}</b></p>
+
+                    &nbsp;Added: <b>{{ pet.created_at|date:"d.m.Y" }}</b>
+                    <a href="{% url 'pet details' pet.slug %}" class="">Preview</a>
+                    <a href="{% url 'pet details' pet.slug %}" class="" id="del" style="float: right;">Delete</a>
+                </div>
+            </main>
+        </div>
+
+    {% endfor %}
+</div>

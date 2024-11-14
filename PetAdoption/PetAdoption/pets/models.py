@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.template.defaultfilters import slugify
+
 from PetAdoption.pets.choices import PetChoices, PetStatusChoices
 
 
@@ -24,17 +26,17 @@ class Pet(TimeStampBaseModel):
         choices=PetChoices.choices
     )
 
-    bread = models.CharField(
+    breed = models.CharField(
         max_length=100,
         default='Unknown'
     )
 
     age = models.IntegerField()     # In months
 
-    # description = models.TextField(
-    #     blank=True,
-    #     null=True,
-    # )
+    description = models.TextField(
+        blank=True,
+        null=True,
+    )
 
     owner = models.ForeignKey(
         to=UserModel,
@@ -52,3 +54,31 @@ class Pet(TimeStampBaseModel):
         choices=PetStatusChoices.choices,
         default=PetStatusChoices.AVAILABLE,
     )
+
+    slug = models.SlugField(
+        null=True,
+        blank=True,
+        unique=True,
+        editable=False,
+    )
+
+    # Add a many-to-many field to track which users have liked the pet
+    likes = models.ManyToManyField(
+        UserModel,
+        related_name='liked_pets',
+        blank=True,
+    )
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if not self.slug:
+            self.slug = slugify(f"{self.name}-{self.id}")
+
+        super().save(*args, **kwargs)
+
+    def total_likes(self):
+        return self.likes.count()
+
+    def __str__(self):
+        return self.name

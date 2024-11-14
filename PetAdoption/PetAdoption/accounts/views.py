@@ -1,24 +1,17 @@
-from gc import get_objects
-
 from django.contrib import messages
-from django.contrib.auth import get_user_model, login, authenticate
-from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.contrib.sessions.models import Session
-from django.http import request
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.utils import timezone
-from django.views.decorators.http import require_GET
 from django.views.generic import UpdateView, CreateView, DetailView
 
-from PetAdoption.accounts.forms import UserForm, UserRegistrationForm, UserEditProfileForm
+from PetAdoption.accounts.forms import UserRegistrationForm, UserEditProfileForm
 from PetAdoption.accounts.models import UserProfile
-
+from PetAdoption.pets.models import Pet
 
 UserModel = get_user_model()
+
 
 class UserProfileDetailsView(LoginRequiredMixin, UpdateView):
     model = UserProfile
@@ -81,7 +74,11 @@ class UserProfileView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user_profile'] = self.get_object()  # This is the profile of the logged-in user
+        pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
+        context['pets'] = pets
+        print(context['pets'])
         return context
+
 
 # def profile_detail(request, pk):
 #     user = get_object_or_404(UserModel, pk=pk)
@@ -195,7 +192,6 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
-
     # def test_func(self):
     #     profile = get_object_or_404(UserProfile, pk=self.kwargs.get('pk'))
     #     return self.request.user == profile.user
@@ -204,12 +200,10 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('profile details view', kwargs={'pk': self.kwargs.get('pk')})
 
 
-
 class UserRegisterView(CreateView):
     model = UserModel
     form_class = UserRegistrationForm
     template_name = 'core/register.html'
-
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -227,7 +221,3 @@ class UserLoginView(LoginView):
     def get_success_url(self):
         # Redirect to the profile page after registration
         return reverse_lazy('profile details view', kwargs={'pk': self.request.user.pk})
-
-
-
-

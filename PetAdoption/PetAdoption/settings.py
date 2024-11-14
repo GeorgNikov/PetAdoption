@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Other apps
     'captcha',
+    'rest_framework',
     # My Apps
     'PetAdoption.pets.apps.PetsConfig',
     'PetAdoption.accounts.apps.AccountsConfig',
