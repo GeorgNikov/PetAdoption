@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load user_tags %}
 
 <nav class="navbar">
     <div class="nav-container">
@@ -17,18 +17,21 @@
 
         <div class="profile">
             {% if user.is_authenticated %}
-                {#                <div class="user-info">#}
-                {#                    <span class="">#}
-                {#                        <a href="{% url 'profile details view' request.user.pk %}">#}
-                {#                            <p><img src="{% static 'images/profile-icon.png' %}" alt="User Profile" class="icon">#}
-                {#                                {{ user.username }}#}
-                {#                            </p>#}
-                {#                        </a>#}
-                {#                    </span>#}
-                {#                </div>#}
+            {#                <div class="user-info">#}
+            {#                    <span class="">#}
+            {#                        <a href="{% url 'profile details view' request.user.pk %}">#}
+            {#                            <p><img src="{% static 'images/profile-icon.png' %}" alt="User Profile" class="icon">#}
+            {#                                {{ user.username }}#}
+            {#                            </p>#}
+            {#                        </a>#}
+            {#                    </span>#}
+            {#                </div>#}
 
+
+
+            {% if user|is_adopter %}
                 <div class="dropdown">
-                    <button class="dropbtn"><i class="fas fa-user"></i>&nbsp; 
+                    <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
                         {% if user_profile.full_name %}
                             {{ user_profile.full_name|truncatechars:20|capfirst }}
                         {% else %}
@@ -39,7 +42,7 @@
                         <a href="{% url 'profile details view' request.user.pk %}">
                             <i class="fas fa-user"></i>&nbsp; &nbsp; My Profile</a>
                         <a href="#"><i class="fas fa-cog"></i>&nbsp; &nbsp; Settings</a>
-                        
+
                         <a href="#"
                            onclick="document.getElementById('logout-form').submit(); return false;">
                             <i class="fas fa-sign-out-alt"></i>&nbsp; &nbsp; Logout</a>
@@ -52,6 +55,36 @@
                         <button class="button" type="submit">Logout</button>
                     </form>
                 </span>
+
+            {% elif user|is_shelter %}
+                {#                For Shelter#}
+                <div class="dropdown">
+                    <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
+                        {% if shelter_profile.organization_name %}
+                            {{ shelter_profile.organization_name|truncatechars:20|capfirst }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'shelter details view' request.user.pk %}">
+                            <i class="fas fa-user"></i>&nbsp; &nbsp; My Profile</a>
+                        <a href="#"><i class="fas fa-cog"></i>&nbsp; &nbsp; Settings</a>
+
+                        <a href="#"
+                           onclick="document.getElementById('logout-form').submit(); return false;">
+                            <i class="fas fa-sign-out-alt"></i>&nbsp; &nbsp; Logout</a>
+                    </div>
+                </div>
+
+                <span>
+                     <form method="post" action="{% url 'logout' %}" id="logout-form" style="display: none;" >
+                        {% csrf_token %}
+                        <button class="button" type="submit">Logout</button>
+                    </form>
+                </span>
+                {% endif %}
+                
             {% endif %}
         </div>
 

@@ -2,7 +2,6 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.core.validators import MinLengthValidator
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
 from PetAdoption.accounts.choices import UserTypeChoices, BulgarianProvinces
 from PetAdoption.accounts.managers import AppUserManager
@@ -28,12 +27,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             AbstractUser.username_validator
         ],
         unique=True,
-        help_text=_(
-            "Required. 50 characters or fewer. Letters, digits and @/./+/-/_ only."
-        ),
-        error_messages={
-            'unique': _("A user with that username already exists."),
-        },
     )
 
     email = models.EmailField(
@@ -55,6 +48,36 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class BaseProfile(models.Model):
+    PHONE_NUMBER_MAX_LENGTH = 13
+
+    ADDRESS_MAX_LENGTH = 100
+
+    CITY_MAX_LENGTH = 60
+    PROVINCE_MAX_LENGTH = 60
+
+    phone_number = models.CharField(
+        max_length=PHONE_NUMBER_MAX_LENGTH,
+        unique=True,
+        null=True,
+        blank=True,
+    )
+
+    address = models.CharField(
+        max_length=ADDRESS_MAX_LENGTH
+    )
+
+    city = models.CharField(
+        max_length=CITY_MAX_LENGTH,
+        choices=load_bulgarian_cities(),
+        default='Sofia',
+    )
+
+    province = models.CharField(
+        max_length=PROVINCE_MAX_LENGTH,
+        choices=BulgarianProvinces.choices,
+        default='Sofia Province',
+    )
+
     completed = models.BooleanField(
         default=False,
         blank=True,
@@ -79,56 +102,29 @@ class BaseProfile(models.Model):
 
 class UserProfile(BaseProfile):
     FIRST_NAME_MAX_LENGTH = 30
+    FIRST_NAME_MIN_LENGTH = 3
+
     LAST_NAME_MAX_LENGTH = 30
+    LAST_NAME_MIN_LENGTH = 3
 
-    PHONE_NUMBER_MAX_LENGTH = 13
-
-    BIO_MAX_LENGTH = 500
-
-    ADDRESS_MAX_LENGTH = 100
-
-    CITY_MAX_LENGTH = 60
-    PROVINCE_MAX_LENGTH = 60
+    IMG_UPLOAD_TO = 'user_profile_images/'  # Cloudinary
 
     first_name = models.CharField(
         max_length=FIRST_NAME_MAX_LENGTH,
+        validators=[
+            MinLengthValidator(FIRST_NAME_MIN_LENGTH)
+        ],
     )
 
     last_name = models.CharField(
         max_length=LAST_NAME_MAX_LENGTH,
-    )
-
-    phone_number = models.CharField(
-        max_length=PHONE_NUMBER_MAX_LENGTH,
-        unique=True,
-        null=True,
-        blank=True,
-    )
-
-    # bio = models.TextField(
-    #     max_length=BIO_MAX_LENGTH,
-    #     blank=True,
-    #     null=True,
-    # )
-
-    address = models.CharField(
-        max_length=ADDRESS_MAX_LENGTH
-    )
-
-    city = models.CharField(
-        max_length=CITY_MAX_LENGTH,
-        choices=load_bulgarian_cities(),
-        default='Sofia',
-    )
-
-    province = models.CharField(
-        max_length=PROVINCE_MAX_LENGTH,
-        choices=BulgarianProvinces.choices,
-        default='Sofia Province',
+        validators=[
+            MinLengthValidator(LAST_NAME_MIN_LENGTH)
+        ],
     )
 
     image = models.ImageField(
-        upload_to='user_profile_images/',  # Cloudinary
+        upload_to=IMG_UPLOAD_TO,
         blank=True,
         null=True,
     )
@@ -141,3 +137,42 @@ class UserProfile(BaseProfile):
     @property
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
+
+
+class ShelterProfile(BaseProfile):
+    ORGANIZATION_NAME_MAX_LENGTH = 100
+    ORGANIZATION_NAME_MIN_LENGTH = 3
+
+    RATING_MAX_DIGITS = 2
+    RATING_DECIMAL_PLACES = 2
+
+    IMG_UPLOAD_TO = 'shelter_profile_images/'    # Cloudinary
+
+    organization_name = models.CharField(
+        max_length=ORGANIZATION_NAME_MAX_LENGTH,
+        unique=True,
+        validators=[
+            MinLengthValidator(ORGANIZATION_NAME_MIN_LENGTH)
+        ],
+        null=True,
+        blank=True,
+    )
+
+    rating = models.DecimalField(
+        max_digits=RATING_MAX_DIGITS,
+        decimal_places=RATING_DECIMAL_PLACES,
+        null=True,
+        blank=True
+    )
+
+    image = models.ImageField(
+        upload_to=IMG_UPLOAD_TO,
+        blank=True,
+        null=True,
+    )
+
+    user = models.OneToOneField(
+        to=CustomUser,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )

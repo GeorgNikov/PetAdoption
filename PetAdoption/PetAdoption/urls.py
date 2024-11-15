@@ -10,6 +10,7 @@ urlpatterns = [
     path('', include('PetAdoption.core.urls')),
     path('pets/', include('PetAdoption.pets.urls')),
     path('accounts/', include('PetAdoption.accounts.urls')),
+   # path('shelters/', include('PetAdoption.shelters.urls')),
 ]
 
 if settings.DEBUG:

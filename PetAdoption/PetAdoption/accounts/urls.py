@@ -1,6 +1,8 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import path, include
-from PetAdoption.accounts.views import UserLoginView, UserProfileView, UserProfileUpdateView
+
+from PetAdoption.accounts.views import UserLoginView, UserProfileView, UserProfileUpdateView, ShelterProfileView, \
+    ShelterEditView, UserProfileRedirectView
 
 urlpatterns = [
 
@@ -12,5 +14,12 @@ urlpatterns = [
         path('edit/', UserProfileUpdateView.as_view(), name='profile edit view'),
 
     ])),
+    path('shelter/<int:pk>/', include([
+        path('', ShelterProfileView.as_view(), name='shelter details view'),
+        path('edit/', ShelterEditView.as_view(), name='shelter edit view'),
+    ]),
+    ),
+
+    path('redirect-profile/<int:pk>/', UserProfileRedirectView.as_view(), name='redirect-profile')
 
 ]

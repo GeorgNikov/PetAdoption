@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views
 from .views import about_view, contact_view, FAQView
-from ..accounts.views import UserLoginView, UserRegisterView
+from ..accounts.views import UserRegisterView
 
 urlpatterns = [
     path('', views.index, name='index'),

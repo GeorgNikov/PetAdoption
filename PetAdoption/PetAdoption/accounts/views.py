@@ -2,12 +2,13 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import UpdateView, CreateView, DetailView
 
-from PetAdoption.accounts.forms import UserRegistrationForm, UserEditProfileForm
-from PetAdoption.accounts.models import UserProfile
+from PetAdoption.accounts.forms import UserRegistrationForm, UserEditProfileForm, ShelterEditProfileForm
+from PetAdoption.accounts.models import UserProfile, ShelterProfile
 from PetAdoption.pets.models import Pet
 
 UserModel = get_user_model()
@@ -42,30 +43,6 @@ class UserProfileView(LoginRequiredMixin, DetailView):
     context_object_name = 'user_profile'
     login_url = reverse_lazy('index')
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     # Step 1: Get session key from the browser
-    #     browser_session_key = request.session.session_key
-    #
-    #     # Step 2: Try to retrieve the user's session from the database
-    #     try:
-    #         user_session = Session.objects.get(session_key=browser_session_key, expire_date__gt=timezone.now())
-    #     except Session.DoesNotExist:
-    #         # Session is not valid or does not exist in the database
-    #         return redirect('index')
-    #
-    #     # Step 3: Ensure the user’s session data matches
-    #     session_data = user_session.get_decoded()
-    #     database_user_id = session_data.get('_auth_user_id')
-    #
-    #     print(browser_session_key)
-    #     print(user_session)
-    #
-    #     if str(request.user.id) != database_user_id:
-    #         # Redirect if the session data does not match the logged-in user
-    #         return redirect('index')
-    #
-    #     # Continue with the normal request flow if session matches
-    #     return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         # Returns the UserProfile instance for the logged-in user
@@ -79,78 +56,6 @@ class UserProfileView(LoginRequiredMixin, DetailView):
         print(context['pets'])
         return context
 
-
-# def profile_detail(request, pk):
-#     user = get_object_or_404(UserModel, pk=pk)
-#
-#     context = {
-#         'user': user,
-#         'pk': pk
-#     }
-#
-#     return render(request, 'accounts/user-profile.html', context)
-
-
-# @login_required
-# def user_profile_detail_view(request, pk):
-#     user = get_object_or_404(UserModel, pk=pk)
-#     profile = get_object_or_404(UserProfile, user=user)
-#
-#     user_form = UserForm(request.POST or None, instance=user)    # instantiate the form
-#     profile_form = UserEditProfileForm(request.POST or None, instance=profile) # instantiate the form
-#
-#
-#     if request.method == 'POST':
-#         if user_form.is_valid() and profile_form.is_valid():
-#             user_form.save()
-#             profile_form.save()
-#             return redirect('user profile')
-#
-#     context = {
-#         'user_form': user_form,
-#         'profile_form': profile_form,
-#         'user_profile': profile,
-#         'user': user
-#     }
-#
-#     return render(request, 'accounts/user-profile.html', context)
-
-
-#
-# @login_required
-# def user_profile_detail_view(request, pk):
-#     user = get_object_or_404(UserModel, pk=pk)
-#     profile = get_object_or_404(UserProfile, user=user)
-#
-#     session_key = request.session.session_key
-#     session = Session.objects.get(session_key=session_key)
-#
-#     if session:
-#
-#         print(session)
-#         user_form = UserForm(request.POST or None, instance=user)    # instantiate the form
-#         profile_form = UserEditProfileForm(request.POST or None, instance=profile) # instantiate the form
-#
-#
-#         if request.method == 'POST':
-#             if user_form.is_valid():
-#                 if profile_form.is_valid():
-#                     user_form.save()
-#                     profile_form.save()
-#                     return redirect('profile details view', pk=profile.pk)
-#
-#         context = {
-#             'user_form': user_form,
-#             'profile_form': profile_form,
-#             'user_profile': profile,
-#             'pk': pk
-#         }
-#
-#     else:
-#         print(session)
-#         return redirect('index')
-#
-#     return render(request, 'accounts/user-profile.html', context)
 
 
 class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -192,10 +97,6 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
-    # def test_func(self):
-    #     profile = get_object_or_404(UserProfile, pk=self.kwargs.get('pk'))
-    #     return self.request.user == profile.user
-
     def get_success_url(self):
         return reverse_lazy('profile details view', kwargs={'pk': self.kwargs.get('pk')})
 
@@ -212,12 +113,98 @@ class UserRegisterView(CreateView):
 
     def get_success_url(self):
         # Redirect to the profile page after registration
-        return reverse_lazy('profile details view', kwargs={'pk': self.object.pk})
-
+        return reverse_lazy('redirect-profile', kwargs={'pk': self.object.pk})
+        # if self.object.type_user == "Adopter":
+        #     return reverse_lazy('profile details view', kwargs={'pk': self.object.pk})
+        # else:
+        #     return reverse_lazy('shelter details view', kwargs={'pk': self.object.pk})
+        #
 
 class UserLoginView(LoginView):
     template_name = 'core/index.html'
 
     def get_success_url(self):
+        user = self.request.user
         # Redirect to the profile page after registration
-        return reverse_lazy('profile details view', kwargs={'pk': self.request.user.pk})
+        return reverse_lazy('redirect-profile', kwargs={'pk': user.pk})
+
+
+class ShelterProfileView(LoginRequiredMixin, DetailView):
+    model = UserProfile
+    template_name = 'accounts/shelter-profile.html'
+    context_object_name = 'shelter_profile'
+    login_url = reverse_lazy('index')
+
+
+    def get_object(self):
+        # Returns the ShelterProfile instance for the logged-in user
+        return get_object_or_404(ShelterProfile, user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['shelter_profile'] = self.get_object()  # This is the profile of the logged-in user
+        pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
+        context['pets'] = pets
+        print(context['pets'])
+        return context
+
+
+class ShelterEditView(LoginRequiredMixin, UpdateView):
+    model = ShelterProfile
+    form_class = ShelterEditProfileForm
+    template_name = 'accounts/shelter-edit-profile.html'
+    context_object_name = 'shelter_profile'
+    login_url = reverse_lazy('index')
+
+    def get_object(self, queryset=None):
+        # Retrieve the profile using `pk` from the URL
+        profile = get_object_or_404(ShelterProfile, pk=self.kwargs['pk'])
+        # Return the profile if the user is the owner
+        return profile
+
+    def form_valid(self, form):
+        # Save the form but don't commit to the database yet
+        profile = form.save(commit=False)
+
+        # Check if all specified fields are filled
+        all_fields_filled = all([
+            getattr(profile, field) for field in form.fields
+        ])
+
+        # Set `completed` to True if all fields are filled, otherwise False
+        profile.completed = all_fields_filled
+        profile.save()  # Now save to the database
+
+        if profile.completed:
+            messages.success(self.request, 'Your profile has been updated successfully!')
+        else:
+            messages.error(self.request, 'Please fill in all the fields to complete your profile.')
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('redirect-profile', kwargs={'pk': self.kwargs.get('pk')})
+
+
+
+class UserProfileRedirectView(View):
+    def get(self, request, *args, **kwargs):
+        # Retrieve the user object
+        user = request.user
+
+        # Mapping of user types to their corresponding view names
+        user_type_to_view = {
+            "Adopter": "profile details view",
+            "Shelter": "shelter details view"
+        }
+
+        # Check if the user type exists in the mapping
+        view_name = user_type_to_view.get(user.type_user)
+
+        if view_name:
+            # Redirect to the respective view based on the user type
+            return redirect(view_name, pk=user.pk)
+
+        # If no valid user type, show an error message
+        messages.error(request, "Invalid user type")
+        return redirect('index')

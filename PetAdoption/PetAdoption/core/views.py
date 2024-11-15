@@ -7,15 +7,21 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 
 from PetAdoption.accounts.forms import UserLoginForm, UserRegistrationForm
+from PetAdoption.accounts.models import CustomUser
 from PetAdoption.core.forms import ContactForm
 
 
 def index(request):
     form = UserLoginForm(request.POST or None)
     register_form = UserRegistrationForm(request.POST or None)
+    # request_user = CustomUser.objects.filter(user=request.user).first()
 
     if request.user.is_authenticated:
-        return redirect('profile details view', pk=request.user.pk)
+        if request.user.type_user == "Adopter":
+            return redirect('profile details view', pk=request.user.pk)
+        elif request.user.type_user == "Shelter":
+            return redirect('shelter details view', pk=request.user.pk)
+        # return redirect('profile details view', pk=request.user.pk)
 
     if request.method == "POST":
         if form.is_valid():
@@ -35,7 +41,12 @@ def index(request):
             password = register_form.cleaned_data.get('password1')
             user = authenticate(request, username=username, password=password)
             login(request, user)
-            return redirect('profile view')
+            # return redirect('profile details view', pk=user.pk)
+
+            if user.type_user == "Adopter":
+                return redirect('profile details view', pk=user.pk)
+            elif user.type_user == "Shelter":
+                return redirect('shelter details view', pk=user.pk)
 
     context = {
         'form': form,

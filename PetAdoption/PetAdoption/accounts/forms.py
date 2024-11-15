@@ -3,9 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.urls import reverse_lazy
 
-from .models import UserProfile, CustomUser
-
-
+from .models import UserProfile, CustomUser, ShelterProfile
 
 UserModel = get_user_model()
 
@@ -21,6 +19,14 @@ class UserEditProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['first_name', 'last_name', 'phone_number', 'province', 'city', 'address', 'image']
+
+
+class ShelterEditProfileForm(forms.ModelForm):
+    user = forms.HiddenInput()
+
+    class Meta:
+        model = ShelterProfile
+        fields = ['organization_name', 'phone_number', 'province', 'city', 'address', 'image']
 
 
 

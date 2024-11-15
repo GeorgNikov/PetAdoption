@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
 
-from PetAdoption.accounts.models import UserProfile
+from PetAdoption.accounts.models import UserProfile, ShelterProfile
 from PetAdoption.pets.forms import AddPetForm, EditPetForm
 from PetAdoption.pets.models import Pet
 
@@ -12,16 +12,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 
+from PetAdoption.pets.utils import check_profile_completion
 
-# # Dashboard to show all pets and link to add pet.
-# def dashboard(request):
-#     pets = Pet.objects.all().order_by('-created_at')
-#
-#     context = {
-#         'pets': pets
-#     }
-#
-#     return render(request, 'pets/dashboard.html', context)
 
 # Dashboard to show all pets and link to add pet.
 class DashboardView(ListView):
@@ -39,39 +31,20 @@ class DashboardView(ListView):
 
     def get_object(self):
         # Returns the UserProfile instance for the logged-in user
-        return get_object_or_404(UserProfile, user=self.request.user)
+        if self.request.user.type_user == "Shelter":
+            return get_object_or_404(ShelterProfile, user=self.request.user)
+        elif self.request.user.type_user == "Adopter":
+            return get_object_or_404(UserProfile, user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
 
-        if self.request.user.is_authenticated:
+        if user.is_authenticated:
+            context['shelter_profile'] = ShelterProfile.objects.filter(user=self.request.user).first()
             context['user_profile'] = self.get_object()  # This is the profile of the logged-in user
 
         return context
-
-
-# def add_pet(request):
-#     form = (request.POST or None)
-#     user = get_object_or_404(UserProfile, user=request.user)
-#
-#     if user.completed == False:
-#         print(user.completed)
-#         return redirect('profile details view', pk=request.user.pk)
-#
-#     if form.method == 'POST':
-#         if form.is_valid():
-#             pet = form.save(commit=False)
-#             pet.save()
-#             return redirect('pet details view', pet.pk)
-#
-#         else:
-#             print(form.errors)
-#
-#     context = {
-#         'form': form
-#     }
-#
-#     return render(request, 'pets/add-pet.html', context)
 
 
 class AddPetView(LoginRequiredMixin, CreateView):
@@ -86,15 +59,11 @@ class AddPetView(LoginRequiredMixin, CreateView):
             messages.error(request, "Please log in to add a pet.")
             return redirect(self.login_url)
 
-        # Check if the user has a completed profile
-        user_profile = UserProfile.objects.filter(user=request.user).first()
-        if not user_profile:
-            messages.error(request, "Profile does not exist. Please contact support.")
-            return redirect('profile edit view', pk=request.user.pk)
 
-        if not user_profile.completed:
-            messages.error(request, "Please complete your profile to add a pet.")
-            return redirect('profile edit view', pk=user_profile.pk)
+        # Check if the user has a completed profile
+        redirect_url = check_profile_completion(request)
+        if redirect_url:
+            return redirect_url  # Redirect if the profile is incomplete or doesn't exist
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -122,10 +91,9 @@ class PetDetailView(DetailView):
             return redirect(self.login_url)
 
         # Check if the user has a completed profile
-        user_profile = UserProfile.objects.filter(user=request.user).first()
-        if not user_profile:
-            messages.error(request, "Profile does not exist. Please contact support.")
-            return redirect('profile edit view', pk=request.user.pk)
+        redirect_url = check_profile_completion(request)
+        if redirect_url:
+            return redirect_url  # Redirect if the profile is incomplete or doesn't exist
 
 
         return super().dispatch(request, *args, **kwargs)
@@ -163,11 +131,12 @@ def delete_pet(request):
 
 
 
-# REST FRAMEWORK
+# REST FRAMEWORK API
 class LikePetView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, pet_pk):
+    @staticmethod
+    def post(request, pet_pk):
         pet = get_object_or_404(Pet, pk=pet_pk)
         if pet.likes.filter(id=request.user.pk).exists():
             # User has already liked this pet, so unlike it
@@ -182,5 +151,3 @@ class LikePetView(APIView):
             'liked': liked,
             'total_likes': pet.likes.count()
         }, status=status.HTTP_200_OK)
-
-

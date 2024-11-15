@@ -3,6 +3,10 @@
 
 {% block content %}
 
+{% load user_tags %}
+
+{% if user|is_adopter %}
+    <!-- Adopter-specific content -->
     <div class="add-pet">
         {% if user.is_authenticated %}
             {% if user_profile.completed %}
@@ -13,8 +17,7 @@
                     Complete Your Profile</a>
             {% endif %}
         {% endif %}
-    </div>
-
+    </div>    
     <div class="dashboard-container">
         {% for pet in pets %}
 
@@ -26,35 +29,81 @@
                         {% else %}
                             <img src="{% static 'images/no.png' %}" alt="Pet" class="pet-box-image">
                         {% endif %}
-
-
                     </div>
                     <div>
-                        <p><b>{{ pet.name|capfirst }}</b></p>
+                        <p><b>{{ pet.name|capfirst }}</b> - {{ pet.created_at|date:"d.m.Y" }}</p>
                         <p>Breed: <b>{{ pet.breed }}</b></p>
                         <p>Age: <b>{{ pet.age }} months</b></p>
                         <p>Owner: <b>{{ pet.owner.username }} </b></p>
+                        <p><b>{{ pet.created_at|date:"d.m.Y" }}</b></p>
                     </div>
-
                     <div>
-                        &nbsp;  <b>{{ pet.created_at|date:"d.m.Y" }}</b>
-
-                        {#                    Like button#}
-
-        <button onclick="likePet({{ pet.pk }})" id="like-button-{{ pet.pk }}" class="like-button">
-            <i class="far fa-heart {% if pet.liked %}fas liked-heart{% endif %}"></i>
-            <span id="like-count-{{ pet.pk }}">{{ pet.total_likes }}</span>
-        </button>
-                    
-
-
+                        {# Like button #}
+                        <button onclick="likePet({{ pet.pk }})" id="like-button-{{ pet.pk }}" class="like-button">
+                            <i class="far fa-heart {% if pet.liked %}fas liked-heart{% endif %}"></i>
+                            <span id="like-count-{{ pet.pk }}">{{ pet.total_likes }}</span>
+                        </button>
                         <a href="{% url 'pet details' pet.slug %}" class="" style="float: right">Preview</a>
                     </div>
-
                 </main>
             </div>
         {% endfor %}
 
+
+    </div>  
+    
+    
+    
+{% elif user|is_shelter %}
+    <!-- Shelter-specific content -->
+     <div class="add-pet">
+        {% if user.is_authenticated %}
+            {% if shelter_profile.completed %}
+                <a href="{% url 'add pet' %}" class="add-pet-link" id="add-pet">
+                    <i class="fas fa-plus"></i>&nbsp; Add Pet for Adoption</a>
+            {% else %}
+                <a href="{% url 'shelter details view' user.pk %}" class="add-pet-link">
+                    Complete Your Profile</a>
+            {% endif %}
+        {% endif %}
+    </div>    
+    <div class="dashboard-container">
+        {% for pet in pets %}
+
+            <div class="box">
+                <main class="pet-box">
+                    <div>
+                        {% if pet.image %}
+                            <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="pet-box-image">
+                        {% else %}
+                            <img src="{% static 'images/no.png' %}" alt="Pet" class="pet-box-image">
+                        {% endif %}
+                    </div>
+                    <div>
+                        <p><b>{{ pet.name|capfirst }}</b> - {{ pet.created_at|date:"d.m.Y" }}</p>
+                        <p>Breed: <b>{{ pet.breed }}</b></p>
+                        <p>Age: <b>{{ pet.age }} months</b></p>
+                        <p>Owner: <b>{{ pet.owner.username }} </b></p>
+                        <p><b>{{ pet.created_at|date:"d.m.Y" }}</b></p>
+                    </div>
+                    <div>
+                        {# Like button #}
+                        <button onclick="likePet({{ pet.pk }})" id="like-button-{{ pet.pk }}" class="like-button">
+                            <i class="far fa-heart {% if pet.liked %}fas liked-heart{% endif %}"></i>
+                            <span id="like-count-{{ pet.pk }}">{{ pet.total_likes }}</span>
+                        </button>
+                        <a href="{% url 'pet details' pet.slug %}" class="" style="float: right">Preview</a>
+                    </div>
+                </main>
+            </div>
+        {% endfor %}
+
+
+    </div>  
+    
+       
+    
+{% endif %}
 
         <!-- Pagination Controls -->
         <div class="pagination">
@@ -62,195 +111,26 @@
                 <p>That's all Folks!</p>
             {% else %}
                 <div class="pagination">
-                    <span class="step-links">
-                        {% if page_obj.has_previous %}
-                            <a href="?page=1" id="first">&laquo; first</a>
-                            <a href="?page={{ page_obj.previous_page_number }}" id="previous">previous</a>
-                        {% endif %}
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1" id="first">&laquo; first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}" id="previous">previous</a>
+                    {% endif %}
 
-                        <span class="current">
-                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                        </span>
-
-                        {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}" id="next">next</a>
-                            <a href="?page={{ page_obj.paginator.num_pages }}" id="last">last &raquo;</a>
-                        {% endif %}
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
                     </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" id="next">next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}" id="last">last &raquo;</a>
+                    {% endif %}
+                </span>
                 </div>
             {% endif %}
         </div>
 
-        {##}
-        {#        <div class="box">#}
-        {#            <main class="pet-box">#}
-        {#                <div>#}
-        {#                    <img src="{% static 'images/two_dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    <p>Name: <b>Rex</b></p>#}
-        {#                    <p>Breed: Uknown</p>#}
-        {#                    <p>Age: 12 months</p>#}
-        {#                    <p>Shelter: Sofia Pet Center</p>#}
-        {##}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    &nbsp;Added: <b>12.09.2023</b>#}
-        {#                    <a href="#" class="" style="float: right">Preview</a>#}
-        {#                </div>#}
-        {#            </main>#}
-        {#        </div>#}
-        {##}
-        {#        <div class="box">#}
-        {#            <main class="pet-box">#}
-        {#                <div>#}
-        {#                    <img src="{% static 'images/no.png' %}" alt="Pet" class="pet-box-image">#}
-        {##}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    <p>Name: <b>Buddy</b></p>#}
-        {#                    <p>Breed: Golden Retriever</p>#}
-        {#                    <p>Age: 3 years old</p>#}
-        {#                    <p>Shelter: Plovdiv Animal Shelter</p>#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    &nbsp;Added: <b>12.09.2023</b>#}
-        {#                    <a href="#" class="" style="float: right">Preview</a>#}
-        {#                </div>#}
-        {#            </main>#}
-        {#        </div>#}
-        {##}
-        {#        <div class="box">#}
-        {#            <main class="pet-box">#}
-        {#                <div>#}
-        {#                    <img src="{% static 'images/cat.jpg' %}" alt="Pet" class="pet-box-image">#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    <p>Name: <b>Rexona</b></p>#}
-        {#                    <p>Breed: Uknown</p>#}
-        {#                    <p>Age: 2 years old</p>#}
-        {#                    <p>Shelter: EU Pet Center</p>#}
-        {##}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    &nbsp;Added: <b>12.09.2023</b>#}
-        {#                    <a href="#" class="" style="float: right">Preview</a>#}
-        {#                </div>#}
-        {##}
-        {#            </main>#}
-        {#        </div>#}
-        {##}
-        {#        <div class="box hidden">#}
-        {#            <main class="pet-box">#}
-        {#                <div>#}
-        {#                    <img src="{% static 'images/dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
-        {##}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    <p>Name: <b>Buddy Hidden</b></p>#}
-        {#                    <p>Breed: Golden Retriever</p>#}
-        {#                    <p>Age: 3 years old</p>#}
-        {#                    <p>Shelter: Plovdiv Animal Shelter</p>#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    &nbsp;Added: <b>12.09.2023</b>#}
-        {#                    <a href="#" class="" style="float: right">Preview</a>#}
-        {#                </div>#}
-        {#            </main>#}
-        {#        </div>#}
-        {##}
-        {#        <div class="box hidden">#}
-        {#            <main class="pet-box">#}
-        {#                <div>#}
-        {#                    <img src="{% static 'images/two_dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    <p>Name: <b>Rex Hidden</b></p>#}
-        {#                    <p>Breed: Uknown</p>#}
-        {#                    <p>Age: 1 years old</p>#}
-        {#                    <p>Shelter: Sofia Pet Center</p>#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    &nbsp;Added: <b>12.09.2023</b>#}
-        {#                    <a href="#" class="" style="float: right">Preview</a>#}
-        {#                </div>#}
-        {#            </main>#}
-        {#        </div>#}
-        {##}
-        {#        <div class="box hidden">#}
-        {#            <main class="pet-box">#}
-        {#                <div>#}
-        {#                    <img src="{% static 'images/dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
-        {##}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    <p>Name: <b>Buddy Hidden</b></p>#}
-        {#                    <p>Breed: Golden Retriever</p>#}
-        {#                    <p>Age: 3 years old</p>#}
-        {#                    <p>Shelter: Plovdiv Animal Shelter</p>#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    &nbsp;Added: <b>12.09.2023</b>#}
-        {#                    <a href="#" class="" style="float: right">Preview</a>#}
-        {#                </div>#}
-        {#            </main>#}
-        {#        </div>#}
-        {##}
-        {#        <div class="box hidden">#}
-        {#            <main class="pet-box">#}
-        {#                <div>#}
-        {#                    <img src="{% static 'images/two_dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    <p>Name: <b>Rex Hidden</b></p>#}
-        {#                    <p>Breed: Uknown</p>#}
-        {#                    <p>Age: 1 years old</p>#}
-        {#                    <p>Shelter: Sofia Pet Center</p>#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    &nbsp;Added: <b>12.09.2023</b>#}
-        {#                    <a href="#" class="" style="float: right">Preview</a>#}
-        {#                </div>#}
-        {#            </main>#}
-        {#        </div>#}
-        {##}
-        {#        <div class="box hidden">#}
-        {#            <main class="pet-box">#}
-        {#                <div>#}
-        {#                    <img src="{% static 'images/dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
-        {##}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    <p>Name: <b>Buddy Hidden</b></p>#}
-        {#                    <p>Breed: Golden Retriever</p>#}
-        {#                    <p>Age: 3 years old</p>#}
-        {#                    <p>Shelter: Plovdiv Animal Shelter</p>#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    &nbsp;Added: <b>12.09.2023</b>#}
-        {#                    <a href="#" class="" style="float: right">Preview</a>#}
-        {#                </div>#}
-        {#            </main>#}
-        {#        </div>#}
-        {##}
-        {#        <div class="box hidden">#}
-        {#            <main class="pet-box">#}
-        {#                <div>#}
-        {#                    <img src="{% static 'images/two_dogs.jpg' %}" alt="Pet" class="pet-box-image">#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    <p>Name: <b>Rex Hidden</b></p>#}
-        {#                    <p>Breed: Uknown</p>#}
-        {#                    <p>Age: 1 years old</p>#}
-        {#                    <p>Shelter: Sofia Pet Center</p>#}
-        {#                </div>#}
-        {#                <div>#}
-        {#                    &nbsp;Added: <b>12.09.2023</b>#}
-        {#                    <a href="#" class="" style="float: right">Preview</a>#}
-        {#                </div>#}
-        {#            </main>#}
-        {#        </div>#}
 
-    </div>
+  
 
 {% endblock %}

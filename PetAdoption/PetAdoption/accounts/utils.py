@@ -14,3 +14,7 @@ def load_bulgarian_cities():
     # Extract only the city names and format them as choices
     city_choices = [(item["city"], item["city"]) for item in data]
     return city_choices
+
+
+
+

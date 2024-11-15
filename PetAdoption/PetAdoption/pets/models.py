@@ -2,10 +2,10 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.template.defaultfilters import slugify
 
-from PetAdoption.pets.choices import PetChoices, PetStatusChoices
-
+from PetAdoption.pets.choices import PetChoices, PetStatusChoices, AdoptionRequestStatusChoices
 
 UserModel = get_user_model()
+
 
 class TimeStampBaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -16,24 +16,32 @@ class TimeStampBaseModel(models.Model):
 
 
 class Pet(TimeStampBaseModel):
+    NAME_MAX_LENGTH = 30
+    TYPE_MAX_LENGTH = 20
+    BREED_MAX_LENGTH = 30
+    STATUS_MAX_LENGTH = 10
+    DESCRIPTION_MAX_LENGTH = 500
+    IMG_UPLOAD_TO = 'pet_images/'
+
     name = models.CharField(
-        max_length=100,
+        max_length=NAME_MAX_LENGTH,
         default='No name',
     )
 
     type = models.CharField(
-        max_length=100,
+        max_length=TYPE_MAX_LENGTH,
         choices=PetChoices.choices
     )
 
     breed = models.CharField(
-        max_length=100,
+        max_length=BREED_MAX_LENGTH,
         default='Unknown'
     )
 
-    age = models.IntegerField()     # In months
+    age = models.PositiveSmallIntegerField()  # In months
 
     description = models.TextField(
+        max_length=DESCRIPTION_MAX_LENGTH,
         blank=True,
         null=True,
     )
@@ -44,13 +52,13 @@ class Pet(TimeStampBaseModel):
     )
 
     image = models.ImageField(
-        upload_to='pet_images/',
+        upload_to=IMG_UPLOAD_TO,
         blank=True,
         null=True,
     )
 
     status = models.CharField(
-        max_length=100,
+        max_length=STATUS_MAX_LENGTH,
         choices=PetStatusChoices.choices,
         default=PetStatusChoices.AVAILABLE,
     )
@@ -82,3 +90,23 @@ class Pet(TimeStampBaseModel):
 
     def __str__(self):
         return self.name
+
+
+class AdoptionRequest(models.Model):
+    STATUS_MAX_LENGTH = 8
+
+    status = models.CharField(
+        max_length=STATUS_MAX_LENGTH,
+        choices=AdoptionRequestStatusChoices.choices,
+        default=AdoptionRequestStatusChoices.PENDING
+    )
+
+    from_user = models.ForeignKey(
+        UserModel,
+        on_delete=models.CASCADE
+    )
+
+    for_pet = models.ForeignKey(
+        'pets.Pet',
+        on_delete=models.CASCADE
+    )

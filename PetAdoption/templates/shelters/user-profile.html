@@ -14,14 +14,14 @@
                     <img src="{{ user_profile.image.url }}" alt="{{ user_profile.image.url }}">
 
                 {% else %}
-                    <img src="https://via.placeholder.com/300" alt="User Profile Picture">
+                    <img src="https://via.placeholder.com/200" alt="User Profile Picture">
                 {% endif %}
             </div>
 
             <div class="profile-info">
                 {% if user.is_authenticated %}
 
-                    {% if user_profile.completed %}
+                        {% if user_profile.completed %}
                         <div class="user-username-email">
                              <span>
                      
@@ -29,7 +29,7 @@
                             </span>
                             <span>
                             <i class="fas fa-user"></i>
-                                <b>{{ user.username }}</b> {{ user.type_user }}
+                                <b>{{ user.username }}</b>
                              &nbsp; ( {{ user_profile.full_name|truncatechars:15 }} ) &nbsp;
 
                             </span>
@@ -37,30 +37,27 @@
                             <div class="user-edit-logout">
                                 <span>
                                     <i class="fas fa-user-edit"></i>
-                                    <a href="{% url 'profile edit view' user_profile.pk %}">Edit Profile</a>
+                                    <a href="{% url 'profile edit view' user_profile.pk %}">Edit</a>
                                 </span>
-                                {#                                <span>#}
-                                {#                                    <i class="fas fa-sign-out-alt"></i>#}
-                                {#                                    <a href="#"#}
-                                {#                                       onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>#}
-                                {#                                </span>#}
+                                <span>
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>
+                                </span>
                             </div>
 
                         </div>
 
 
 
-                    {% else %}
+                        {% else %}
                         <h2> {{ user.username }} </h2>
-                        <p>Please, complete your profile to start the adoption process.</p>
-                        <span id="second"><a
-                                href="{% url 'profile edit view' user_profile.pk %}">Complete Profile</a></span>
-                    {% endif %}
+                            <p>Please, complete your profile to start the adoption process.</p>
+                            <span id="second"><a href="{% url 'profile edit view' user_profile.pk %}">Complete Profile</a></span>
+                        {% endif %}
                 {% endif %}
 
 
             </div>
-
 
         </div>
 
@@ -69,13 +66,6 @@
             09.10.2024 - Adoption request: {{ adoption_request_status }} Pending <br>
             08.10.2024 - New Adoption request to: <a href="#">SofiaPetShelter</a> for <a href="#"><b>Shih-Tzu</b></a>
         </div>
-
-
-{% include 'accounts/my_pets.html' %}
-
-
     </div>
-
-
 
 {% endblock %}
