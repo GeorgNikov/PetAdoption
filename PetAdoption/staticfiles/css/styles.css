@@ -4,6 +4,8 @@
 @import "navigation.css";
 @import "pets.css";
 @import "404.css";
+@import "shelter-profile.css";
+@import "user-profile.css";
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;1,300&display=swap');
 
 .lato-regular {

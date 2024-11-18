@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.shortcuts import redirect, get_object_or_404, render
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import UpdateView, CreateView, DetailView
@@ -20,7 +20,7 @@ class UserProfileDetailsView(LoginRequiredMixin, UpdateView):
     context_object_name = 'user_profile'
     login_url = reverse_lazy('index')
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         # Returns the UserProfile instance for the logged-in user
         return get_object_or_404(UserProfile, user=self.request.user)
 
@@ -39,12 +39,12 @@ class UserProfileDetailsView(LoginRequiredMixin, UpdateView):
 
 class UserProfileView(LoginRequiredMixin, DetailView):
     model = UserProfile
-    template_name = 'accounts/user-profile.html'
+    template_name = 'accounts/user-profile-preview.html'
     context_object_name = 'user_profile'
     login_url = reverse_lazy('index')
 
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         # Returns the UserProfile instance for the logged-in user
         return get_object_or_404(UserProfile, user=self.request.user)
 
@@ -53,8 +53,27 @@ class UserProfileView(LoginRequiredMixin, DetailView):
         context['user_profile'] = self.get_object()  # This is the profile of the logged-in user
         pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
         context['pets'] = pets
-        print(context['pets'])
         return context
+
+
+# class UserProfilePreview(LoginRequiredMixin, DetailView):
+#     model = UserProfile
+#     template_name = 'accounts/user-profile-preview.html'
+#     context_object_name = 'user_profile'
+#     login_url = reverse_lazy('index')
+#
+#
+#     def get_object(self, queryset=None, pk=None):
+#         # Returns the UserProfile instance for the logged-in user
+#         return get_object_or_404(UserProfile, user=self.request.user)
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['user_profile'] = self.get_object()  # This is the profile of the logged-in user
+#         pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
+#         context['pets'] = pets
+#         print(context['pets'])
+#         return context
 
 
 
@@ -130,15 +149,18 @@ class UserLoginView(LoginView):
 
 
 class ShelterProfileView(LoginRequiredMixin, DetailView):
-    model = UserProfile
+    model = ShelterProfile
     template_name = 'accounts/shelter-profile.html'
     context_object_name = 'shelter_profile'
     login_url = reverse_lazy('index')
 
+    # def get_object(self, queryset=None):
+    #     slug = self.kwargs['slug']  # Assuming the URL is using a slug
+    #     return get_object_or_404(ShelterProfile, slug=slug)
 
-    def get_object(self):
-        # Returns the ShelterProfile instance for the logged-in user
-        return get_object_or_404(ShelterProfile, user=self.request.user)
+    # def get_object(self, queryset=None, pk=None):
+    #     # Returns the ShelterProfile instance for the logged-in user
+    #     return get_object_or_404(ShelterProfile, pk=pk)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -157,7 +179,6 @@ class ShelterEditView(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('index')
 
     def get_object(self, queryset=None):
-        # Retrieve the profile using `pk` from the URL
         profile = get_object_or_404(ShelterProfile, pk=self.kwargs['pk'])
         # Return the profile if the user is the owner
         return profile
@@ -173,7 +194,7 @@ class ShelterEditView(LoginRequiredMixin, UpdateView):
 
         # Set `completed` to True if all fields are filled, otherwise False
         profile.completed = all_fields_filled
-        profile.save()  # Now save to the database
+        profile.save()
 
         if profile.completed:
             messages.success(self.request, 'Your profile has been updated successfully!')
@@ -186,16 +207,33 @@ class ShelterEditView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('redirect-profile', kwargs={'pk': self.kwargs.get('pk')})
 
 
+class ShelterProfilePreview(LoginRequiredMixin, DetailView):
+    model = UserProfile
+    template_name = 'accounts/shelter-profile-preview.html'
+    context_object_name = 'shelter_profile'
+    login_url = reverse_lazy('index')
+
+
+    def get_object(self, queryset=None):
+        # Returns the ShelterProfile instance for the logged-in user
+        return get_object_or_404(ShelterProfile, user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['shelter_profile'] = self.get_object()  # This is the profile of the logged-in user
+        context['pets'] = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
+        return context
 
 class UserProfileRedirectView(View):
-    def get(self, request, *args, **kwargs):
+    @staticmethod
+    def get(request, *args, **kwargs):
         # Retrieve the user object
         user = request.user
 
         # Mapping of user types to their corresponding view names
         user_type_to_view = {
             "Adopter": "profile details view",
-            "Shelter": "shelter details view"
+            "Shelter": "shelter details view",
         }
 
         # Check if the user type exists in the mapping

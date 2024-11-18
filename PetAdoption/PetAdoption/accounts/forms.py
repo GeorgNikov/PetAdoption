@@ -15,6 +15,7 @@ class UserForm(forms.ModelForm):
 
 class UserEditProfileForm(forms.ModelForm):
     user = forms.HiddenInput()
+    slug = forms.HiddenInput()
 
     class Meta:
         model = UserProfile
@@ -23,6 +24,7 @@ class UserEditProfileForm(forms.ModelForm):
 
 class ShelterEditProfileForm(forms.ModelForm):
     user = forms.HiddenInput()
+    slug = forms.HiddenInput()
 
     class Meta:
         model = ShelterProfile

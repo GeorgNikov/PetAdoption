@@ -2,6 +2,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.core.validators import MinLengthValidator
 from django.db import models
+from django.utils.text import slugify
 
 from PetAdoption.accounts.choices import UserTypeChoices, BulgarianProvinces
 from PetAdoption.accounts.managers import AppUserManager
@@ -16,7 +17,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     type_user = models.CharField(
         max_length=USER_TYPE_MAX_LENGTH,
-        choices=UserTypeChoices.choices,
+        choices=UserTypeChoices,
         default=UserTypeChoices.ADOPTER,
     )
 
@@ -74,8 +75,14 @@ class BaseProfile(models.Model):
 
     province = models.CharField(
         max_length=PROVINCE_MAX_LENGTH,
-        choices=BulgarianProvinces.choices,
+        choices=BulgarianProvinces,
         default='Sofia Province',
+    )
+
+    slug = models.SlugField(
+        blank=True,
+        null=True,
+        editable=True,
     )
 
     completed = models.BooleanField(
@@ -138,6 +145,17 @@ class UserProfile(BaseProfile):
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if not self.slug:
+            if self.full_name:
+                self.slug = slugify(f"{self.full_name}-{self.pk}")
+            else:
+                self.slug = slugify(f"{self.user.username}-{self.pk}")
+
+        super().save(*args, **kwargs)
+
 
 class ShelterProfile(BaseProfile):
     ORGANIZATION_NAME_MAX_LENGTH = 100
@@ -176,3 +194,15 @@ class ShelterProfile(BaseProfile):
         on_delete=models.CASCADE,
         primary_key=True,
     )
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if not self.slug:
+            if self.organization_name:
+                self.slug = slugify(f"{self.organization_name}-{self.pk}")
+            else:
+                self.slug = slugify(f"{self.user.username}-{self.pk}")
+
+        super().save(*args, **kwargs)
+

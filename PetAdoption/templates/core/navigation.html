@@ -17,18 +17,6 @@
 
         <div class="profile">
             {% if user.is_authenticated %}
-            {#                <div class="user-info">#}
-            {#                    <span class="">#}
-            {#                        <a href="{% url 'profile details view' request.user.pk %}">#}
-            {#                            <p><img src="{% static 'images/profile-icon.png' %}" alt="User Profile" class="icon">#}
-            {#                                {{ user.username }}#}
-            {#                            </p>#}
-            {#                        </a>#}
-            {#                    </span>#}
-            {#                </div>#}
-
-
-
             {% if user|is_adopter %}
                 <div class="dropdown">
                     <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
@@ -37,9 +25,10 @@
                         {% else %}
                             {{ user.username }}
                         {% endif %}
+                    {{ user.pk }} - {{ user.userprofile.pk }}
                     </button>
                     <div class="dropdown-content">
-                        <a href="{% url 'profile details view' request.user.pk %}">
+                        <a href="{% url 'profile details view' user.pk %}">
                             <i class="fas fa-user"></i>&nbsp; &nbsp; My Profile</a>
                         <a href="#"><i class="fas fa-cog"></i>&nbsp; &nbsp; Settings</a>
 
@@ -67,7 +56,7 @@
                         {% endif %}
                     </button>
                     <div class="dropdown-content">
-                        <a href="{% url 'shelter details view' request.user.pk %}">
+                        <a href="{% url 'shelter details view' user.pk %}">
                             <i class="fas fa-user"></i>&nbsp; &nbsp; My Profile</a>
                         <a href="#"><i class="fas fa-cog"></i>&nbsp; &nbsp; Settings</a>
 
@@ -109,7 +98,7 @@
         {% if user.is_authenticated %}
             <li>&nbsp;</li>
             <li>
-                <a href="{% url 'profile details view' request.user.pk %}">
+                <a href="{% url 'profile details view' user.pk %}">
                     My Profile
                 </a>
             </li>

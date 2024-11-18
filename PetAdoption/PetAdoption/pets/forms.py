@@ -1,7 +1,5 @@
 from django import forms
-
 from PetAdoption.pets.models import Pet
-
 
 
 class PetBaseForm(forms.ModelForm):
@@ -17,7 +15,10 @@ class AddPetForm(PetBaseForm):
     pass
 
 class EditPetForm(PetBaseForm):
-    pass
+    type = forms.HiddenInput()
+
+    class Meta(PetBaseForm.Meta):
+        fields = ('name', 'breed', 'age', 'description', 'image')
 
 
     # name = forms.CharField(

@@ -2,12 +2,10 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
-
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 
 from PetAdoption.accounts.forms import UserLoginForm, UserRegistrationForm
-from PetAdoption.accounts.models import CustomUser
 from PetAdoption.core.forms import ContactForm
 
 
@@ -46,7 +44,7 @@ def index(request):
             if user.type_user == "Adopter":
                 return redirect('profile details view', pk=user.pk)
             elif user.type_user == "Shelter":
-                return redirect('shelter details view', pk=user.pk)
+                return redirect('shelter page preview', pk=user.pk)
 
     context = {
         'form': form,

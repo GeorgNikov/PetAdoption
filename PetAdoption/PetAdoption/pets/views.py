@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
@@ -59,7 +60,6 @@ class AddPetView(LoginRequiredMixin, CreateView):
             messages.error(request, "Please log in to add a pet.")
             return redirect(self.login_url)
 
-
         # Check if the user has a completed profile
         redirect_url = check_profile_completion(request)
         if redirect_url:
@@ -79,10 +79,11 @@ class AddPetView(LoginRequiredMixin, CreateView):
 
 class PetDetailView(DetailView):
     model = Pet
-    template_name = 'pets/pet-details.html'
+    template_name = 'pets/pet-details-new.html'
     context_object_name = 'pet'
     slug_url_kwarg = 'pet_slug'
     login_url = reverse_lazy('index')
+    get_success_url = reverse_lazy('dashboard')
 
     def dispatch(self, request, *args, **kwargs):
         # Proceed only if the user is authenticated
@@ -100,31 +101,34 @@ class PetDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        pet_owner = Pet.objects.get(slug=self.kwargs['pet_slug']).owner
+        context['shelter_owner_profile'] = ShelterProfile.objects.filter(user=pet_owner).first()
+        context['user_user_profile'] = UserProfile.objects.filter(user=pet_owner).first()
         context['user_profile'] = UserProfile.objects.filter(user=self.request.user).first()
         return context
 
-    get_success_url = reverse_lazy('dashboard')
+
 
 
 class EditPetView(LoginRequiredMixin, UpdateView):
     model = Pet
     form_class = EditPetForm
-    template_name = 'pets/edit-pet.html'
+    template_name = 'pets/edit-pet-new.html'
     context_object_name = 'pet'
 
     def get_object(self, queryset=None):
         # Use pet_slug instead of pk
         pet_slug = self.kwargs['pet_slug']
-        pet = get_object_or_404(Pet, slug=pet_slug)  # Assuming you're using a slug field, or adjust if needed
+        pet = get_object_or_404(Pet, slug=pet_slug)
         if pet.owner != self.request.user:
             messages.error(self.request, "You are not allowed to edit this pet.")
-            return redirect('dashboard')  # Redirect to another page, e.g., the dashboard
+            return redirect('dashboard')
         return pet
 
 
     def get_success_url(self):
         messages.success(self.request, "Pet details updated successfully!")
-        return reverse_lazy('pet details', kwargs={'slug': self.object.slug})
+        return reverse_lazy('pet details', kwargs={'pet_slug': self.object.slug})
 
 def delete_pet(request):
     return render(request, 'pets/delete-pet.html')

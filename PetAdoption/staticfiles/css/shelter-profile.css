@@ -1,0 +1,132 @@
+/* General Styles */
+/*body {*/
+/*    font-family: Arial, sans-serif;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    background-color: #f5f5f5;*/
+/*    color: #333;*/
+/*    line-height: 1.6;*/
+/*}*/
+
+/*a {*/
+/*    color: #007bff;*/
+/*    text-decoration: none;*/
+/*}*/
+
+/*a:hover {*/
+/*    text-decoration: underline;*/
+/*}*/
+
+.shelter-profile {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header Section */
+.shelter-header {
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    color: white;
+}
+
+.header-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.shelter-name {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Main Section */
+.shelter-main {
+    flex: 1;
+    padding: 20px;
+}
+
+.shelter-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.shelter-details,
+.shelter-actions {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 1;
+}
+
+.shelter-details {
+    max-width: 60%;
+}
+
+.shelter-actions {
+    max-width: 35%;
+}
+
+.shelter-actions h3 {
+    margin-top: 0;
+}
+
+.shelter-actions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.shelter-actions li {
+    margin-bottom: 10px;
+}
+
+.button {
+    display: block;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+/* Footer Section */
+.shelter-footer {
+    text-align: center;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+}
+
+.shelter-footer .mission {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .shelter-container {
+        flex-direction: column;
+    }
+
+    .shelter-details,
+    .shelter-actions {
+        max-width: 100%;
+    }
+}

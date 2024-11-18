@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="shelter-profile">
+        <!-- Header Section -->
+        <header class="shelter-header" style="background-image: url('{{ shelter_profile.image.url }}');">
+            <div class="header-overlay">
+                <h1 class="shelter-name">{{ shelter_profile.organization_name }}</h1>
+            </div>
+        </header>
+
+        <!-- Main Section -->
+        <main class="shelter-main">
+            <div class="shelter-container">
+                <!-- Left Section: Shelter Details -->
+                <section class="shelter-details">
+                    <h2> {{ shelter_profile.organization_name }}</h2>
+                    <p><strong>Location:</strong> {{ shelter_profile.province }}, {{ shelter_profile.city }}, {{ shelter_profile.address }}</p>
+                    <a><strong>Phone:</strong> <a href="tel:{{ shelter_profile.phone_number }}"> {{ shelter_profile.phone_number }}</a></p>
+                    <p><strong>Email:</strong> <a href="mailto:{{ shelter_profile.user.email }}">{{ shelter_profile.user.email  }}</a></p>
+                    <p><strong>Established:</strong> {{ shelter_profile.created_at|date:"j M Y" }}</p>
+                </section>
+
+                <!-- Right Section: Links and Actions -->
+                <section class="shelter-actions">
+                    <h3>Actions</h3>
+                    <ul>
+                        <li><a href="#" class="button">Manage Shelter</a></li>
+                        <li><a href="#" class="button">View Adoptable Pets</a></li>
+                        <li><a href="#" class="button">Make a Donation</a></li>
+                    </ul>
+                </section>
+            </div>
+        </main>
+
+
+    </div>
+
+{% endblock %}
