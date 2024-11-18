@@ -8,14 +8,14 @@ A comprehensive platform to connect loving families with pets in need of a home.
 
 ## 📖 Table of Contents
 
-- [About the Project](#about-the-project)
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Setup and Installation](#setup-and-installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+- [About the Project](#-about-the-project)
+- [Features](#-features)
+- [Technologies Used](#-technologies-used)
+- [Setup and Installation](#-setup-and-installation)
+- [Usage](#-usage)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Contact](#-contact)
 
 ---
 
