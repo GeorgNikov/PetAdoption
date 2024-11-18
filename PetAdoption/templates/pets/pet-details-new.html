@@ -1,0 +1,61 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block content %}
+
+    {% if pet.image %}
+        <!-- Header Image Section -->
+        <div class="image-container" style="--background-image: url('{{ pet.image.url }}');">
+        <!-- Foreground image dynamically loaded -->
+        <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
+ 
+        
+    {% else %}
+        <div class="image-container" style="--background-image: url('{% static 'images/no-pet-image.jpg' %}');">
+        <!-- Foreground image dynamically loaded -->
+
+    {% endif %}
+<!-- Edit Pet Details link (visible only to the owner) -->
+{% if request.user == pet.owner %}
+
+    <a href="{% url 'edit pet' pet.slug %}" class="edit-button">Edit Pet Details</a>
+{% endif %}
+</div>
+
+<!-- Main Content Wrapper -->
+<div class="content-wrapper">
+    <!-- Pet Details Section -->
+    <div class="pet-details-section">
+        <h2>Pet Information</h2>
+        <p><strong>Name:</strong> {{ pet.name }}</p>
+        <p><strong>Age:</strong> {{ pet.age }} months</p>
+        <p><strong>Breed:</strong> {{ pet.breed }} </p>
+        <p><strong>Description:</strong> {{ pet.description }}</p>
+    </div>
+
+    <!-- Owner Details Section -->
+    <div class="owner-details-section">
+        <h3>Owner Information</h3>
+        {% if pet.owner|is_shelter %}
+            <p><strong>Owner:</strong> {{ shelter_owner_profile.organization_name }}</p>
+            <p><strong>Email:</strong> {{ pet.owner.email }}</p>
+            <p><strong>Phone:</strong> {{ shelter_owner_profile.phone_number }}</p>
+        {% elif pet.owner|is_adopter %}
+            <p><strong>Owner:</strong> {{ user_user_profile.full_name }}</p>
+            <p><strong>Email:</strong> {{ pet.owner.email }}</p>
+            <p><strong>Phone:</strong> {{ user_user_profile.phone_number }}</p>
+        {% endif %}
+
+        <div class="owner-actions-container">
+            {% if pet.owner|is_shelter %}
+            <a href="{% url 'shelter page preview' pet.owner.shelterprofile.slug %}" class="visit-link">View Shelter Page</a>
+            {% elif pet.owner|is_adopter %}
+            <a href="{% url 'profile page preview' pet.owner.userprofile.pk %}" class="visit-link">View Profile</a>
+            {% endif %}
+            <a href="#" class="adoption-link">Adopt Me</a>
+            <a href="#" class="donation-link">Make a Donation</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
