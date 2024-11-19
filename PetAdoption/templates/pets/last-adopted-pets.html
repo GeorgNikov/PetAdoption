@@ -1,1 +1,56 @@
-<h1>Last Adopted Pets</h1>
+{% load static %}
+
+
+<section class="last-adopted">
+    <h2 class="section-title">Last Adopted Pet</h2>
+    <div class="adopted-pets-grid">
+         {% for pet in pets %}
+        <div class="box-profile">
+
+                <div>
+                    {% if pet.image %}
+                        <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="pet-box-image-profile">
+                    {% else %}
+                        <img src="{% static 'images/no.png' %}" alt="Pet" class="pet-box-image-profile">
+                    {% endif %}
+                </div>
+                <div>
+                    <p><b>{{ pet.name|capfirst }}</b></p>
+
+                    &nbsp;<img src="{% static 'images/adopted.png' %}" alt="Adopted" style="float: right">
+
+                </div>
+
+        </div>
+
+    {% endfor %}   
+    </div>
+</section>
+
+{#<div class="step">#}
+{#<h2>Last Adopted Pets</h2>#}
+{##}
+{#</div>#}
+{#<div class="my-pets">#}
+{##}
+{#    {% for pet in pets %}#}
+{#        <div class="box-profile">#}
+{#            <main class="pet-box-profile">#}
+{#                <div>#}
+{#                    {% if pet.image %}#}
+{#                        <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="pet-box-image-profile">#}
+{#                    {% else %}#}
+{#                        <img src="{% static 'images/no.png' %}" alt="Pet" class="pet-box-image-profile">#}
+{#                    {% endif %}#}
+{#                </div>#}
+{#                <div>#}
+{#                    <p><b>{{ pet.name|capfirst }}</b></p>#}
+{##}
+{#                    &nbsp;<img src="{% static 'images/adopted.png' %}" alt="Adopted" style="float: right">#}
+{##}
+{#                </div>#}
+{#            </main>#}
+{#        </div>#}
+{##}
+{#    {% endfor %}#}
+{#</div>#}

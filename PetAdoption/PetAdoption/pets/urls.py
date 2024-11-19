@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .views import AddPetView, delete_pet, DashboardView, PetDetailView, EditPetView, LikePetView
+from .views import AddPetView, delete_pet, DashboardView, PetDetailView, EditPetView, LikePetView, last_adopted_pets
 from PetAdoption import settings
 from django.conf.urls.static import static
 
@@ -17,6 +17,8 @@ urlpatterns = [
         path('like/', LikePetView.as_view(), name='like pet'),
         path('delete/', delete_pet, name='delete pet'),
     ])),
+
+    path('last_adopted_pets/', last_adopted_pets, name='last adopted pets'),
 ]
 
 if settings.DEBUG:

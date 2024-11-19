@@ -7,11 +7,13 @@ from django.views.generic import TemplateView
 
 from PetAdoption.accounts.forms import UserLoginForm, UserRegistrationForm
 from PetAdoption.core.forms import ContactForm
+from PetAdoption.pets.models import Pet
 
 
 def index(request):
     form = UserLoginForm(request.POST or None)
     register_form = UserRegistrationForm(request.POST or None)
+    pets = Pet.objects.all().order_by('-created_at')[:4] # TODO adopted pets
     # request_user = CustomUser.objects.filter(user=request.user).first()
 
     if request.user.is_authenticated:
@@ -48,7 +50,8 @@ def index(request):
 
     context = {
         'form': form,
-        'register_form': register_form
+        'register_form': register_form,
+        'pets': pets,
     }
 
     return render(request, 'core/index.html', context)

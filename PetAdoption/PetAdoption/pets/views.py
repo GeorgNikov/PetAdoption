@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
@@ -133,6 +132,18 @@ class EditPetView(LoginRequiredMixin, UpdateView):
 def delete_pet(request):
     return render(request, 'pets/delete-pet.html')
 
+
+
+def last_adopted_pets(request):
+    pets = Pet.objects.all().order_by('-created_at')[:4]
+
+    context = {
+        'pets': pets
+    }
+
+    print(pets)
+
+    return render(request, 'pets/last-adopted-pets.html', context)
 
 
 # REST FRAMEWORK API

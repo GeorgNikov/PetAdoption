@@ -18,7 +18,7 @@
                 <section class="shelter-details">
                     <h2> {{ shelter_profile.organization_name }}</h2>
                     <p><strong>Location:</strong> {{ shelter_profile.province }}, {{ shelter_profile.city }}, {{ shelter_profile.address }}</p>
-                    <a><strong>Phone:</strong> <a href="tel:{{ shelter_profile.phone_number }}"> {{ shelter_profile.phone_number }}</a></p>
+                    <p><strong>Phone:</strong> <a href="tel:{{ shelter_profile.phone_number }}"> {{ shelter_profile.phone_number }}</a></p>
                     <p><strong>Email:</strong> <a href="mailto:{{ shelter_profile.user.email }}">{{ shelter_profile.user.email  }}</a></p>
                     <p><strong>Established:</strong> {{ shelter_profile.created_at|date:"j M Y" }}</p>
                 </section>
