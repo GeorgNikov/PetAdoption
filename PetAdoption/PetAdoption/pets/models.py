@@ -92,7 +92,7 @@ class Pet(TimeStampBaseModel):
         return self.name
 
 
-class AdoptionRequest(models.Model):
+class AdoptionRequest(TimeStampBaseModel):
     STATUS_MAX_LENGTH = 8
 
     status = models.CharField(

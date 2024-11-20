@@ -115,7 +115,7 @@
 
 .box-profile {
     float: left;
-    width: auto;
+    max-width: 250px;
     height: auto;
     margin-left: 15px;
     display: inline-block;

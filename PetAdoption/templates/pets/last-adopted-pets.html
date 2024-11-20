@@ -1,6 +1,6 @@
 {% load static %}
 
-
+{% if pets %}
 <section class="last-adopted">
     <h2 class="section-title">Last Adopted Pet</h2>
     <div class="adopted-pets-grid">
@@ -26,6 +26,7 @@
     {% endfor %}   
     </div>
 </section>
+{% endif %}
 
 {#<div class="step">#}
 {#<h2>Last Adopted Pets</h2>#}

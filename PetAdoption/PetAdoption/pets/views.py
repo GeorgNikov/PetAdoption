@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 
-from PetAdoption.pets.utils import check_profile_completion
+from PetAdoption.pets.utils import check_profile_completion, check_user_type
 
 
 # Dashboard to show all pets and link to add pet.
@@ -31,20 +31,38 @@ class DashboardView(ListView):
 
     def get_object(self):
         # Returns the UserProfile instance for the logged-in user
-        if self.request.user.type_user == "Shelter":
+        if check_user_type(self.request) == "Shelter":
+            shelter_profile = get_object_or_404(ShelterProfile, user=self.request.user)
             return get_object_or_404(ShelterProfile, user=self.request.user)
-        elif self.request.user.type_user == "Adopter":
+
+        elif check_user_type(self.request) == "Adopter":
+            user_profile = get_object_or_404(UserProfile, user=self.request.user)
             return get_object_or_404(UserProfile, user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        if user.is_authenticated:
-            context['shelter_profile'] = ShelterProfile.objects.filter(user=self.request.user).first()
-            context['user_profile'] = self.get_object()  # This is the profile of the logged-in user
+        if check_user_type(self.request) == "Shelter":
+            context['shelter_profile'] = ShelterProfile.objects.get(user=user)
+        elif check_user_type(self.request) == "Adopter":
+            context['user_profile'] = UserProfile.objects.get(user=user)
 
         return context
+
+    def dispatch(self, request, *args, **kwargs):
+        # Proceed only if the user is authenticated
+        if not request.user.is_authenticated:
+            messages.error(request, "Please login to view our pets.")
+            return redirect('index')
+
+        # Check if the user has a completed profile
+        redirect_url = check_profile_completion(request)
+        if redirect_url:
+            return redirect_url  # Redirect if the profile is incomplete or doesn't exist
+
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class AddPetView(LoginRequiredMixin, CreateView):
@@ -134,17 +152,15 @@ def delete_pet(request):
 
 
 
-def last_adopted_pets(request):
-    pets = Pet.objects.all().order_by('-created_at')[:4]
-
-    context = {
-        'pets': pets
-    }
-
-    print(pets)
-
-    return render(request, 'pets/last-adopted-pets.html', context)
-
+# def last_adopted_pets(request):
+#     pets = Pet.objects.filter(status="Adopted").exclude(owner=request.user).exclude(status="Available").exclude(status="Pending").order_by('-updated_at')[:4]
+#
+#     context = {
+#         'pets': pets
+#     }
+#
+#     return render(request, 'pets/last-adopted-pets.html', context)
+#
 
 # REST FRAMEWORK API
 class LikePetView(APIView):

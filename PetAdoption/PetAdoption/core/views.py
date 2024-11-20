@@ -8,20 +8,27 @@ from django.views.generic import TemplateView
 from PetAdoption.accounts.forms import UserLoginForm, UserRegistrationForm
 from PetAdoption.core.forms import ContactForm
 from PetAdoption.pets.models import Pet
+from PetAdoption.pets.utils import check_user_type
 
 
 def index(request):
     form = UserLoginForm(request.POST or None)
     register_form = UserRegistrationForm(request.POST or None)
-    pets = Pet.objects.all().order_by('-created_at')[:4] # TODO adopted pets
-    # request_user = CustomUser.objects.filter(user=request.user).first()
+    try:
+        pets = Pet.objects.filter(
+            status="Adopted"
+        ).order_by(
+            '-updated_at'
+        )[:4]
+    except:
+        pets = []
 
     if request.user.is_authenticated:
-        if request.user.type_user == "Adopter":
-            return redirect('profile details view', pk=request.user.pk)
-        elif request.user.type_user == "Shelter":
-            return redirect('shelter details view', pk=request.user.pk)
-        # return redirect('profile details view', pk=request.user.pk)
+        # if check_user_type(request) == "Adopter":
+        #     return redirect('profile details view', pk=request.user.pk)
+        # elif check_user_type(request) == "Shelter":
+        #     return redirect('shelter details view', pk=request.user.pk)
+        return redirect('dashboard')
 
     if request.method == "POST":
         if form.is_valid():
@@ -43,10 +50,11 @@ def index(request):
             login(request, user)
             # return redirect('profile details view', pk=user.pk)
 
-            if user.type_user == "Adopter":
+            if check_user_type(request) == "Adopter":
                 return redirect('profile details view', pk=user.pk)
-            elif user.type_user == "Shelter":
+            elif check_user_type(request) == "Shelter":
                 return redirect('shelter page preview', pk=user.pk)
+            return redirect('index')
 
     context = {
         'form': form,

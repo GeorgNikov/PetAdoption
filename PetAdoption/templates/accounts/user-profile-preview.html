@@ -7,7 +7,11 @@
         <!-- Header Section -->
         <header class="user-header">
             <div class="user-header-content">
+            {% if user_profile.image %}
                 <img src="{{ user_profile.image.url }}" alt="{{ user.username }}'s profile image" class="user-profile-image">
+            {% else %}
+                <img src="{% static 'images/no.png' %}" alt="{{ user.username }}'s profile image" class="user-profile-image">
+            {% endif %}
                 <h1 class="user-name">{% if user.userprofile.full_name %}{{ user.userprofile.full_name }}{% else %}{{ user.username }}{% endif %}</h1>
             </div>
         </header>
@@ -27,9 +31,9 @@
                 <section class="user-actions">
                     <h3>Actions</h3>
                     <ul>
-                        <li><a href="#" class="button">Edit Profile</a></li>
+                        <li><a href="{% url 'profile edit view' user_profile.pk %}" class="button">Edit Profile</a></li>
                         <li><a href="#" class="button">View Activity</a></li>
-                        <li><a href="#" class="button button-danger">Logout</a></li>
+                        <li><a href="#" class="button button-danger">DELETE PROFILE</a></li>
                     </ul>
                 </section>
             </div>

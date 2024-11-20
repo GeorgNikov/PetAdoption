@@ -36,22 +36,22 @@
     <!-- Owner Details Section -->
     <div class="owner-details-section">
         <h3>Owner Information</h3>
-        {% if pet.owner|is_shelter %}
+{#        {% if pet.owner|is_shelter %}#}
             <p><strong>Owner:</strong> {{ shelter_owner_profile.organization_name }}</p>
             <p><strong>Email:</strong> {{ pet.owner.email }}</p>
             <p><strong>Phone:</strong> {{ shelter_owner_profile.phone_number }}</p>
-        {% elif pet.owner|is_adopter %}
-            <p><strong>Owner:</strong> {{ user_user_profile.full_name }}</p>
-            <p><strong>Email:</strong> {{ pet.owner.email }}</p>
-            <p><strong>Phone:</strong> {{ user_user_profile.phone_number }}</p>
-        {% endif %}
+{#        {% elif pet.owner|is_adopter %}#}
+{#            <p><strong>Owner:</strong> {{ user_user_profile.full_name }}</p>#}
+{#            <p><strong>Email:</strong> {{ pet.owner.email }}</p>#}
+{#            <p><strong>Phone:</strong> {{ user_user_profile.phone_number }}</p>#}
+{#        {% endif %}#}
 
         <div class="owner-actions-container">
-            {% if pet.owner|is_shelter %}
+{#            {% if pet.owner|is_shelter %}#}
             <a href="{% url 'shelter page preview' pet.owner.shelterprofile.slug %}" class="visit-link">View Shelter Page</a>
-            {% elif pet.owner|is_adopter %}
-            <a href="{% url 'profile page preview' pet.owner.userprofile.pk %}" class="visit-link">View Profile</a>
-            {% endif %}
+{#            {% elif pet.owner|is_adopter %}#}
+{#            <a href="{% url 'profile page preview' pet.owner.userprofile.pk %}" class="visit-link">View Profile</a>#}
+{#            {% endif %}#}
             <a href="#" class="adoption-link">Adopt Me</a>
             <a href="#" class="donation-link">Make a Donation</a>
         </div>

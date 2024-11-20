@@ -43,6 +43,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
 
     USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
 
     objects = AppUserManager()
 
@@ -52,13 +53,11 @@ class BaseProfile(models.Model):
     PHONE_NUMBER_MAX_LENGTH = 13
 
     ADDRESS_MAX_LENGTH = 100
-
     CITY_MAX_LENGTH = 60
     PROVINCE_MAX_LENGTH = 60
 
     phone_number = models.CharField(
         max_length=PHONE_NUMBER_MAX_LENGTH,
-        unique=True,
         null=True,
         blank=True,
     )
@@ -79,16 +78,9 @@ class BaseProfile(models.Model):
         default='Sofia Province',
     )
 
-    slug = models.SlugField(
-        blank=True,
-        null=True,
-        editable=True,
-    )
-
     completed = models.BooleanField(
         default=False,
         blank=True,
-        null=True,
     )
 
     created_at = models.DateTimeField(
@@ -136,9 +128,16 @@ class UserProfile(BaseProfile):
         null=True,
     )
 
+    slug = models.SlugField(
+        unique=True,
+        blank=True,
+        null=True,
+        editable=True,
+    )
+
     user = models.OneToOneField(
         to=CustomUser,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
 
     @property
@@ -146,15 +145,18 @@ class UserProfile(BaseProfile):
         return f'{self.first_name} {self.last_name}'
 
     def save(self, *args, **kwargs):
+        if not self.slug:  # Ensure slug is only generated if it doesn't already exist
+            base_slug = slugify(self.full_name or f"user-{self.user.pk}")
+            slug = base_slug
+            counter = 1
+            while UserProfile.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         super().save(*args, **kwargs)
 
-        if not self.slug:
-            if self.full_name:
-                self.slug = slugify(f"{self.full_name}-{self.pk}")
-            else:
-                self.slug = slugify(f"{self.user.username}-{self.pk}")
-
-        super().save(*args, **kwargs)
+    def __str__(self):
+        return f"{self.full_name or self.user.username}"
 
 
 class ShelterProfile(BaseProfile):
@@ -189,20 +191,28 @@ class ShelterProfile(BaseProfile):
         null=True,
     )
 
+    slug = models.SlugField(
+        unique=True,
+        blank=True,
+        null=True,
+        editable=True,
+    )
+
     user = models.OneToOneField(
         to=CustomUser,
         on_delete=models.CASCADE,
-        primary_key=True,
     )
 
     def save(self, *args, **kwargs):
+        if not self.slug:  # Ensure slug is only generated if it doesn't already exist
+            base_slug = slugify(self.organization_name or f"user-{self.user.pk}")
+            slug = base_slug
+            counter = 1
+            while ShelterProfile.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         super().save(*args, **kwargs)
 
-        if not self.slug:
-            if self.organization_name:
-                self.slug = slugify(f"{self.organization_name}-{self.pk}")
-            else:
-                self.slug = slugify(f"{self.user.username}-{self.pk}")
-
-        super().save(*args, **kwargs)
-
+    def __str__(self):
+        return f"{self.organization_name or self.user.username}"

@@ -4,76 +4,72 @@
 <nav class="navbar">
     <div class="nav-container">
         <div class="logo">
-            <a href="{% url 'index' %}">PetAdoption</a>
+            <a href="{% url 'index' %}"> PetAdoption</a>
         </div>
         <ul class="nav-links">
-            <li><a href="{% url 'index' %}">Home</a></li>
-            <li><a href="{% url 'dashboard' %}">Find Pets</a></li>
-            <li><a href="#">Shelters</a></li>
-            <li><a href="{% url 'about' %}">About</a></li>
-            <li><a href="{% url 'contact' %}">Contacts</a></li>
-            <li><a href="{% url 'faq' %}">FAQ</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'dashboard' %}"> Find Pets</a></li>
+            {% else %}
+                <li><a href="{% url 'index' %}"> Home</a></li>
+            {% endif %}
+
+            <li><a href="#"> Shelters</a></li>
+            <li><a href="{% url 'about' %}"> About</a></li>
+            <li><a href="{% url 'contact' %}"> Contacts</a></li>
+            <li><a href="{% url 'faq' %}"> FAQ</a></li>
         </ul>
 
         <div class="profile">
             {% if user.is_authenticated %}
-            {% if user|is_adopter %}
-                <div class="dropdown">
-                    <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
-                        {% if user_profile.full_name %}
-                            {{ user_profile.full_name|truncatechars:20|capfirst }}
-                        {% else %}
-                            {{ user.username }}
-                        {% endif %}
-                    {{ user.pk }} - {{ user.userprofile.pk }}
-                    </button>
-                    <div class="dropdown-content">
-                        <a href="{% url 'profile details view' user.pk %}">
-                            <i class="fas fa-user"></i>&nbsp; &nbsp; My Profile</a>
-                        <a href="#"><i class="fas fa-cog"></i>&nbsp; &nbsp; Settings</a>
+                {% if user|is_adopter %}
+                    <div class="dropdown">
+                        <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
+                            {{ userprofile.full_name|default:user.username }}
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'redirect-profile' user.pk %}">
+                                <i class="fas fa-user"></i> &nbsp; &nbsp; My Profile
+                            </a>
+                            <a href="#"><i class="fas fa-cog"></i> &nbsp; &nbsp; Settings</a>
 
-                        <a href="#"
-                           onclick="document.getElementById('logout-form').submit(); return false;">
-                            <i class="fas fa-sign-out-alt"></i>&nbsp; &nbsp; Logout</a>
+                            <a href="#"
+                               onclick="document.getElementById('logout-form').submit(); return false;">
+                                <i class="fas fa-sign-out-alt"></i>&nbsp; &nbsp; Logout</a>
+                        </div>
                     </div>
-                </div>
 
-                <span>
+                    <span>
                      <form method="post" action="{% url 'logout' %}" id="logout-form" style="display: none;">
                         {% csrf_token %}
                         <button class="button" type="submit">Logout</button>
                     </form>
                 </span>
 
-            {% elif user|is_shelter %}
-                {#                For Shelter#}
-                <div class="dropdown">
-                    <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
-                        {% if shelter_profile.organization_name %}
-                            {{ shelter_profile.organization_name|truncatechars:20|capfirst }}
-                        {% else %}
-                            {{ user.username }}
-                        {% endif %}
-                    </button>
-                    <div class="dropdown-content">
-                        <a href="{% url 'shelter details view' user.pk %}">
-                            <i class="fas fa-user"></i>&nbsp; &nbsp; My Profile</a>
-                        <a href="#"><i class="fas fa-cog"></i>&nbsp; &nbsp; Settings</a>
+                {% elif user|is_shelter %}
+                    <div class="dropdown">
+                        <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
+                                {{ shelter_profile.organization_name|default:user.username }}
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'redirect-profile' user.pk %}">
+                                <i class="fas fa-user"></i> &nbsp; &nbsp; My Profile
+                            </a>
+                            <a href="#">
+                                <i class="fas fa-cog"></i> &nbsp; &nbsp; Settings</a>
 
-                        <a href="#"
-                           onclick="document.getElementById('logout-form').submit(); return false;">
-                            <i class="fas fa-sign-out-alt"></i>&nbsp; &nbsp; Logout</a>
+                            <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">
+                                <i class="fas fa-sign-out-alt"></i> &nbsp; &nbsp; Logout</a>
+                        </div>
                     </div>
-                </div>
 
-                <span>
-                     <form method="post" action="{% url 'logout' %}" id="logout-form" style="display: none;" >
+                    <span>
+                     <form method="post" action="{% url 'logout' %}" id="logout-form" style="display: none;">
                         {% csrf_token %}
                         <button class="button" type="submit">Logout</button>
                     </form>
                 </span>
                 {% endif %}
-                
+
             {% endif %}
         </div>
 
@@ -87,18 +83,21 @@
 <!-- Dropdown Mobile Menu -->
 <div class="mobile-menu" id="mobile-menu">
     <ul>
-        <li><a href="{% url 'index' %}">Home</a></li>
-        <li><a href="{% url 'dashboard' %}">Find Pets</a></li>
-        <li><a href="#">Shelters</a></li>
-        <li><a href="{% url 'about' %}">About</a></li>
-        <li><a href="{% url 'contact' %}">Contacts</a></li>
-        <li><a href="{% url 'faq' %}">FAQ</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'dashboard' %}"> Find Pets</a></li>
+            {% else %}
+                <li><a href="{% url 'index' %}"> Home</a></li>
+            {% endif %}
+        <li><a href="#"> Shelters</a></li>
+        <li><a href="{% url 'about' %}"> About</a></li>
+        <li><a href="{% url 'contact' %}"> Contacts</a></li>
+        <li><a href="{% url 'faq' %}"> FAQ</a></li>
 
 
         {% if user.is_authenticated %}
-            <li>&nbsp;</li>
+            <li> &nbsp;</li>
             <li>
-                <a href="{% url 'profile details view' user.pk %}">
+                <a href="{% url 'redirect-profile' user.pk %}">
                     My Profile
                 </a>
             </li>
