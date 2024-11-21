@@ -37,6 +37,18 @@
     background-color: #3e8e41;
 }
 
+.pet-description-section h5 {
+    font-size: 0.9rem;
+    font-weight: normal;
+}
+
+.pet-description-section ul {
+    list-style-type: disc;
+    margin-left: 40px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
 /* pet-detail.css */
 .last-adopted {
     padding: 20px;
@@ -229,7 +241,8 @@
 .image-container img {
     position: relative;
     z-index: 2;
-    width: 400px;
+    min-width: 400px;
+    padding: 15px;
     height: 100%;
     object-fit: cover; /* Ensures the image fits the container */
 }
@@ -246,7 +259,7 @@
     border-radius: 5px;
     font-size: 14px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 1; /* Ensure it appears above other elements */
+    z-index: 2; /* Ensure it appears above other elements */
 }
 
 .image-container .edit-button:hover {
@@ -273,6 +286,7 @@
     background-color: #f9f9f9;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 65%;
 }
 
 .pet-details-section h2 {
@@ -409,12 +423,14 @@
 }
 
 .pet-edit-form .image-preview {
-    margin-top: 8px;
-    max-height: 150px;
-    overflow: hidden;
+margin-top: 8px;
+    width: 300px;
+    height: 150px;
     border-radius: 6px;
     display: inline-block;
-    width: 100%;
+    overflow: hidden;
+    object-fit: contain;
+    background: none;
 }
 
 .pet-edit-form .image-preview img {

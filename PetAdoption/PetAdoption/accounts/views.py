@@ -1,9 +1,11 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth.views import LoginView
+from django.contrib.sessions.models import Session
 from django.core.mail import send_mail
 from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy, reverse
@@ -14,33 +16,13 @@ from django.views.generic import UpdateView, CreateView, DetailView, FormView
 
 from PetAdoption.accounts.forms import UserRegistrationForm, UserEditProfileForm, ShelterEditProfileForm
 from PetAdoption.accounts.models import UserProfile, ShelterProfile
+from PetAdoption.accounts.services.geolocation import get_coordinates
+from PetAdoption.accounts.utils import redirect_ot_profile
+
 from PetAdoption.pets.models import Pet
 from PetAdoption.settings import EMAIL_HOST_USER
 
 UserModel = get_user_model()
-
-
-# class UserProfileDetailsView(LoginRequiredMixin, UpdateView):
-#     model = UserProfile
-#     template_name = 'accounts/user-profile-preview.html'
-#     context_object_name = 'user_profile'
-#     login_url = reverse_lazy('index')
-#
-#     def get_object(self, queryset=None):
-#         # Returns the UserProfile instance for the logged-in user
-#         return get_object_or_404(UserProfile, user=self.request.user)
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['user_profile'] = get_object_or_404(UserProfile, user=self.request.user)
-#         context['pk'] = self.kwargs.get('pk')
-#         return context
-#
-#     def dispatch(self, request, *args, **kwargs):
-#         # Prevent users from accessing other profiles by checking the ID
-#         if kwargs['pk'] != str(self.request.user.pk):
-#             return redirect('profile details view')  # or raise a 404 error if preferred
-#         return super().dispatch(request, *args, **kwargs)
 
 
 # USER PROFILE
@@ -61,25 +43,6 @@ class UserProfileView(LoginRequiredMixin, DetailView):
         context['pets'] = pets
         return context
 
-
-# class UserProfilePreview(LoginRequiredMixin, DetailView):
-#     model = UserProfile
-#     template_name = 'accounts/user-profile-preview.html'
-#     context_object_name = 'user_profile'
-#     login_url = reverse_lazy('index')
-#
-#
-#     def get_object(self, queryset=None, pk=None):
-#         # Returns the UserProfile instance for the logged-in user
-#         return get_object_or_404(UserProfile, user=self.request.user)
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['user_profile'] = self.get_object()  # This is the profile of the logged-in user
-#         pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
-#         context['pets'] = pets
-#         print(context['pets'])
-#         return context
 
 
 # EDIT USER PROFILE
@@ -126,6 +89,23 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('profile details view', kwargs={'pk': self.kwargs.get('pk')})
 
 
+
+# DELETE USER PROFILE
+@login_required
+def user_profile_delete_view(request, pk):
+    profile = get_object_or_404(UserProfile, pk=pk)
+    user = profile.user
+    if request.method == 'POST':
+        user.is_active = False
+        user.save()
+        profile.delete()
+
+        messages.success(request, "Your profile has been DELETED successfully.")
+        return redirect('index')
+
+    return render(request, 'accounts/userprofile_confirm_delete.html')
+
+
 # REGISTRATION VIEW
 class UserRegisterView(CreateView):
     model = UserModel
@@ -138,30 +118,37 @@ class UserRegisterView(CreateView):
         login(self.request, user)
 
         # Redirect to the appropriate profile page after registration
+        redirect_ot_profile(user)
+
         return response
 
+
+    # def get_success_url(self):
+    #     user = self.object
+    #
+    #     if user.type_user == "Adopter":
+    #         # Fetch the related UserProfile
+    #         profile = getattr(user, "user_profile", None)
+    #     elif user.type_user == "Shelter":
+    #         # Fetch the related ShelterProfile
+    #         profile = getattr(user, "shelter_profile", None)
+    #     else:
+    #         profile = None
+    #
+    #     if profile and profile.pk:
+    #         # Redirect to the respective profile page
+    #         if user.type_user == "Adopter":
+    #             return reverse('redirect-profile', kwargs={'pk': profile.pk})
+    #         elif user.type_user == "Shelter":
+    #             return reverse('redirect-profile', kwargs={'pk': profile.pk})
+    #     else:
+    #         # Handle case where profile wasn't created (fallback)
+    #         messages.error(self.request, "Profile creation failed. Please contact support.")
+    #         return reverse('index')
     def get_success_url(self):
-        user = self.object
+        return reverse('index')
 
-        if user.type_user == "Adopter":
-            # Fetch the related UserProfile
-            profile = getattr(user, "user_profile", None)
-        elif user.type_user == "Shelter":
-            # Fetch the related ShelterProfile
-            profile = getattr(user, "shelter_profile", None)
-        else:
-            profile = None
 
-        if profile and profile.pk:
-            # Redirect to the respective profile page
-            if user.type_user == "Adopter":
-                return reverse('profile details view', kwargs={'pk': profile.pk})
-            elif user.type_user == "Shelter":
-                return reverse('shelter details view', kwargs={'pk': profile.pk})
-        else:
-            # Handle case where profile wasn't created (fallback)
-            messages.error(self.request, "Profile creation failed. Please contact support.")
-            return reverse('index')
 
 
 # USER LOGIN
@@ -243,6 +230,8 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
     login_url = reverse_lazy('index')
 
 
+
+
     def get_object(self, queryset=None, *args, **kwargs):
         slug = self.kwargs['slug']
 
@@ -250,8 +239,25 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['shelter_profile'] = self.get_object()  # This is the profile of the logged-in user
+
+        shelter_profile = self.get_object()
+        context['shelter_profile'] = shelter_profile
+        # This is the profile of the logged-in user
         context['pets'] = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
+
+        # Fetch coordinates for the shelter's address
+        address = f"{shelter_profile.province}, {shelter_profile.city}, {shelter_profile.address}"
+        print(address)
+        latitude, longitude = get_coordinates(address)
+        if latitude and longitude:
+            context['map_coordinates'] = {
+                'latitude': latitude,
+                'longitude': longitude,
+            }
+            print(context['map_coordinates'])
+        else:
+            context['map_coordinates'] = None
+
         return context
 
 

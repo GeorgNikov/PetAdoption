@@ -48,7 +48,7 @@
                 {% elif user|is_shelter %}
                     <div class="dropdown">
                         <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
-                                {{ shelter_profile.organization_name|default:user.username }}
+                                {{ user.username }}
                         </button>
                         <div class="dropdown-content">
                             <a href="{% url 'redirect-profile' user.pk %}">

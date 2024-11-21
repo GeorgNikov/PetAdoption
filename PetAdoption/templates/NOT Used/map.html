@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shelter Profile Preview</title>
+
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    
+    <!-- Include Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+ 
+
+    <!-- Map Container -->
+    <div id="map" style="height: 400px; width: 100%;"></div>
+
+    <script>
+        const mapCoordinates = {{ map_coordinates|safe }};
+        if (mapCoordinates) {
+            const map = L.map('map').setView([mapCoordinates.latitude, mapCoordinates.longitude], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+            }).addTo(map);
+
+            L.marker([mapCoordinates.latitude, mapCoordinates.longitude]).addTo(map)
+                .bindPopup('Shelter Location')
+                .openPopup();
+        } else {
+            document.getElementById('map').innerHTML = '<p>Location data not available.</p>';
+        }
+    </script>
+</body>
+</html>

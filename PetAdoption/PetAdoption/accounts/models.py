@@ -40,6 +40,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     is_active = models.BooleanField(
         default=True,
+        editable=True,
     )
 
     USERNAME_FIELD = 'username'

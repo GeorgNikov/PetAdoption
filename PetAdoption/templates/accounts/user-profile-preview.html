@@ -2,17 +2,22 @@
 {% load static %}
 
 {% block content %}
-   
+
     <div class="user-profile">
         <!-- Header Section -->
-        <header class="user-header">
-            <div class="user-header-content">
-            {% if user_profile.image %}
-                <img src="{{ user_profile.image.url }}" alt="{{ user.username }}'s profile image" class="user-profile-image">
-            {% else %}
-                <img src="{% static 'images/no.png' %}" alt="{{ user.username }}'s profile image" class="user-profile-image">
-            {% endif %}
-                <h1 class="user-name">{% if user.userprofile.full_name %}{{ user.userprofile.full_name }}{% else %}{{ user.username }}{% endif %}</h1>
+        <header class="user-header" style="background-image: url('{% static 'images/no-pet-image.jpg' %}');">
+            <div class="user-header-overlay">
+                <div class="user-header-content">
+                    {% if user_profile.image %}
+                        <img src="{{ user_profile.image.url }}" alt="{{ user.username }}'s profile image"
+                             class="user-profile-image">
+                    {% else %}
+                        <img src="{% static 'images/no.png' %}" alt="{{ user.username }}'s profile image"
+                             class="user-profile-image">
+                    {% endif %}
+                    <h1 class="user-name">{% if user.userprofile.full_name %}{{ user.userprofile.full_name }}{% else %}
+                        {{ user.username }}{% endif %}</h1>
+                </div>
             </div>
         </header>
 
@@ -33,7 +38,39 @@
                     <ul>
                         <li><a href="{% url 'profile edit view' user_profile.pk %}" class="button">Edit Profile</a></li>
                         <li><a href="#" class="button">View Activity</a></li>
-                        <li><a href="#" class="button button-danger">DELETE PROFILE</a></li>
+                        <li>
+                            <div id="delete-container">
+                                <!-- Initial DELETE PROFILE link -->
+                                <a href="#" id="delete-profile" class="button delete-button-danger"
+                                   onclick="showOptions(event)">DELETE PROFILE</a>
+
+                                <!-- Hidden confirmation options -->
+                                <div id="confirmation-options" style="display: none;">
+                                    <a href="{% url 'profile delete' pk=user_profile.pk %}" class="button button-danger">Yes,
+                                        delete</a>
+                                    <a href="#" class="button delete-button-success" onclick="hideOptions(event)">No,
+                                        cancel</a>
+                                </div>
+                                <script>
+                                    function showOptions(event) {
+                                        event.preventDefault(); // Prevent the default link behavior
+
+                                        // Hide the initial DELETE PROFILE link and show the confirmation options
+                                        document.getElementById('delete-profile').style.display = 'none';
+                                        document.getElementById('confirmation-options').style.display = 'block';
+                                    }
+
+                                    function hideOptions(event) {
+                                        event.preventDefault(); // Prevent the default link behavior
+
+                                        // Show the initial DELETE PROFILE link and hide the confirmation options
+                                        document.getElementById('delete-profile').style.display = 'block';
+                                        document.getElementById('confirmation-options').style.display = 'none';
+                                    }
+
+                                </script>
+                            </div>
+                        </li>
                     </ul>
                 </section>
             </div>

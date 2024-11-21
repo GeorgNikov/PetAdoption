@@ -7,11 +7,22 @@
 
 /* Header Section */
 .user-header {
-    background-color: #4caf50;
     color: white;
     text-align: center;
-    padding: 20px;
+
     position: relative;
+    background-size: cover;
+    background-position: center;
+
+}
+
+.user-header-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .user-header-content {
@@ -20,9 +31,9 @@
 }
 
 .user-profile-image {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    border-radius: 5%;
     border: 3px solid white;
     margin-bottom: 10px;
 }
@@ -98,6 +109,45 @@
 
 .button-danger:hover {
     background-color: #c82333;
+}
+
+.delete-button-danger {
+    color: white;
+    background-color: #dc3545;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px 5px 0 0;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: Uppercase;
+}
+
+.delete-button-danger:hover {
+    background-color: #c82333;
+}
+
+
+.delete-button-success {
+    color: white;
+    background-color: #1fb23d;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px 5px 0 0;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: Uppercase;
+}
+
+.delete-button-success:hover {
+    background-color: #1da639;
 }
 
 /* Footer Section */
