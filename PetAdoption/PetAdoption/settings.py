@@ -1,33 +1,38 @@
 import os
 from pathlib import Path
 
+import cloudinary
 from decouple import config
 from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Cloudinary Configuration
+CLOUDINARY_STORAGE = {
+    'cloud_name': config('CLOUDINARY_CLOUD_NAME'),
+    'api_key': config('CLOUDINARY_API_KEY'),
+    'api_secret': config('CLOUDINARY_API_SECRET'),
+}
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE['cloud_name'],
+    api_key=CLOUDINARY_STORAGE['api_key'],
+    api_secret=CLOUDINARY_STORAGE['api_secret'],
+    secure=True
+)
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
-# git filter-repo --path settings.py --replace-text (echo "SECRET_KEY = '.*'==>SECRET_KEY = config('SECRET_KEY')")
-# ALLOWED_HOSTS = '.*'==>ALLOWED_HOSTS = config("ALLOWED_HOSTS")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# To view from local network USE: python manage.py runserver 192.168.1.104:800
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*', '0.0.0.0', '192.168.1.*']
-
 # Only localhost
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,6 +43,8 @@ INSTALLED_APPS = [
     # Other apps
     'captcha',
     'rest_framework',
+    'cloudinary',
+    'cloudinary_storage',
     # My Apps
     'PetAdoption.pets.apps.PetsConfig',
     'PetAdoption.accounts.apps.AccountsConfig',
@@ -53,7 +60,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'PetAdoption.middlewares.MeasureTimeMiddleware',
 ]
 
 ROOT_URLCONF = 'PetAdoption.urls'
@@ -93,20 +99,20 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
-# AUTH_PASSWORD_VALIDATORS = [
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-#     },
-# ]
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 
 # Internationalization
@@ -123,8 +129,6 @@ USE_TZ = True
 CSRF_COOKIE_SECURE = False
 
 SITE_NAME = 'Pet Adoption'
-# SITE_URL = 'http://127.0.0.1:8000'
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -135,10 +139,12 @@ STATICFILES_DIRS = [
     BASE_DIR / "staticfiles",
 ]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+if DEBUG:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
+# SMTP Server configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -154,5 +160,5 @@ CONTACT_EMAIL = config('CONTACT_EMAIL')  # The email where you'd like to receive
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
-LOGIN_REDIRECT_URL = reverse_lazy('profile details view')
+# LOGIN_REDIRECT_URL = reverse_lazy('redirect-profile')
 LOGOUT_REDIRECT_URL = reverse_lazy('index')

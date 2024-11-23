@@ -1,15 +1,18 @@
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 
 from PetAdoption.accounts.forms import UserLoginForm, UserRegistrationForm
+from PetAdoption.accounts.models import ShelterProfile, UserProfile
 from PetAdoption.core.forms import ContactForm
 from PetAdoption.pets.models import Pet
 from PetAdoption.pets.utils import check_user_type
 
+
+UserModel = get_user_model()
 
 def index(request):
     form = UserLoginForm(request.POST or None)
@@ -24,10 +27,6 @@ def index(request):
         pets = []
 
     if request.user.is_authenticated:
-        # if check_user_type(request) == "Adopter":
-        #     return redirect('profile details view', pk=request.user.pk)
-        # elif check_user_type(request) == "Shelter":
-        #     return redirect('shelter details view', pk=request.user.pk)
         return redirect('dashboard')
 
     if request.method == "POST":
@@ -96,10 +95,41 @@ def contact_view(request):
     else:
         form = ContactForm()
 
-    return render(request, 'core/contacts.html', {'form': form})
+        user_profile = UserProfile.objects.get(user=request.user.pk)
 
+        context = {
+            'form': form,
+            'full_name': user_profile.full_name
+        }
 
+    return render(request, 'core/contacts.html', context)
 
 
 class FAQView(TemplateView):
     template_name = 'core/faq.html'
+
+
+class SheltersView(TemplateView):
+    model = ShelterProfile
+    template_name = 'core/shelters.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        shelters = ShelterProfile.objects.all()
+
+        # For each shelter, get the count of available pets
+        shelters_with_pet_count = []
+        for shelter in shelters:
+            # Count the number of available pets for this shelter
+            available_pets_count = Pet.objects.filter(owner=shelter.user.pk, status="Available").count()
+            shelters_with_pet_count.append({
+                'shelter': shelter,
+                'available_pets_count': available_pets_count,
+                'slug': shelter.slug
+            })
+
+        # Add the shelter information with the pet count to the context
+        context['shelters'] = shelters_with_pet_count
+        print(context['shelters'])
+        return context

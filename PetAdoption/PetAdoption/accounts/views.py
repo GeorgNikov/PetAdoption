@@ -74,7 +74,7 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
             getattr(profile, field) for field in form.fields
         ])
 
-        # Set `completed` to True if all fields are filled, otherwise False
+        # Set `completed` to True if all fields are filled
         profile.completed = all_fields_filled
         profile.save()  # Now save to the database
 
@@ -122,32 +122,8 @@ class UserRegisterView(CreateView):
 
         return response
 
-
-    # def get_success_url(self):
-    #     user = self.object
-    #
-    #     if user.type_user == "Adopter":
-    #         # Fetch the related UserProfile
-    #         profile = getattr(user, "user_profile", None)
-    #     elif user.type_user == "Shelter":
-    #         # Fetch the related ShelterProfile
-    #         profile = getattr(user, "shelter_profile", None)
-    #     else:
-    #         profile = None
-    #
-    #     if profile and profile.pk:
-    #         # Redirect to the respective profile page
-    #         if user.type_user == "Adopter":
-    #             return reverse('redirect-profile', kwargs={'pk': profile.pk})
-    #         elif user.type_user == "Shelter":
-    #             return reverse('redirect-profile', kwargs={'pk': profile.pk})
-    #     else:
-    #         # Handle case where profile wasn't created (fallback)
-    #         messages.error(self.request, "Profile creation failed. Please contact support.")
-    #         return reverse('index')
     def get_success_url(self):
         return reverse('index')
-
 
 
 
@@ -229,9 +205,6 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
     context_object_name = 'shelter_profile'
     login_url = reverse_lazy('index')
 
-
-
-
     def get_object(self, queryset=None, *args, **kwargs):
         slug = self.kwargs['slug']
 
@@ -246,9 +219,9 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
         context['pets'] = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
 
         # Fetch coordinates for the shelter's address
-        address = f"{shelter_profile.province}, {shelter_profile.city}, {shelter_profile.address}"
-        print(address)
-        latitude, longitude = get_coordinates(address)
+        latitude, longitude = get_coordinates(shelter_profile.full_address)
+        print(latitude)
+        print(longitude)
         if latitude and longitude:
             context['map_coordinates'] = {
                 'latitude': latitude,

@@ -12,8 +12,7 @@
             {% else %}
                 <li><a href="{% url 'index' %}"> Home</a></li>
             {% endif %}
-
-            <li><a href="#"> Shelters</a></li>
+            <li><a href="{% url 'shelters' %}"> Shelters</a></li>
             <li><a href="{% url 'about' %}"> About</a></li>
             <li><a href="{% url 'contact' %}"> Contacts</a></li>
             <li><a href="{% url 'faq' %}"> FAQ</a></li>
@@ -48,7 +47,7 @@
                 {% elif user|is_shelter %}
                     <div class="dropdown">
                         <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
-                                {{ user.username }}
+                            {{ user.username }}
                         </button>
                         <div class="dropdown-content">
                             <a href="{% url 'redirect-profile' user.pk %}">
@@ -83,12 +82,12 @@
 <!-- Dropdown Mobile Menu -->
 <div class="mobile-menu" id="mobile-menu">
     <ul>
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'dashboard' %}"> Find Pets</a></li>
-            {% else %}
-                <li><a href="{% url 'index' %}"> Home</a></li>
-            {% endif %}
-        <li><a href="#"> Shelters</a></li>
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'dashboard' %}"> Find Pets</a></li>
+        {% else %}
+            <li><a href="{% url 'index' %}"> Home</a></li>
+        {% endif %}
+        <li><a href="{% url 'shelters' %}"> Shelters</a></li>
         <li><a href="{% url 'about' %}"> About</a></li>
         <li><a href="{% url 'contact' %}"> Contacts</a></li>
         <li><a href="{% url 'faq' %}"> FAQ</a></li>

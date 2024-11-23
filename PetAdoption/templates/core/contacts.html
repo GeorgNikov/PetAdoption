@@ -8,11 +8,6 @@
         <div class="right-content">
             <section >
                 <div class="container">
-
-
-
-
-
                     <!-- Form -->
                     <form action="{% url 'contact' %}" method="post">
                         <h1>Contact Us</h1>
@@ -22,7 +17,7 @@
                             <label for="name">Your Name</label>
                             {% if user.is_authenticated and user.username%}
                                 <input type="text" id="name" name="name"  placeholder="Enter your name"
-                                       required readonly value="{{ user.username }}">
+                                       required readonly value="{{ full_name|default:user.username }}">
                             {% else %}
                                 <input type="text" id="name" name="name" placeholder="Enter your name" required>
                             {% endif %}

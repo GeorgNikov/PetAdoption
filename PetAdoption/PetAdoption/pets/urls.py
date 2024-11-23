@@ -23,5 +23,5 @@ urlpatterns = [
     # path('last_adopted_pets/', last_adopted_pets, name='last adopted pets'),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

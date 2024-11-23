@@ -1,8 +1,10 @@
+from cloudinary.models import CloudinaryField
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.template.defaultfilters import slugify
 
-from PetAdoption.pets.choices import PetChoices, PetStatusChoices, AdoptionRequestStatusChoices
+from PetAdoption.pets.choices import PetChoices, PetStatusChoices, AdoptionRequestStatusChoices, PetGenderChoices, \
+    PetSizeChoices
 
 UserModel = get_user_model()
 
@@ -19,8 +21,10 @@ class Pet(TimeStampBaseModel):
     NAME_MAX_LENGTH = 30
     TYPE_MAX_LENGTH = 20
     BREED_MAX_LENGTH = 30
+    GENDER_MAX_LENGTH = 6
+    SIZE_MAX_LENGTH = 6
     STATUS_MAX_LENGTH = 10
-    DESCRIPTION_MAX_LENGTH = 500
+    DESCRIPTION_MAX_LENGTH = 1500
     IMG_UPLOAD_TO = 'pet_images/'
 
     name = models.CharField(
@@ -41,6 +45,22 @@ class Pet(TimeStampBaseModel):
 
     age = models.PositiveSmallIntegerField()  # In months
 
+    # noinspection PyUnresolvedReferences
+    gender = models.CharField(
+        max_length=GENDER_MAX_LENGTH,
+        choices=PetGenderChoices.choices,
+        blank=True,
+        null=True,
+    )
+
+    # noinspection PyUnresolvedReferences
+    size = models.CharField(
+        max_length=SIZE_MAX_LENGTH,
+        choices=PetSizeChoices.choices,
+        blank=True,
+        null=True,
+    )
+
     description = models.TextField(
         max_length=DESCRIPTION_MAX_LENGTH,
         blank=True,
@@ -52,8 +72,8 @@ class Pet(TimeStampBaseModel):
         on_delete=models.CASCADE
     )
 
-    image = models.ImageField(
-        upload_to=IMG_UPLOAD_TO,
+    image = CloudinaryField(
+        'image',
         blank=True,
         null=True,
     )

@@ -112,3 +112,21 @@ form button:hover {
     background-color: #e7f7e7;
     border-left: 4px solid #4CAF50;
 }
+
+/* Grid Layout */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    gap: 20px; /* Space between columns */
+}
+
+.form-bottom {
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr; /* Stack columns on smaller screens */
+    }
+}

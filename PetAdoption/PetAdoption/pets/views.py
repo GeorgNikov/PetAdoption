@@ -16,81 +16,7 @@ from rest_framework import status, permissions
 from PetAdoption.pets.utils import check_profile_completion
 
 
-# Dashboard to show all pets and link to add pet. WORKED
-# class DashboardView(ListView):
-#     model = Pet
-#     template_name = 'pets/dashboard.html'
-#     context_object_name = 'pets'
-#     paginate_by = 6
-#     success_url = reverse_lazy('dashboard')
-#
-#     def get_queryset(self):
-#         queryset = self.model.objects.filter(status="Available").order_by('-created_at')
-#         for pet in queryset:
-#             pet.liked = pet.likes.filter(pk=self.request.user.pk).exists()
-#
-#         return queryset
-#
-#     def get_object(self):
-#         # Returns the UserProfile instance for the logged-in user
-#         if check_user_type(self.request) == "Shelter":
-#             shelter_profile = get_object_or_404(ShelterProfile, user=self.request.user)
-#             return shelter_profile
-#
-#         elif check_user_type(self.request) == "Adopter":
-#             user_profile = get_object_or_404(UserProfile, user=self.request.user)
-#             return user_profile
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         shelter_param = self.request.GET.get('shelter')
-#         user = self.request.user
-#
-#         if shelter_param:
-#             # Assuming `shelter_param` corresponds to a field in the ShelterProfile model
-#             shelter = get_object_or_404(ShelterProfile, user__pk=shelter_param)
-#             context['shelter'] = shelter
-#             # Filter pets by shelter
-#             pets = Pet.objects.filter(owner=shelter.user.pk, status="Available").order_by('-created_at')
-#
-#         else:
-#             pets = Pet.objects.filter(status="Available").order_by('-created_at')
-#
-#         for pet in pets:
-#             pet.liked = pet.likes.filter(pk=self.request.user.pk).exists()
-#
-#         if check_user_type(self.request) == "Shelter":
-#             context['shelter_profile'] = ShelterProfile.objects.get(user=user)
-#         elif check_user_type(self.request) == "Adopter":
-#             context['user_profile'] = UserProfile.objects.get(user=user)
-#
-#             # Paginate the filtered pets
-#         paginator = Paginator(pets, 6)  # 10 pets per page
-#         page_number = self.request.GET.get('page')
-#         page_obj = paginator.get_page(page_number)
-#
-#         context['page_obj'] = page_obj
-#         context['pets'] = page_obj.object_list
-#         context['paginator'] = paginator
-#         context['shelter'] = shelter_param
-#
-#         return context
-#
-#     def dispatch(self, request, *args, **kwargs):
-#         # Proceed only if the user is authenticated
-#         if not request.user.is_authenticated:
-#             messages.error(request, "Please login to view our pets.")
-#             return redirect('index')
-#
-#         # Check if the user has a completed profile
-#         redirect_url = check_profile_completion(request)
-#         if redirect_url:
-#             return redirect_url  # Redirect if the profile is incomplete or doesn't exist
-#
-#
-#         return super().dispatch(request, *args, **kwargs)
-
-# TEST NEW DASHBOARD VIEW
+# DASHBOARD VIEW
 class Dashboard(ListView):
     model = Pet
     template_name = 'pets/dashboard.html'
@@ -101,7 +27,6 @@ class Dashboard(ListView):
     def get_queryset(self):
         queryset = self.model.objects.filter(status__in=["Available", "Pending"]).order_by('-created_at')
 
-
         for pet in queryset:
             pet.liked = pet.likes.filter(pk=self.request.user.pk).exists()
         return queryset
@@ -109,7 +34,6 @@ class Dashboard(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get the request's query parameters
         query_params = self.request.GET.copy()
 
         # Remove the 'page' parameter from the query parameters
@@ -123,7 +47,7 @@ class Dashboard(ListView):
         age_param = self.request.GET.get('age')
         city_param = self.request.GET.get('city')
 
-        pets = Pet.objects.filter(status="Available")
+        pets = Pet.objects.filter(status="Available").order_by('-created_at')
         if shelter_param:
             pets = pets.filter(owner__pk=shelter_param)
         if age_param:
@@ -155,7 +79,6 @@ class Dashboard(ListView):
         redirect_url = check_profile_completion(request)
         if redirect_url:
             return redirect_url  # Redirect if the profile is incomplete or doesn't exist
-
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -209,7 +132,6 @@ class PetDetailView(DetailView):
         if redirect_url:
             return redirect_url  # Redirect if the profile is incomplete or doesn't exist
 
-
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -219,8 +141,6 @@ class PetDetailView(DetailView):
         context['user_user_profile'] = UserProfile.objects.filter(user=pet_owner).first()
         context['user_profile'] = UserProfile.objects.filter(user=self.request.user).first()
         return context
-
-
 
 
 class EditPetView(LoginRequiredMixin, UpdateView):
@@ -243,9 +163,10 @@ class EditPetView(LoginRequiredMixin, UpdateView):
         messages.success(self.request, "Pet details updated successfully!")
         return reverse_lazy('pet details', kwargs={'pet_slug': self.object.slug})
 
+
+# DELETE PET
 def delete_pet(request):
     return render(request, 'pets/delete-pet.html')
-
 
 
 class AdoptionRequestView(LoginRequiredMixin, CreateView):
@@ -285,17 +206,9 @@ class AdoptionRequestView(LoginRequiredMixin, CreateView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('pet details', kwargs={'pet_slug': self.kwargs.get('pet_slug')})
+        return reverse_lazy('redirect-profile', kwargs={'pk': self.request.user.pk})
+        # return reverse_lazy('pet details', kwargs={'pet_slug': self.kwargs.get('pet_slug')})
 
-# def last_adopted_pets(request):
-#     pets = Pet.objects.filter(status="Adopted").exclude(owner=request.user).exclude(status="Available").exclude(status="Pending").order_by('-updated_at')[:4]
-#
-#     context = {
-#         'pets': pets
-#     }
-#
-#     return render(request, 'pets/last-adopted-pets.html', context)
-#
 
 # REST FRAMEWORK API
 class LikePetView(APIView):

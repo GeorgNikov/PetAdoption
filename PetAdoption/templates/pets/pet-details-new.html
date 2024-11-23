@@ -8,10 +8,10 @@
         <div class="image-container" style="--background-image: url('{{ pet.image.url }}');">
         <!-- Foreground image dynamically loaded -->
         <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
- 
-        
+
+
     {% else %}
-        <div class="image-container" style="--background-image: url('{% static 'images/no-pet-image.jpg' %}');">
+        <div class="image-container" style="--background-image: url('https://res.cloudinary.com/dlcpd3g8w/image/upload/v1732366108/ft7952ghfxe7b19qjhca.png');">
         <!-- Foreground image dynamically loaded -->
 
     {% endif %}
@@ -29,41 +29,38 @@
         <h2>Pet Information</h2>
         <p><strong>Name:</strong> {{ pet.name }}</p>
         <p><strong>Age:</strong> {{ pet.age }} months</p>
+        <p><strong>Species:</strong> {{ pet.type }}</p>
         <p><strong>Breed:</strong> {{ pet.breed }} </p>
+        <p><strong>Gender:</strong> {{ pet.gender }}</p>
+        <p><strong>Size:</strong> {{ pet.size }}</p>
+        
         <p><strong>Description:</strong> {{ pet.description }}</p>
     </div>
 
     <!-- Owner Details Section -->
     <div class="owner-details-section">
         <h3>Owner Information</h3>
-{#        {% if pet.owner|is_shelter %}#}
-            <p><strong>Owner:</strong> {{ shelter_owner_profile.organization_name }}</p>
-            <p><strong>Email:</strong> {{ pet.owner.email }}</p>
-            <p><strong>Phone:</strong> {{ shelter_owner_profile.phone_number }}</p>
-{#        {% elif pet.owner|is_adopter %}#}
-{#            <p><strong>Owner:</strong> {{ user_user_profile.full_name }}</p>#}
-{#            <p><strong>Email:</strong> {{ pet.owner.email }}</p>#}
-{#            <p><strong>Phone:</strong> {{ user_user_profile.phone_number }}</p>#}
-{#        {% endif %}#}
+        <p><strong>Owner:</strong> {{ shelter_owner_profile.organization_name }}</p>
+        <p><strong>Email:</strong> {{ pet.owner.email }}</p>
+        <p><strong>Phone:</strong> {{ shelter_owner_profile.phone_number }}</p>
+
 
         <div class="owner-actions-container">
-{#            {% if pet.owner|is_shelter %}#}
-            <a href="{% url 'shelter page preview' pet.owner.shelterprofile.slug %}" class="visit-link">View Shelter Page</a>
-{#            {% elif pet.owner|is_adopter %}#}
-{#            <a href="{% url 'profile page preview' pet.owner.userprofile.pk %}" class="visit-link">View Profile</a>#}
-{#            {% endif %}#}
- 
-        
+            <a href="{% url 'shelter page preview' pet.owner.shelter_profile.slug %}" class="visit-link">View Shelter
+                Page</a>
+
             {% if user.is_authenticated %}
-    {% if has_requested_adoption %}
-        <p>You have already requested to adopt this pet.</p>
-    {% else %}
-        <a href="{% url 'adopt_pet' pet.slug %}" class="btn btn-success">Adopt Me</a>
-    {% endif %}
-{% else %}
-    <p><a href="{% url 'login' %}">Log in</a> to request adoption.</p>
-{% endif %}
-        
+                {% if has_requested_adoption %}
+                    <p>You have already requested to adopt this pet.</p>
+                {% else %}
+                    {% if user|is_adopter %}
+                        <a href="{% url 'adopt_pet' pet.slug %}" class="btn btn-success">Adopt Me</a>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <p><a href="{% url 'login' %}">Log in</a> to request adoption.</p>
+            {% endif %}
+
             <a href="#" class="donation-link">Share</a>
         </div>
     </div>

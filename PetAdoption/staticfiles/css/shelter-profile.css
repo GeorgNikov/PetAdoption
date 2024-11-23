@@ -3,11 +3,12 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    width: 100%;
 }
 
 /* Header Section */
 .shelter-header {
-    height: 300px;
+    height: 250px;
     background-size: cover;
     background-position: center;
     position: relative;
@@ -37,9 +38,19 @@
 
 .shelter-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     gap: 20px;
     flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.shelter-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    max-width: 515px;
 }
 
 .shelter-details,
@@ -49,6 +60,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     flex: 1;
+    min-width: 400px;
 }
 
 .shelter-details {

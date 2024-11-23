@@ -1,3 +1,5 @@
+from cloudinary import CloudinaryImage
+from cloudinary.models import CloudinaryField
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.core.validators import MinLengthValidator
@@ -96,6 +98,7 @@ class BaseProfile(models.Model):
         null=True,
     )
 
+    @property
     def full_address(self):
         return f'{self.province}, {self.city}, {self.address}'
 
@@ -126,8 +129,8 @@ class UserProfile(BaseProfile):
         ],
     )
 
-    image = models.ImageField(
-        upload_to=IMG_UPLOAD_TO,
+    image = CloudinaryField(
+        'user_profile_images',
         blank=True,
         null=True,
     )
@@ -142,6 +145,7 @@ class UserProfile(BaseProfile):
     user = models.OneToOneField(
         to=CustomUser,
         on_delete=models.CASCADE,
+        related_name='user_profile',
     )
 
     @property
@@ -189,8 +193,8 @@ class ShelterProfile(BaseProfile):
         blank=True
     )
 
-    image = models.ImageField(
-        upload_to=IMG_UPLOAD_TO,
+    image = CloudinaryField(
+        "shelter_profile_images",
         blank=True,
         null=True,
     )
@@ -202,9 +206,15 @@ class ShelterProfile(BaseProfile):
         editable=True,
     )
 
+    website = models.URLField(
+        blank=True,
+        null=True,
+    )
+
     user = models.OneToOneField(
         to=CustomUser,
         on_delete=models.CASCADE,
+        related_name='shelter_profile',
     )
 
     def save(self, *args, **kwargs):

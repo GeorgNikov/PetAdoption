@@ -3,8 +3,7 @@
 
 {% block content %}
 
-    <div class="user-profile">
-        <!-- Header Section -->
+
         <header class="user-header" style="background-image: url('{% static 'images/no-pet-image.jpg' %}');">
             <div class="user-header-overlay">
                 <div class="user-header-content">
@@ -15,21 +14,25 @@
                         <img src="{% static 'images/no.png' %}" alt="{{ user.username }}'s profile image"
                              class="user-profile-image">
                     {% endif %}
-                    <h1 class="user-name">{% if user.userprofile.full_name %}{{ user.userprofile.full_name }}{% else %}
-                        {{ user.username }}{% endif %}</h1>
+                    <h1 class="user-name">
+                        {{ user_profile.full_name|default:user.username }}</h1>
                 </div>
             </div>
         </header>
+    <div class="container">
+    <div class="user-profile">
+        <!-- Header Section -->
+
 
         <!-- Main Section -->
         <main class="user-main">
             <div class="user-container">
                 <!-- Left Section: User Details -->
                 <section class="user-details">
-                    <h2>About {{ user.username }}</h2>
+                    <h2>{{ user_profile.full_name|default:user.username }}</h2>
                     <p><strong>Email:</strong> {{ user.email }}</p>
-                    <p><strong>Joined:</strong> {{ user.userprofile.created_at|date:"F j, Y" }}</p>
-                    <p><strong>Location:</strong> {{ user.userprofile.province }}, {{ user.userprofile.city }}</p>
+                    <p><strong>Joined:</strong> {{ user_profile.created_at|date:"F j, Y" }}</p>
+                    <p><strong>Location:</strong> {{ user_profile.full_address }}</p>
                 </section>
 
                 <!-- Right Section: Links and Actions -->
@@ -76,7 +79,6 @@
             </div>
         </main>
     </div>
-
-
+    </div>
 
 {% endblock %}

@@ -20,3 +20,14 @@ class PetStatusChoices(models.TextChoices):
     AVAILABLE = 'Available', 'Available'
     ADOPTED = 'Adopted', 'Adopted'
     PENDING = 'Pending', 'Pending'
+
+
+class PetGenderChoices(models.TextChoices):
+    MALE = 'Male', 'Male'
+    FEMALE = 'Female', 'Female'
+
+
+class PetSizeChoices(models.TextChoices):
+    SMALL = 'Small', 'Small'
+    MEDIUM = 'Medium', 'Medium'
+    LARGE = 'Large', 'Large'

@@ -3,83 +3,88 @@
 
 {% block content %}
 
-    <div class="shelter-profile">
-        <!-- Header Section -->
-        {% if shelter_profile.image %}
-            <header class="shelter-header" style="background-image: url('{{ shelter_profile.image.url }}');">
-                <div class="header-overlay">
-                    <h1 class="shelter-name">{{ shelter_profile.organization_name }}</h1>
-                </div>
-            </header>
-        {% else %}
-            <header class="shelter-header" style="background-image: url('{% static 'images/no-pet-image.jpg' %}');">
-                <div class="header-overlay">
-                    <h1 class="shelter-name">{{ shelter_profile.organization_name|default:shelter_profile.user.username }}</h1>
-                </div>
-            </header>
-        {% endif %}
-
-        <!-- Main Section -->
-        <main class="shelter-main">
-            <div class="shelter-container">
-                <!-- Left Section: Shelter Details -->
-                <section class="shelter-details">
-                    <h2> {{ shelterprofile.organization_name }}</h2>
-                    <p>
-                        <strong>Location:</strong> {{ shelter_profile.province }}, {{ shelter_profile.city }}, {{ shelter_profile.address }}
-                    </p>
-                    <p><strong>Phone:</strong> <a
-                            href="tel:{{ shelter_profile.phone_number }}"> {{ shelter_profile.phone_number|default:"N/A" }}</a>
-                    </p>
-                    <p><strong>Email:</strong> <a
-                            href="mailto:{{ shelter_profile.user.email }}">{{ shelter_profile.user.email }}</a></p>
-                    <p><strong>Established:</strong> {{ shelter_profile.created_at|date:"j M Y" }}</p>
-                </section>
-
-
-                <!-- Right Section: Links and Actions -->
-                <section class="shelter-actions">
-                    <h3>Actions</h3>
-
-                    <ul>
-                        {% if request.user == shelter_profile.user %}
-                            <li>
-                                <a href="{% url 'shelter edit view' shelter_profile.pk %}" class="button">Manage Shelter</a>
-                            </li>
-                        {% endif %}
-                    
-                        <li><a href="{% url 'dashboard' %}?shelter={{ shelter_profile.user.pk}}" class="button">View Adoptable Pets</a></li>
-                        <li><a href="#" class="button">Make a Donation</a></li>
-                    </ul>
-
-                    <!-- Center Section: Shelter Geolocation map -->
-                    <div id="map" style="height: 200px; width: 100%;">
-
-                        <script>
-                            const mapCoordinates = {{ map_coordinates|safe }};
-                            if (mapCoordinates) {
-                                const map = L.map('map').setView([mapCoordinates.latitude, mapCoordinates.longitude], 13);
-
-                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                    attribution: '© OpenStreetMap contributors',
-                                }).addTo(map);
-
-                                L.marker([mapCoordinates.latitude, mapCoordinates.longitude]).addTo(map)
-                                    .bindPopup('{{ shelter_profile.organization_name }}')
-                                    .openPopup();
-                            } else {
-                                document.getElementById('map').innerHTML = '<p>Location data not available.</p>';
-                            }
-                        </script>
-                    </div>
-
-                </section>
+    <!-- Header Section -->
+    {% if shelter_profile.image %}
+        <header class="shelter-header" style="background-image: url('{{ shelter_profile.image.url }}');">
+            <div class="header-overlay">
+                <h1 class="shelter-name">{{ shelter_profile.organization_name }}</h1>
             </div>
-        </main>
+        </header>
+    {% else %}
+        <header class="shelter-header" style="background-image: url('{% static 'images/no-pet-image.jpg' %}');">
+            <div class="header-overlay">
+                <h1 class="shelter-name">{{ shelter_profile.organization_name|default:shelter_profile.user.username }}</h1>
+            </div>
+        </header>
+    {% endif %}
+
+    <div class="container">
+        <div class="shelter-profile">
+
+            <!-- Main Section -->
+            <main class="shelter-main">
+                <div class="shelter-container">
+                
+                    <!-- Left Section: Shelter Details -->
+                    <section class="shelter-details">
+                        <h2> {{ shelterprofile.organization_name }}</h2>
+                        <p>
+                            <strong>Location:</strong> {{ shelter_profile.province }}, {{ shelter_profile.city }}, {{ shelter_profile.address }}
+                        </p>
+                        <p><strong>Phone:</strong> <a
+                                href="tel:{{ shelter_profile.phone_number }}"> {{ shelter_profile.phone_number|default:"N/A" }}</a>
+                        </p>
+                        <p><strong>Email:</strong> <a
+                                href="mailto:{{ shelter_profile.user.email }}">{{ shelter_profile.user.email }}</a></p>
+                        <p><strong>Established:</strong> {{ shelter_profile.created_at|date:"j M Y" }}</p>
+                    </section>
 
 
+                    <!-- Right Section: Links and Actions -->
+                    <section class="shelter-actions">
+                        <h3>Actions</h3>
+
+                        <ul>
+                            {% if request.user == shelter_profile.user %}
+                                <li>
+                                    <a href="{% url 'shelter edit view' shelter_profile.pk %}" class="button">Manage
+                                        Shelter</a>
+                                </li>
+                            {% endif %}
+
+                            <li><a href="{% url 'dashboard' %}?shelter={{ shelter_profile.user.pk }}" class="button">View
+                                Adoptable Pets</a></li>
+                            <li><a href="#" class="button">Make a Donation</a></li>
+                        </ul>
+
+                        <!-- Center Section: Shelter Geolocation map -->
+                        <div id="map" style="height: 200px; width: 100%;">
+
+                            <script>
+                                const mapCoordinates = {{ map_coordinates|safe }};
+                                if (mapCoordinates) {
+                                    const map = L.map('map').setView([mapCoordinates.latitude, mapCoordinates.longitude], 13);
+
+                                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                        attribution: '© OpenStreetMap contributors',
+                                    }).addTo(map);
+
+                                    L.marker([mapCoordinates.latitude, mapCoordinates.longitude]).addTo(map)
+                                        .bindPopup('{{ shelter_profile.organization_name }}')
+                                        .openPopup();
+                                } else {
+                                    document.getElementById('map').innerHTML = '<p>Location data not available.</p>';
+                                }
+                            </script>
+                        </div>
+
+                    </section>
+                </div>
+            </main>
+
+
+        </div>
     </div>
-
 {% endblock %}
 
 

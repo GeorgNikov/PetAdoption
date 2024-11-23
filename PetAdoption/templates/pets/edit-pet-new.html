@@ -18,6 +18,7 @@
         <!-- Pet Edit Form Section -->
         <div class="pet-details-section">
             <h2>Edit Pet Information</h2>
+        
 
             <!-- Display form for editing pet details -->
             <form method="POST" enctype="multipart/form-data" class="pet-edit-form">
@@ -36,20 +37,28 @@
                             <label for="breed">Breed</label>
                             <input type="text" id="breed" name="breed" value="{{ pet.breed }}" required>
                         </div>
+                        
+<div class="form-group">
+    <label for="gender">Gender</label>
+    <select id="gender" name="gender" required>
+        <option value="Male" {% if pet.gender == "Male" %}selected{% endif %}>Male</option>
+        <option value="Female" {% if pet.gender == "Female" %}selected{% endif %}>Female</option>
+    </select>
+</div>
+                        <div class="form-group">
+                            <label for="size">Size</label>
+                            <select id="size" name="size" required>
+                                <option value="Small">Small</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Large">Large</option>
+                            </select>
+                        </div>
 
                         <div class="form-group">
                             <label for="age">Age (in months)</label>
                             <input type="number" id="age" name="age" value="{{ pet.age }}" required>
                         </div>
                         
-{#                              <div class="form-group" hidden="hidden">#}
-{#        <label for="type" hidden="hidden">Type</label>#}
-{#        <select id="type" name="type"  hidden="hidden">#}
-{#          <option value="Dog" {% if pet.type == 'Dog' %}selected{% endif %}>Dog</option>#}
-{#          <option value="Cat" {% if pet.type == 'Cat' %}selected{% endif %}>Cat</option>#}
-{#          <option value="Other" {% if pet.type == 'Other' %}selected{% endif %}>Other</option>#}
-{#        </select>#}
-{#      </div>#}
 
                         <div class="form-group">
                             <label for="description" id="description">Description</label>
@@ -69,9 +78,6 @@
                                 {% endif %}
                             </div>
                         </div>
-
-                        <!-- Description Field (Under image) -->
-
                     </div>
                 </div>
 
