@@ -131,5 +131,5 @@ class SheltersView(TemplateView):
 
         # Add the shelter information with the pet count to the context
         context['shelters'] = shelters_with_pet_count
-        print(context['shelters'])
+
         return context

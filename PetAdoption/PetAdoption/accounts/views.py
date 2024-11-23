@@ -44,7 +44,6 @@ class UserProfileView(LoginRequiredMixin, DetailView):
         return context
 
 
-
 # EDIT USER PROFILE
 class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = UserProfile
@@ -195,7 +194,6 @@ class ShelterEditView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('shelter details view', kwargs={'pk': self.kwargs.get('pk')})
-        # return reverse_lazy('redirect-profile', kwargs={'pk': self.kwargs.get('pk')})
 
 
 # SHELTER PROFILE PREVIEW
@@ -220,14 +218,12 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
 
         # Fetch coordinates for the shelter's address
         latitude, longitude = get_coordinates(shelter_profile.full_address)
-        print(latitude)
-        print(longitude)
+
         if latitude and longitude:
             context['map_coordinates'] = {
                 'latitude': latitude,
                 'longitude': longitude,
             }
-            print(context['map_coordinates'])
         else:
             context['map_coordinates'] = None
 
