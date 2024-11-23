@@ -104,26 +104,6 @@ Follow these steps to set up the project locally:
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Follow these steps to contribute:
-
-1. Fork the repository.
-2. Create a feature branch:
-    ```bash
-    git checkout -b feature-name
-    ```
-3. Commit your changes:
-    ```bash
-    git commit -m "Add a meaningful message about your feature"
-    ```
-4. Push to your branch:
-    ```bash
-    git push origin feature-name
-    ```
-5. Open a Pull Request.
-
----
 
 ## 📜 License
 
@@ -135,7 +115,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 Have questions or want to connect?
 
-- **GitHub**: [Your GitHub Profile](https://github.com/GeorgNikov)
+- **GitHub**: [GitHub Profile](https://github.com/GeorgNikov)
 - **Email**: petadoption.smtp@gmail.com
 
 ---
