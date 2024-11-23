@@ -70,13 +70,13 @@ class BaseProfile(models.Model):
     city = models.CharField(
         max_length=CITY_MAX_LENGTH,
         choices=load_bulgarian_cities(),
-        default='Sofia',
+        default=load_bulgarian_cities()[0],
     )
 
     province = models.CharField(
         max_length=PROVINCE_MAX_LENGTH,
         choices=BulgarianProvinces,
-        default='Sofia Province',
+        default=BulgarianProvinces.SOFIA_CITY,
     )
 
     completed = models.BooleanField(
@@ -95,6 +95,9 @@ class BaseProfile(models.Model):
         blank=True,
         null=True,
     )
+
+    def full_address(self):
+        return f'{self.province}, {self.city}, {self.address}'
 
     class Meta:
         abstract = True

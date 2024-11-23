@@ -2,19 +2,18 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
-from django.template.base import kwarg_re
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
 
 from PetAdoption.accounts.models import UserProfile, ShelterProfile
-from PetAdoption.pets.forms import AddPetForm, EditPetForm
-from PetAdoption.pets.models import Pet
+from PetAdoption.pets.forms import AddPetForm, EditPetForm, AdoptionRequestForm
+from PetAdoption.pets.models import Pet, AdoptionRequest
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 
-from PetAdoption.pets.utils import check_profile_completion, check_user_type
+from PetAdoption.pets.utils import check_profile_completion
 
 
 # Dashboard to show all pets and link to add pet. WORKED
@@ -100,7 +99,9 @@ class Dashboard(ListView):
     success_url = reverse_lazy('dashboard')
 
     def get_queryset(self):
-        queryset = self.model.objects.filter(status="Available").order_by('-created_at')
+        queryset = self.model.objects.filter(status__in=["Available", "Pending"]).order_by('-created_at')
+
+
         for pet in queryset:
             pet.liked = pet.likes.filter(pk=self.request.user.pk).exists()
         return queryset
@@ -130,6 +131,9 @@ class Dashboard(ListView):
         if city_param:
             pets = pets.filter(city__iexact=city_param)
 
+        for pet in pets:
+            pet.liked = pet.likes.filter(pk=self.request.user.pk).exists()
+
         # Paginate the filtered pets
         paginator = Paginator(pets, self.paginate_by)
         page_number = self.request.GET.get('page')
@@ -140,6 +144,20 @@ class Dashboard(ListView):
         context['page_obj'] = page_obj
         context['paginator'] = paginator
         return context
+
+    def dispatch(self, request, *args, **kwargs):
+        # Proceed only if the user is authenticated
+        if not request.user.is_authenticated:
+            messages.error(request, "Please login to view our pets.")
+            return redirect('index')
+
+        # Check if the user has a completed profile
+        redirect_url = check_profile_completion(request)
+        if redirect_url:
+            return redirect_url  # Redirect if the profile is incomplete or doesn't exist
+
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class AddPetView(LoginRequiredMixin, CreateView):
@@ -176,6 +194,7 @@ class PetDetailView(DetailView):
     template_name = 'pets/pet-details-new.html'
     context_object_name = 'pet'
     slug_url_kwarg = 'pet_slug'
+    slug_field = 'slug'
     login_url = reverse_lazy('index')
     get_success_url = reverse_lazy('dashboard')
 
@@ -228,6 +247,45 @@ def delete_pet(request):
     return render(request, 'pets/delete-pet.html')
 
 
+
+class AdoptionRequestView(LoginRequiredMixin, CreateView):
+    model = AdoptionRequest
+    form_class = AdoptionRequestForm
+    template_name = 'pets/adoption_request.html'
+
+    def form_valid(self, form):
+        pet_slug = self.kwargs.get('pet_slug')
+        pet = get_object_or_404(Pet, slug=pet_slug)
+
+        # Prevent the owner from adopting their own pet
+        if pet.owner == self.request.user:
+            messages.error(self.request, "You cannot adopt your own pet.")
+            return redirect('dashboard')
+
+        # Prevent multiple requests for the same pet
+        if AdoptionRequest.objects.filter(adopter=self.request.user, pet=pet).exists():
+            messages.error(self.request, "You have already requested to adopt this pet.")
+            return redirect('dashboard')
+
+        # Automatically set the adopter and pet for the adoption request
+        form.instance.adopter = self.request.user
+        form.instance.pet = pet
+        pet.status = "Pending"
+        pet.save()
+
+        # Save the form and redirect to a success URL
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pet_slug = self.kwargs.get('pet_slug')
+        pet = get_object_or_404(Pet, slug=pet_slug)
+        context['pet'] = get_object_or_404(Pet, slug=pet_slug)  # Pass the pet to the template
+        context['shelter_owner_profile'] = ShelterProfile.objects.get(user=pet.owner)
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('pet details', kwargs={'pet_slug': self.kwargs.get('pet_slug')})
 
 # def last_adopted_pets(request):
 #     pets = Pet.objects.filter(status="Adopted").exclude(owner=request.user).exclude(status="Available").exclude(status="Pending").order_by('-updated_at')[:4]

@@ -1,8 +1,7 @@
 import json
 import os
 from django.conf import settings
-from django.contrib.auth import logout
-from django.contrib.sessions.models import Session
+
 from rest_framework.reverse import reverse_lazy
 
 
@@ -17,15 +16,6 @@ def load_bulgarian_cities():
     # Extract only the city names and format them as choices
     city_choices = [(item["city"], item["city"]) for item in data]
     return city_choices
-
-
-# # Delete all sessions for the user
-# def delete_user_sessions(request, user):
-#     # Delete all active sessions for the user
-#     sessions = Session.objects.filter(session_key=request.session.session_key)
-#     sessions.delete()
-#     # Explicitly log out the user
-#     logout(request)
 
 
 def redirect_ot_profile(user):

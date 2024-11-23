@@ -39,6 +39,7 @@ class UserProfileImageForm(forms.ModelForm):
 
 
 class UserRegistrationForm(UserCreationForm):
+    # noinspection PyUnresolvedReferences
     class Meta(UserCreationForm.Meta):
         model = UserModel
         fields = ('email', 'username', 'password1', 'password2', 'type_user' )
@@ -54,6 +55,7 @@ class UserLoginForm(forms.Form):
 
 # From lector
 class CustomUserCreationForm(UserCreationForm):
+    # noinspection PyUnresolvedReferences
     class Meta(UserCreationForm.Meta):
         model = get_user_model()
         fields = ('username', 'email',)

@@ -84,6 +84,11 @@ body {
     color: #007BFF;
 }
 
+.step p a {
+    text-decoration: none;
+    color: #ccc;
+}
+
 .step-number {
     font-size: 20px;
     font-weight: normal;

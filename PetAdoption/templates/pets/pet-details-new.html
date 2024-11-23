@@ -52,8 +52,19 @@
 {#            {% elif pet.owner|is_adopter %}#}
 {#            <a href="{% url 'profile page preview' pet.owner.userprofile.pk %}" class="visit-link">View Profile</a>#}
 {#            {% endif %}#}
-            <a href="#" class="adoption-link">Adopt Me</a>
-            <a href="#" class="donation-link">Make a Donation</a>
+ 
+        
+            {% if user.is_authenticated %}
+    {% if has_requested_adoption %}
+        <p>You have already requested to adopt this pet.</p>
+    {% else %}
+        <a href="{% url 'adopt_pet' pet.slug %}" class="btn btn-success">Adopt Me</a>
+    {% endif %}
+{% else %}
+    <p><a href="{% url 'login' %}">Log in</a> to request adoption.</p>
+{% endif %}
+        
+            <a href="#" class="donation-link">Share</a>
         </div>
     </div>
 </div>

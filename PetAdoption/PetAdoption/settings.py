@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from decouple import config
 from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -11,7 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-19l38u+)i@))3l7+k=_dwl#c24l)#%!#eva)3iqowkefbq@z32'
+SECRET_KEY = config('SECRET_KEY')
+# git filter-repo --path settings.py --replace-text (echo "SECRET_KEY = '.*'==>SECRET_KEY = config('SECRET_KEY')")
+# ALLOWED_HOSTS = '.*'==>ALLOWED_HOSTS = config("ALLOWED_HOSTS")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -78,13 +81,14 @@ WSGI_APPLICATION = 'PetAdoption.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "petadoption_db",
-        "USER": "postgres",
-        "PASSWORD": "nemapass",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST", default="localhost"),
+        "PORT": config("DB_PORT", default="5432"),
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -119,7 +123,7 @@ USE_TZ = True
 CSRF_COOKIE_SECURE = False
 
 SITE_NAME = 'Pet Adoption'
-SITE_URL = 'http://127.0.0.1:8000'
+# SITE_URL = 'http://127.0.0.1:8000'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -139,9 +143,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'nikovi@gmail.com'
-EMAIL_HOST_PASSWORD = 'nouz vuid frum rhkg'
-CONTACT_EMAIL = 'petadoption.smtp@gmail.com'  # The email where you'd like to receive messages
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+CONTACT_EMAIL = config('CONTACT_EMAIL')  # The email where you'd like to receive messages
 
 
 # Default primary key field type

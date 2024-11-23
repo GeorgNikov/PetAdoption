@@ -1,9 +1,10 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load user_tags %}
 
 {% block content %}
 
-    {% load user_tags %}
+
 
     {% if user|is_adopter %}
         <!-- Adopter-specific content -->
@@ -58,13 +59,13 @@
         <!-- Shelter-specific content -->
         <div class="add-pet">
             {% if user.is_authenticated %}
-                {% if shelter_profile.completed %}
+{#                {% if shelter_profile.completed %}#}
                     <a href="{% url 'add pet' %}" class="add-pet-link" id="add-pet">
                         <i class="fas fa-plus"></i>&nbsp; Add Pet for Adoption</a>
-                {% else %}
-                    <a href="{% url 'shelter details view' user.pk %}" class="add-pet-link">
-                        Complete Your Profile</a>
-                {% endif %}
+{#                {% else %}#}
+{#                    <a href="{% url 'shelter details view' user.pk %}" class="add-pet-link">#}
+{#                        Complete Your Profile</a>#}
+{#                {% endif %}#}
             {% endif %}
         </div>
         <div class="dashboard-container">

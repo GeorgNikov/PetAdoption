@@ -28,6 +28,7 @@ class Pet(TimeStampBaseModel):
         default='No name',
     )
 
+    # noinspection PyUnresolvedReferences
     type = models.CharField(
         max_length=TYPE_MAX_LENGTH,
         choices=PetChoices.choices
@@ -57,6 +58,7 @@ class Pet(TimeStampBaseModel):
         null=True,
     )
 
+    # noinspection PyUnresolvedReferences
     status = models.CharField(
         max_length=STATUS_MAX_LENGTH,
         choices=PetStatusChoices.choices,
@@ -95,18 +97,29 @@ class Pet(TimeStampBaseModel):
 class AdoptionRequest(TimeStampBaseModel):
     STATUS_MAX_LENGTH = 8
 
+    # noinspection PyUnresolvedReferences
     status = models.CharField(
         max_length=STATUS_MAX_LENGTH,
         choices=AdoptionRequestStatusChoices.choices,
         default=AdoptionRequestStatusChoices.PENDING
     )
 
-    from_user = models.ForeignKey(
+    adopter = models.ForeignKey(
         UserModel,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='adoption_requests'
     )
 
-    for_pet = models.ForeignKey(
+    pet = models.ForeignKey(
         'pets.Pet',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='adoption_requests'
     )
+
+    message = models.TextField(
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        return f"{self.adopter} requests to adopt {self.pet.name}"

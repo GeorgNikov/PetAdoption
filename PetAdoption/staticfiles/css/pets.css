@@ -293,6 +293,17 @@
     margin-top: 0;
 }
 
+.card-img-top {
+    object-fit: cover;
+    height: 300px; /* Adjust height as needed */
+    width: 100%;
+}
+.card-body {
+    text-align: left;
+}
+
+
+
 /* Owner Details Section */
 .owner-details-section {
     flex: 1;

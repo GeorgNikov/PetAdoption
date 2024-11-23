@@ -1,5 +1,5 @@
 from django import forms
-from PetAdoption.pets.models import Pet
+from PetAdoption.pets.models import Pet, AdoptionRequest
 
 
 class PetBaseForm(forms.ModelForm):
@@ -58,3 +58,16 @@ class EditPetForm(PetBaseForm):
     #         }
     #     )
     # )
+
+
+class AdoptionRequestForm(forms.ModelForm):
+    class Meta:
+        model = AdoptionRequest
+        fields = ['message']  # Allow the adopter to write a message
+        widgets = {
+            'message': forms.Textarea(attrs={
+                'placeholder': 'Why would you like to adopt this pet?',
+                'rows': 14,
+                'cols': 110
+            }),
+        }
