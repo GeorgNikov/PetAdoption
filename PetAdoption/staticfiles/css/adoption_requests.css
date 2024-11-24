@@ -1,0 +1,157 @@
+.adoption-requests-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.adoption-requests-left, .adoption-requests-right {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.adoption-requests-left h2, .adoption-requests-right h2 {
+    margin-bottom: 15px;
+}
+
+.adoption-request-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.pet-thumbnail {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.pet-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.adoption-request-details {
+    flex-grow: 1;
+    font-size: 16px;
+}
+
+.status-approved {
+    color: green;
+    font-weight: bold;
+}
+
+.status-rejected {
+    color: red;
+    font-weight: bold;
+}
+
+.btn-review-request {
+    padding: 5px 10px;
+    text-decoration: none;
+    color: white;
+    background-color: #007bff;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: inline-block;
+}
+
+.btn-review-request:hover {
+    background-color: #0056b3;
+}
+
+.adoption-request-details a {
+    font-size: 1.1rem;
+    text-decoration: none;
+    color: darkgreen;
+
+}
+
+.adoption-request-details a:hover {
+    font-size: 1.1rem;
+    text-decoration: none;
+    color: #007BFF;
+
+}
+.button-container {
+    display: flex;
+    gap: 10px; /* Space between the buttons */
+    justify-content: center; /* Center the buttons horizontally */
+    align-items: center; /* Align items vertically if needed */
+    margin-top: 10px; /* Add spacing above the buttons */
+}
+
+.btn-approve-request {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    background-color: green;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: inline-block;
+    max-width: 150px;
+    text-align: center;
+}
+
+.btn-reject-request {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    background-color: red;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: inline-block;
+    max-width: 150px;
+    text-align: center;
+}
+
+.btn-approve-request:hover {
+    background-color: darkgreen;
+}
+
+.btn-reject-request:hover {
+    background-color: darkred;
+}
+
+.adoption-image-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 10px 0;
+
+}
+
+.item-left, .item-center, .item-right {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.item-left {
+    flex: 1; /* Align to the left */
+    justify-content: flex-start;
+}
+
+.item-center {
+    flex: 0; /* Center the chain icon */
+    justify-content: center;
+}
+
+.item-right {
+    flex: 1; /* Align to the right */
+    justify-content: flex-end;
+}
+
+.chain-icon {
+    height: 64px;
+    width: 64px;
+    object-fit: contain;
+}

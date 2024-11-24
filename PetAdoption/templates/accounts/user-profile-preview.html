@@ -34,6 +34,36 @@
 
                     <!-- Right Section: Links and Actions -->
                     <section class="user-actions">
+                        <h3>Adoption Requests</h3>
+                        <ul>
+                            {% if adoptions %}
+
+                                {% for adoption in adoptions %}
+
+                                    {% if adoption.status == "Pending" %}
+                                        <li class="adoption-requests pending">
+                                            {{ adoption.pet.name }} - {{ adoption.status|upper }}
+                                            ( {{ adoption.updated_at|date:"j M Y" }} )
+                                            <br><a href="{% url 'adoption request confirm delete' adoption.pk %}">Cancel Request</a>
+                                        </li>
+                                    {% elif adoption.status == "Rejected" %}
+                                        <p class="adoption-requests rejected"> {{ adoption.pet.name }}
+                                            - {{ adoption.status|upper }}
+                                            ( {{ adoption.updated_at|date:"j M Y" }} )</p>
+                                    {% else %}
+                                        <p class="adoption-requests approved"> {{ adoption.pet.name }}
+                                            - {{ adoption.status|upper }}
+                                            - {{ adoption.updated_at|date:"j M Y" }}
+                                            <br><a href="{% url 'submit rating' adoption_request_pk=adoption.pk %}">Rating Adoption Process</a>
+                                        </p>
+                                    {% endif %}
+
+                                {% endfor %}
+                            {% else %}
+                                <li>No requests yet.</li>
+                            {% endif %}
+
+                        </ul>
                         <h3>Actions</h3>
                         <ul>
                             <li><a href="{% url 'profile edit view' user_profile.pk %}" class="button">Edit Profile</a>

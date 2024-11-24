@@ -15,6 +15,7 @@
     position: relative;
     background-size: cover;
     background-position: center;
+    margin-top: -18px;
 }
 
 .user-header-overlay {
@@ -36,7 +37,7 @@
     height: 150px;
     border-radius: 50%;
     border: 3px solid white;
-    margin-bottom: 10px;
+    margin-bottom: 0;
 }
 
 .user-name {
@@ -103,12 +104,71 @@
     background-color: #e67e22;
 }
 
+.btn-count-requests {
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    max-width: 30px;
+    padding: 3px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.btn-count-requests:hover {
+    background-color: #e67e22;
+}
+
+.btn-count-requests.active {
+    background-color: green;
+}
+
 .button-container {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
 }
 
+/* Adoption Requests Section */
+.adoption-requests {
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 1px 4px 8px 1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 5px;
+
+}
+
+.adoption-requests.pending {
+        font-size: 16px;
+    color: orange;
+    text-shadow: #5c6670 1px 0 1px;
+}
+
+.adoption-requests.rejected {
+        font-size: 16px;
+    color: red;
+    text-shadow: #5c6670 1px 0 1px;
+}
+
+.adoption-requests.approved {
+        font-size: 16px;
+    color: lightgreen;
+    text-shadow: #5c6670 1px 0 1px;
+}
+
+.adoption-requests.pending a{
+    text-decoration: underline;
+    color: red;
+}
+
+.adoption-requests.approved a{
+    text-decoration: underline;
+    color: darkgreen;
+}
+
+/* Button Styles */
 .button {
     display: block;
     padding: 10px 15px;

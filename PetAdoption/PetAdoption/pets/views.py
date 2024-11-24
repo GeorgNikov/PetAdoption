@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DetailView, UpdateView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
 from PetAdoption.accounts.models import UserProfile, ShelterProfile
 from PetAdoption.pets.forms import AddPetForm, EditPetForm, AdoptionRequestForm
@@ -207,7 +207,31 @@ class AdoptionRequestView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('redirect-profile', kwargs={'pk': self.request.user.pk})
-        # return reverse_lazy('pet details', kwargs={'pet_slug': self.kwargs.get('pet_slug')})
+
+
+
+class AdoptionRequestDeleteView(LoginRequiredMixin, DeleteView):
+    model = AdoptionRequest
+    template_name = 'pets/adoption_request_confirm_delete.html'
+    context_object_name = 'request'
+
+    def get_success_url(self):
+        # Restore the pet's status to "Available"
+        adoption_request = self.get_object()
+        pet = adoption_request.pet
+        pet.status = "Available"
+        pet.save()
+
+        # Redirect the user after deletion
+        return reverse_lazy('dashboard')
+
+    def test_func(self):
+        # Ensure only the adopter who created the request can delete it
+        adoption_request = self.get_object()
+        return adoption_request.adopter == self.request.user
+
+
+
 
 
 # REST FRAMEWORK API

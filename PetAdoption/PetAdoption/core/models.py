@@ -1,31 +1,28 @@
+from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
+from PetAdoption.accounts.models import ShelterProfile
+
+UserModel = get_user_model()
 
 # Create your models here.
-class AdoptionFeedBack(models.Model):
-    from_user = models.ForeignKey(
+class ShelterRating(models.Model):
+    adopter = models.ForeignKey(
         'accounts.UserProfile',
         on_delete=models.CASCADE,
-        related_name='from_user',
+        related_name='adopter',
         null=True
     )
 
-    to_shelter = models.ForeignKey(
+    shelter = models.ForeignKey(
         'accounts.ShelterProfile',
         on_delete=models.CASCADE,
-        related_name='to_shelter',
+        related_name='shelter',
         null=True
     )
 
-    for_pet = models.ForeignKey(
-        'pets.Pet',
-        on_delete=models.CASCADE,
-        related_name='for_pet',
-        null=True
-    )
-
-    review = models.TextField()
+    feedback = models.TextField()
 
     rating = models.PositiveIntegerField(
         validators=[
@@ -34,6 +31,23 @@ class AdoptionFeedBack(models.Model):
         ]
     )
 
+    adoption_request = models.OneToOneField(
+        'pets.AdoptionRequest',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
     created_at = models.DateTimeField(
         auto_now_add=True
     )
+
+    class Meta:
+        unique_together = ('shelter', 'adopter')  # Prevent multiple ratings by the same user for the same shelter
+
+
+class ContactForm(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=200)
+    message = models.TextField()

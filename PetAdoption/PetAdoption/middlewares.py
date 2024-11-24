@@ -29,25 +29,25 @@ from django.utils.deprecation import MiddlewareMixin
 #         execution_time = end_time - start_time
 #         print(f"Execution time class: {execution_time} seconds")
 #         return response
-
-class MeasureTimeMiddleware(MiddlewareMixin):
-    def process_request(self, request, *args, **kwargs):
-        self.start_time = time.time()
-
-    def process_view(self, request, view_func, view_args, view_kwargs):
-        print("Processing view")
-
-    def process_template_response(self, request, response):
-        print("Template response processed")
-        return response
-
-    def process_exception(self, request, exception):
-        print("Processing exception")
-        return exception
-
-    def process_response(self, request, response):
-        end_time = time.time()
-        execution_time = end_time - self.start_time
-        print(f"Execution time class: {execution_time} seconds")
-        return response
+#
+# class MeasureTimeMiddleware(MiddlewareMixin):
+#     def process_request(self, request, *args, **kwargs):
+#         self.start_time = time.time()
+#
+#     def process_view(self, request, view_func, view_args, view_kwargs):
+#         print("Processing view")
+#
+#     def process_template_response(self, request, response):
+#         print("Template response processed")
+#         return response
+#
+#     def process_exception(self, request, exception):
+#         print("Processing exception")
+#         return exception
+#
+#     def process_response(self, request, response):
+#         end_time = time.time()
+#         execution_time = end_time - self.start_time
+#         print(f"Execution time class: {execution_time} seconds")
+#         return response
 

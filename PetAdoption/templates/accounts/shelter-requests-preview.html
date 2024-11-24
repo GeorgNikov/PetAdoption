@@ -27,33 +27,7 @@
 
                     <!-- Left Section: Shelter Details -->
                     <section class="shelter-details">
-                        <h2> {{ shelterprofile.organization_name }}</h2>
-                        <p>
-                            <strong>Location:</strong> {{ shelter_profile.province }}, {{ shelter_profile.city }}, {{ shelter_profile.address }}
-                        </p>
-                        <p><strong>Phone:</strong> <a
-                                href="tel:{{ shelter_profile.phone_number }}"> {{ shelter_profile.phone_number|default:"N/A" }}</a>
-                        </p>
-                        <p><strong>Email:</strong> <a
-                                href="mailto:{{ shelter_profile.user.email }}">{{ shelter_profile.user.email }}</a></p>
-                        <p><strong>Established:</strong> {{ shelter_profile.created_at|date:"j M Y" }}</p>
-
-                        <!-- Shelter ratings and feedback section -->
-                        &nbsp;
-                        <p>Average Rating: {{ average_rating|floatformat:1|default:"N/A" }}</p>
-                        &nbsp;
-                        <h2>Reviews</h2>
-                        <ul>
-                            {% for rating in ratings %}
-                                <li>
-                                    <strong>{{ rating.adopter.username }}</strong>: {{ rating.rating }} stars
-                                    <p>{{ rating.review }}</p>
-                                    <small>{{ rating.created_at|date:"F j, Y" }}</small>
-                                </li>
-                            {% empty %}
-                                <li>No reviews yet</li>
-                            {% endfor %}
-                        </ul>
+                        <p> Here must be request adoption details</p>
                     </section>
 
 
@@ -68,7 +42,7 @@
                                 <h3>Adoption Requests
                                 <a class="btn-count-requests active">{{ adoption_requests.count }}</a> </h3>
                                 <li>
-                                    <a href="{% url 'shelter adoption requests' shelter_profile.pk %}" class="button">View Requests</a>
+                                    <a href="#" class="button">View Requests</a>
                                 </li>
                             {% endif %}
                         </ul>

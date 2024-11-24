@@ -1,4 +1,3 @@
-from cloudinary import CloudinaryImage
 from cloudinary.models import CloudinaryField
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
@@ -9,6 +8,7 @@ from django.utils.text import slugify
 from PetAdoption.accounts.choices import UserTypeChoices, BulgarianProvinces
 from PetAdoption.accounts.managers import AppUserManager
 from PetAdoption.accounts.utils import load_bulgarian_cities
+
 
 # Extended AbstractBaseUser model
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -49,7 +49,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['email']
 
     objects = AppUserManager()
-
 
 
 class BaseProfile(models.Model):
@@ -174,7 +173,7 @@ class ShelterProfile(BaseProfile):
     RATING_MAX_DIGITS = 2
     RATING_DECIMAL_PLACES = 2
 
-    IMG_UPLOAD_TO = 'shelter_profile_images/'    # Cloudinary
+    IMG_UPLOAD_TO = 'shelter_profile_images/'  # Cloudinary
 
     organization_name = models.CharField(
         max_length=ORGANIZATION_NAME_MAX_LENGTH,
@@ -190,7 +189,7 @@ class ShelterProfile(BaseProfile):
         max_digits=RATING_MAX_DIGITS,
         decimal_places=RATING_DECIMAL_PLACES,
         null=True,
-        blank=True
+        blank=True,
     )
 
     image = CloudinaryField(
@@ -227,6 +226,13 @@ class ShelterProfile(BaseProfile):
                 counter += 1
             self.slug = slug
         super().save(*args, **kwargs)
+
+    @property
+    def average_rating(self):
+        rating = self.rating.all()  # Related name from ShelterRating
+        if rating.exists():
+            return round(rating.aggregate(models.Avg('rating'))['rating__avg'], 2)
+        return None
 
     def __str__(self):
         return f"{self.organization_name or self.user.username}"

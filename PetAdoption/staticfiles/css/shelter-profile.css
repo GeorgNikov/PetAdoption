@@ -8,6 +8,7 @@
 
 /* Header Section */
 .shelter-header {
+    margin-top: -39px;
     height: 250px;
     background-size: cover;
     background-position: center;

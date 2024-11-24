@@ -18,8 +18,10 @@ from PetAdoption.accounts.forms import UserRegistrationForm, UserEditProfileForm
 from PetAdoption.accounts.models import UserProfile, ShelterProfile
 from PetAdoption.accounts.services.geolocation import get_coordinates
 from PetAdoption.accounts.utils import redirect_ot_profile
+from PetAdoption.core.forms import ShelterRatingForm
+from PetAdoption.core.models import ShelterRating
 
-from PetAdoption.pets.models import Pet
+from PetAdoption.pets.models import Pet, AdoptionRequest
 from PetAdoption.settings import EMAIL_HOST_USER
 
 UserModel = get_user_model()
@@ -38,6 +40,9 @@ class UserProfileView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        adoptions = AdoptionRequest.objects.filter(adopter=self.request.user).order_by('-created_at')
+        print(adoptions)
+        context['adoptions'] = adoptions
         context['user_profile'] = self.get_object()  # This is the profile of the logged-in user
         pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
         context['pets'] = pets
@@ -149,6 +154,10 @@ class ShelterProfileView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        adoption_requests = AdoptionRequest.objects.filter(pet__owner=self.request.user, status='Pending').order_by('-created_at')
+        print(adoption_requests)
+        context['adoption_requests'] = adoption_requests
+
         context['shelter_profile'] = self.get_object()  # This is the profile of the logged-in user
         pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
         context['pets'] = pets
@@ -211,8 +220,15 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        # Get the shelter's profile
         shelter_profile = self.get_object()
         context['shelter_profile'] = shelter_profile
+
+        # Get the shelter's rating
+        rating = ShelterRating.objects.filter(shelter=shelter_profile).order_by('-created_at')
+        context['rating'] = rating
+        context['rating_form'] = ShelterRatingForm()
+
         # This is the profile of the logged-in user
         context['pets'] = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
 
