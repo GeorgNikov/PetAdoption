@@ -74,7 +74,7 @@
                         </span>
                                     <p>Adopter is
                                         <strong>{{ request.adopter.user_profile.full_name|default:request.adopter.username }}</strong>
-                                        on {{ request.updated_at|date:"F j, Y" }}</p>
+                                        on {{ request.updated_at|date:"j M Y" }}</p>
                                 </div>
                             </li>
                         {% endfor %}

@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
+from django.db.models import Avg
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
@@ -11,6 +12,7 @@ from django.views.generic import TemplateView, FormView
 from PetAdoption.accounts.forms import UserLoginForm, UserRegistrationForm
 from PetAdoption.accounts.models import ShelterProfile, UserProfile
 from PetAdoption.core.forms import ContactForm, ShelterRatingForm
+from PetAdoption.core.models import ShelterRating
 from PetAdoption.pets.models import Pet, AdoptionRequest
 from PetAdoption.pets.utils import check_user_type
 
@@ -104,6 +106,26 @@ class FAQView(TemplateView):
     template_name = 'core/faq.html'
 
 
+# View to show shelter ratings
+# def show_ratings(request, slug):
+#     shelter = get_object_or_404(ShelterProfile, slug=slug)
+#     ratings = ShelterRating.objects.filter(shelter=shelter.pk).all()
+#
+#     # Calculate the average rating
+#     average_rating = ratings.aggregate(Avg('rating'))['rating__avg']
+#
+#     # Ensure a fallback value if there are no ratings
+#     average_rating = average_rating if average_rating is not None else 0
+#
+#     context = {
+#         'shelter': shelter,
+#         'ratings': ratings,
+#         'average_rating': average_rating,
+#     }
+#
+#     return render(request, 'core/show-rating.html', context)
+
+
 class SheltersView(TemplateView):
     model = ShelterProfile
     template_name = 'core/shelters.html'
@@ -115,84 +137,25 @@ class SheltersView(TemplateView):
 
         # For each shelter, get the count of available pets
         shelters_with_pet_count = []
+
         for shelter in shelters:
             # Count the number of available pets for this shelter
             available_pets_count = Pet.objects.filter(owner=shelter.user.pk, status="Available").count()
+            average_rating = ShelterRating.objects.filter(shelter=shelter.pk).aggregate(Avg('rating'))['rating__avg'] or 0.00
+            average_rating_percent = int((average_rating / 5) * 100)
+
             shelters_with_pet_count.append({
                 'shelter': shelter,
                 'available_pets_count': available_pets_count,
-                'slug': shelter.slug
+                'slug': shelter.slug,
+                'average_rating': average_rating,
+                'average_rating_percent': average_rating_percent
             })
 
         # Add the shelter information with the pet count to the context
         context['shelters'] = shelters_with_pet_count
 
         return context
-
-
-# class ShelterRatingCreateView(LoginRequiredMixin, CreateView):
-#     model = ShelterRating
-#     form_class = ShelterRatingForm
-#     template_name = 'core/shelter-rating-form.html'
-#
-#     def dispatch(self, request, *args, **kwargs):
-#         # Get the adoption request based on the ID passed in the URL
-#         self.adoption_request = get_object_or_404(AdoptionRequest, pk=kwargs['adoption_request_id'])
-#
-#         # Ensure the adoption is completed and belongs to the current user
-#         if self.adoption_request.status != 'Approved' or self.adoption_request.adopter != request.user:
-#             messages.error(request, "You can only rate a shelter after completing an adoption process.")
-#             return redirect('dashboard')
-#
-#         # Check if a rating already exists for this adoption
-#         if ShelterRating.objects.filter(adoption_request=self.adoption_request).exists():
-#             messages.error(request, "You have already rated this shelter for this adoption.")
-#             return redirect('dashboard')
-#
-#         return super().dispatch(request, *args, **kwargs)
-#
-#     def form_valid(self, form):
-#         # Automatically associate the rating with the shelter and adopter
-#         form.instance.adopter = self.request.user
-#         form.instance.shelter = self.adoption_request.pet.owner.shelterprofile
-#         form.instance.adoption_request = self.adoption_request
-#         return super().form_valid(form)
-#
-#     def get_success_url(self):
-#         messages.success(self.request, "Thank you for your feedback!")
-#         return redirect('dashboard')
-
-
-# class SubmitRatingView(LoginRequiredMixin, DetailView):
-#     template_name = 'accounts/shelter-feedback-rating.html'
-#     form_class = ShelterRatingCreateView
-#
-#     def get_shelter(self):
-#         return get_object_or_404(ShelterProfile, slug=self.kwargs.get('slug'))
-#
-#     def dispatch(self, request, *args, **kwargs):
-#         shelter = self.get_shelter()
-#         # Check if the user has adopted from the shelter
-#         user_adopted = AdoptionRequest.objects.filter(
-#             adopter=request.user.pk
-#         ).exists()
-#
-#         print(user_adopted)
-#         if not user_adopted:
-#             return redirect('shelter page preview', slug=shelter.slug)
-#         return super().dispatch(request, *args, **kwargs)
-#
-#     def form_valid(self, form):
-#         shelter = self.get_shelter()
-#         rating = form.save(commit=False)
-#         rating.shelter = shelter
-#         rating.user = self.request.user
-#         rating.save()
-#         return redirect('shelter page preview', slug=shelter.slug)
-#
-#     def form_invalid(self, form):
-#         # Handle invalid form submission, if needed
-#         return redirect('profile details view', pk=self.request.user.pk)
 
 
 class ShelterRatingView(LoginRequiredMixin, FormView):
@@ -211,6 +174,16 @@ class ShelterRatingView(LoginRequiredMixin, FormView):
             status='Approved'  # Ensure the adoption is approved
         )
         self.shelter = self.adoption_request.pet.owner.shelter_profile  # Get shelter from adoption request
+
+        # Check if the user has already rated the shelter for this adoption request
+        if ShelterRating.objects.filter(
+                adopter=self.get_user_profile(),
+                shelter=self.shelter,
+                adoption_request=self.adoption_request
+        ).exists():
+            messages.error(self.request, "You have already rated this shelter for this adoption.")
+            return redirect(reverse_lazy('profile details view', kwargs={'pk': self.request.user.pk}))
+
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -221,8 +194,6 @@ class ShelterRatingView(LoginRequiredMixin, FormView):
         rating.adoption_request = self.adoption_request
         rating.save()
 
-        # self.shelter.rating = rating
-        # self.shelter.save()
         messages.success(self.request, "Thank you for your feedback!")
 
         return redirect(reverse_lazy('shelter page preview', kwargs={'slug': self.shelter.slug}))
@@ -278,3 +249,6 @@ class UpdateAdoptionRequestStatusView(View):
             adoption_request.pet.save()
             adoption_request.save()
         return redirect('shelter adoption requests', pk=pk)
+
+
+

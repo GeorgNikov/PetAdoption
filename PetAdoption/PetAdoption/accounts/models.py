@@ -85,6 +85,12 @@ class BaseProfile(models.Model):
         blank=True,
     )
 
+    image = CloudinaryField(
+        'image',
+        blank=True,
+        null=True,
+    )
+
     created_at = models.DateTimeField(
         auto_now_add=True,
         blank=True,
@@ -128,12 +134,6 @@ class UserProfile(BaseProfile):
         ],
     )
 
-    image = CloudinaryField(
-        'user_profile_images',
-        blank=True,
-        null=True,
-    )
-
     slug = models.SlugField(
         unique=True,
         blank=True,
@@ -170,9 +170,7 @@ class ShelterProfile(BaseProfile):
     ORGANIZATION_NAME_MAX_LENGTH = 100
     ORGANIZATION_NAME_MIN_LENGTH = 3
 
-    RATING_MAX_DIGITS = 2
-    RATING_DECIMAL_PLACES = 2
-
+    WEBSITE_MAX_LENGTH = 100
     IMG_UPLOAD_TO = 'shelter_profile_images/'  # Cloudinary
 
     organization_name = models.CharField(
@@ -185,19 +183,6 @@ class ShelterProfile(BaseProfile):
         blank=True,
     )
 
-    rating = models.DecimalField(
-        max_digits=RATING_MAX_DIGITS,
-        decimal_places=RATING_DECIMAL_PLACES,
-        null=True,
-        blank=True,
-    )
-
-    image = CloudinaryField(
-        "shelter_profile_images",
-        blank=True,
-        null=True,
-    )
-
     slug = models.SlugField(
         unique=True,
         blank=True,
@@ -206,6 +191,7 @@ class ShelterProfile(BaseProfile):
     )
 
     website = models.URLField(
+        max_length=WEBSITE_MAX_LENGTH,
         blank=True,
         null=True,
     )
@@ -217,22 +203,32 @@ class ShelterProfile(BaseProfile):
     )
 
     def save(self, *args, **kwargs):
-        if not self.slug:  # Ensure slug is only generated if it doesn't already exist
-            base_slug = slugify(self.organization_name or f"user-{self.user.pk}")
-            slug = base_slug
-            counter = 1
-            while ShelterProfile.objects.filter(slug=slug).exists():
-                slug = f"{base_slug}-{counter}"
-                counter += 1
-            self.slug = slug
+        # Generate the slug when organization_name is set
+        if self.organization_name:
+            base_slug = slugify(self.organization_name)
+        else:
+            base_slug = slugify(f"user-{self.user.pk}")
+
+        slug = base_slug
+        # Ensure we don't try to generate the slug if it's already set or during object creation
+        if not self.pk:  # Only when the object is being created
+            slug = f"{base_slug}-{self.pk}"  # Using the pk to create a unique slug
+        else:
+            # If the organization_name has changed, update the slug
+            if self.pk and self.slug != f"{base_slug}-{self.pk}":
+                slug = f"{base_slug}-{self.pk}"
+
+        # Ensure the final slug is unique
+        counter = 1
+        original_slug = slug
+        while ShelterProfile.objects.filter(slug=slug).exists():
+            slug = f"{original_slug}-{counter}"
+            counter += 1
+
+        self.slug = slug
+
+        # Call the parent save method
         super().save(*args, **kwargs)
 
-    @property
-    def average_rating(self):
-        rating = self.rating.all()  # Related name from ShelterRating
-        if rating.exists():
-            return round(rating.aggregate(models.Avg('rating'))['rating__avg'], 2)
-        return None
-
     def __str__(self):
-        return f"{self.organization_name or self.user.username}"
+        return self.organization_name if self.organization_name else f"User-{self.user.pk}"

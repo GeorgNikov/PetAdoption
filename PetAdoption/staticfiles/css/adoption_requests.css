@@ -155,3 +155,107 @@
     width: 64px;
     object-fit: contain;
 }
+
+/* Rating and feedback styles */
+.rating-form {
+    margin: 20px 0;
+    background-color: #f9f9f9;
+}
+
+.star-rating {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    font-size: 2rem;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label {
+    color: #ccc;
+    font-size: 2rem;
+    margin: 0 2px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.star-rating input:checked ~ label {
+    color: #ffcc00;
+}
+
+.star-rating input:checked + label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #ffcc00;
+}
+
+/* Stars to show in shelters */
+.shelter-star-rating {
+    position: relative;
+    display: inline-block;
+    font-size: 20px; /* Adjust for star size */
+    line-height: 1;
+    color: gray; /* Color for unfilled stars */
+}
+
+.shelter-stars {
+  position: relative;
+  display: inline-block;
+  font-size: 24px; /* Adjust size */
+  color: #ccc; /* Color for empty stars */
+  overflow: hidden; /* Ensure stars don't overflow */
+}
+
+.shelter-stars-filled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  color: gold; /* Color for filled stars */
+  width: 0%; /* Dynamic width for filled stars */
+}
+
+.shelter-stars-empty {
+  color: #ccc; /* Empty star color */
+}
+
+
+.feedback-section {
+    margin-top: 15px;
+}
+
+.feedback-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.feedback-section textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+.submit-btn {
+    display: block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #28a745;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
+}

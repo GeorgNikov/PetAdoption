@@ -27,6 +27,8 @@
 
                     <!-- Left Section: Shelter Details -->
                     <section class="shelter-details">
+
+                       
                         <h2> {{ shelterprofile.organization_name }}</h2>
                         <p>
                             <strong>Location:</strong> {{ shelter_profile.province }}, {{ shelter_profile.city }}, {{ shelter_profile.address }}
@@ -40,8 +42,12 @@
 
                         <!-- Shelter ratings and feedback section -->
                         &nbsp;
-                        <p>Average Rating: {{ average_rating|floatformat:1|default:"N/A" }}</p>
-                        &nbsp;
+                                        <p>Rating:</p>
+                        <div class="shelter-stars">
+                            <span class="shelter-stars-filled" style="width: {{ average_rating_percent }}%;">★★★★★</span>
+                            <span class="shelter-stars-empty">★★★★★</span>
+                        </div>
+                        
                         <h2>Reviews</h2>
                         <ul>
                             {% for rating in ratings %}
@@ -73,7 +79,7 @@
                             {% endif %}
                         </ul>
                         {% endif %}
-                    
+
                     <h3>Actions</h3>
                         <ul>
                             {% if request.user == shelter_profile.user %}

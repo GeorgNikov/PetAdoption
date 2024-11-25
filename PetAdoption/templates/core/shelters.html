@@ -1,32 +1,43 @@
 {% extends 'core/base.html' %}
-{% block content %} 
+{% load cloudinary %}
 
-<div class="container">
+{% block content %}
 
-    <div class="shelter-container">
-    {% for shelter in shelters %}
-        <div class="shelter-card">
-            <img src="{{ shelter.shelter.image.url }}" alt="{{ shelter.shelter.organization_name }}" height="200">
-            <h2>{{ shelter.shelter.organization_name }}</h2>
-            <p><strong>Address:</strong> {{ shelter.shelter }}</p>
-            <p><strong>Phone:</strong> {{ shelter.shelter.phone_number }}</p>
-            <p><strong>Email:</strong> {{ shelter.shelter.user.email }}</p>
-            <p><strong>Website:</strong>
-                {% if shelter.shelter.website %}
-                <a href="{{ shelter.shelter.website }}">{{ shelter.shelter.website }}</a>
-                {% else %}
-                N/A
-                {% endif %}
-            </p>
+    <div class="container">
 
-            <div class="button-container">
-            <a href="{% url 'dashboard' %}?shelter={{ shelter.shelter.user.pk }}" class="btn-count-pets">View Available Pets: {{ shelter.available_pets_count }}</a>
-                <a href="{% url 'shelter page preview' shelter.slug %}" class="button">View Shelter page</a>
+        <div class="shelter-container">
+            {% for shelter in shelters %}
+                <div class="shelter-card">
+                    <img src="{{ shelter.shelter.image.url }}" alt="{{ shelter.shelter.organization_name }}"
+                         height="200" width="auto">
+                    <h2>{{ shelter.shelter.organization_name }}</h2>
+                    <p><strong>Address:</strong> {{ shelter.shelter }}</p>
+                    <p><strong>Phone:</strong> {{ shelter.shelter.phone_number }}</p>
+                    <p><strong>Email:</strong> {{ shelter.shelter.user.email }}</p>
+                    <p><strong>Website:</strong>
+                        {% if shelter.shelter.website %}
+                            <a href="{{ shelter.shelter.website }}">{{ shelter.shelter.website }}</a>
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
+                    <div class="shelter-star-rating">
+                        <div class="shelter-stars">
+                            <span class="shelter-stars-filled" style="width: {{ shelter.average_rating_percent }}%;">★★★★★</span>
+                            <span class="shelter-stars-empty">★★★★★</span>
+                        </div>
+
+                    </div>
+
+                    <div class="button-container">
+                        <a href="{% url 'dashboard' %}?shelter={{ shelter.shelter.user.pk }}" class="btn-count-pets">View
+                            Available Pets: {{ shelter.available_pets_count }}</a>
+                        <a href="{% url 'shelter page preview' shelter.slug %}" class="button">View Shelter page</a>
+                    </div>
+                </div>
+
+            {% endfor %}
         </div>
-        </div>
-
-    {% endfor %}
     </div>
-</div>
 
 {% endblock %}

@@ -37,25 +37,54 @@
                         <h3>Adoption Requests</h3>
                         <ul>
                             {% if adoptions %}
-
                                 {% for adoption in adoptions %}
-
                                     {% if adoption.status == "Pending" %}
                                         <li class="adoption-requests pending">
-                                            {{ adoption.pet.name }} - {{ adoption.status|upper }}
-                                            ( {{ adoption.updated_at|date:"j M Y" }} )
-                                            <br><a href="{% url 'adoption request confirm delete' adoption.pk %}">Cancel Request</a>
+                                            <div class="adoption-pet-image">
+                                                <img src="{{ adoption.pet.image.url }}" alt="{{ adoption.pet.name }}"
+                                                     class="pet-thumbnail">
+                                            </div>
+                                            <div class="adoption-pet-info">
+                                                <p class="adoption-pet-name">{{ adoption.pet.name }} {{ adoption.status|upper }}</p>
+                                                <p class="adoption-pet-status">
+                                                    {{ adoption.updated_at|date:"j M Y" }}</p>
+                                                <a href="{% url 'adoption request confirm delete' adoption.pk %}"
+                                                   class="adoption-btn-cancel-request">
+                                                    Cancel Request
+                                                </a>
+                                            </div>
                                         </li>
                                     {% elif adoption.status == "Rejected" %}
-                                        <p class="adoption-requests rejected"> {{ adoption.pet.name }}
-                                            - {{ adoption.status|upper }}
-                                            ( {{ adoption.updated_at|date:"j M Y" }} )</p>
-                                    {% else %}
-                                        <p class="adoption-requests approved"> {{ adoption.pet.name }}
-                                            - {{ adoption.status|upper }}
-                                            - {{ adoption.updated_at|date:"j M Y" }}
-                                            <br><a href="{% url 'submit rating' adoption_request_pk=adoption.pk %}">Rating Adoption Process</a>
-                                        </p>
+                                        <li class="adoption-requests rejected">
+                                            <div class="adoption-pet-image">
+                                                <img src="{{ adoption.pet.image.url }}" alt="{{ adoption.pet.name }}"
+                                                     class="pet-thumbnail">
+                                            </div>
+                                            <div class="adoption-pet-info">
+                                                <p class="adoption-pet-name">{{ adoption.pet.name }} {{ adoption.status|upper }}</p>
+                                                <p class="adoption-pet-status">
+                                                    {{ adoption.updated_at|date:"j M Y" }}</p>
+                                            </div>
+                                        </li>
+                                    {% elif adoption.status == "Approved" %}
+                                        <div class="adoption-requests approved">
+                                            <div class="adoption-pet-image">
+                                                <img src="{{ adoption.pet.image.url }}" alt="{{ adoption.pet.name }}"
+                                                     class="pet-thumbnail">
+                                            </div>
+                                            <div class="adoption-pet-info">
+                                                <p class="adoption-pet-name">{{ adoption.pet.name }} {{ adoption.status|upper }}</p>
+                                                <p class="adoption-pet-status">
+                                                    {{ adoption.updated_at|date:"j M Y" }}</p>
+                                        
+                                                {% if adoption.id in rated_adoptions %}
+                                                    <p class="adoption-rated-message"> Already rate this adoption</p>
+                                                {% elif adoption.status == "Approved" %}
+                                                    <a href="{% url 'submit rating' adoption.pk %}"
+                                                       class="adoption-btn-rate-shelter">Rate Shelter</a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
                                     {% endif %}
 
                                 {% endfor %}
@@ -68,7 +97,7 @@
                         <ul>
                             <li><a href="{% url 'profile edit view' user_profile.pk %}" class="button">Edit Profile</a>
                             </li>
-                            <li><a href="#" class="button">View Activity</a></li>
+
                             <li>
                                 <div id="delete-container">
                                     <!-- Initial DELETE PROFILE link -->

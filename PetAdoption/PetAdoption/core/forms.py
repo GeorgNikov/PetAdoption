@@ -15,12 +15,12 @@ class ContactForm(forms.Form):
 class ShelterRatingForm(forms.ModelForm):
     class Meta:
         model = ShelterRating
-        fields = ['feedback', 'rating']
+        fields = ['rating', 'feedback']
         widgets = {
-            'feedback': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Write your feedback here...'}),
+            'feedback': forms.Textarea(attrs={'rows': 10, 'cols': 46, 'placeholder': 'Write your feedback here...'}),
             'rating': forms.NumberInput(attrs={'min': 1, 'max': 5}),
         }
         labels = {
-            'feedback': 'Your Feedback',
-            'rating': 'Your Rating (1-5)',
+            'feedback': 'Feedback message',
+            'rating': 'Rating (1-5)',
         }

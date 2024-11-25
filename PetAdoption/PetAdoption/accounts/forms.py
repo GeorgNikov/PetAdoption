@@ -1,3 +1,4 @@
+from cloudinary.forms import CloudinaryFileField
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
@@ -16,6 +17,7 @@ class UserForm(forms.ModelForm):
 class UserEditProfileForm(forms.ModelForm):
     user = forms.HiddenInput()
     slug = forms.HiddenInput()
+    image = CloudinaryFileField(required=False)
 
     class Meta:
         model = UserProfile
@@ -25,6 +27,7 @@ class UserEditProfileForm(forms.ModelForm):
 class ShelterEditProfileForm(forms.ModelForm):
     user = forms.HiddenInput()
     slug = forms.HiddenInput()
+    image = CloudinaryFileField(required=False)
 
     class Meta:
         model = ShelterProfile
@@ -32,10 +35,10 @@ class ShelterEditProfileForm(forms.ModelForm):
 
 
 
-class UserProfileImageForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        fields = ['image']
+# class UserProfileImageForm(forms.ModelForm):
+#     class Meta:
+#         model = UserProfile
+#         fields = ['image']
 
 
 class UserRegistrationForm(UserCreationForm):

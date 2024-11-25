@@ -1,7 +1,7 @@
 import json
 import os
-from django.conf import settings
 
+from django.conf import settings
 from rest_framework.reverse import reverse_lazy
 
 
@@ -23,3 +23,5 @@ def redirect_ot_profile(user):
         return reverse_lazy('user_profile', kwargs={'pk': user.profile.pk})
     elif hasattr(user, 'shelter'):
         return reverse_lazy('shelter_profile', kwargs={'pk': user.shelter.pk})
+
+

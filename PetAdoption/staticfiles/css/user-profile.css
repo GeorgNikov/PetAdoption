@@ -143,30 +143,85 @@
 .adoption-requests.pending {
         font-size: 16px;
     color: orange;
-    text-shadow: #5c6670 1px 0 1px;
+
 }
 
 .adoption-requests.rejected {
         font-size: 16px;
     color: red;
-    text-shadow: #5c6670 1px 0 1px;
+
 }
 
 .adoption-requests.approved {
-        font-size: 16px;
-    color: lightgreen;
-    text-shadow: #5c6670 1px 0 1px;
+    font-size: 14px;
+    color: green;
+
 }
 
 .adoption-requests.pending a{
     text-decoration: underline;
     color: red;
+    font-size: 15px;
 }
 
 .adoption-requests.approved a{
-    text-decoration: underline;
+
     color: darkgreen;
 }
+
+.adoption-requests {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.adoption-pet-image {
+    flex-shrink: 0;
+    margin-right: 15px;
+}
+
+.adoption-pet-image img.pet-thumbnail {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #333333;
+}
+
+.adoption-pet-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.adoption-pet-info .adoption-pet-name {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.adoption-pet-info .adoption-pet-status {
+    margin: 0;
+    color: #333;
+        font-size: 0.9rem;
+}
+
+.adoption-pet-info .adoption-rated-message {
+    margin: 5px 0;
+    color: gray;
+        font-size: 0.9rem;
+}
+
+.adoption-pet-info .adoption-btn-rate-shelter {
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 0.9rem;
+}
+
+.adoption-pet-info .adoption-btn-rate-shelter:hover {
+    background-color: snow;
+}
+
 
 /* Button Styles */
 .button {

@@ -2,16 +2,36 @@
 
 {% block content %}
 
-    <div class="container">
-        <div class="rating-container">
-            <h2>Rate {{ shelter.name }}</h2>
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Submit Rating</button>
-            </form>
+    
+{#    <form method="post" class="reset-password-form">#}
+{#        {% csrf_token %}#}
+{#        <h2>Rate Us & Feedback{{ shelter.name }}</h2>#}
+{#        <div class="form-group">#}
+{##}
+{#            {{ form }}#}
+{#        </div>#}
+{#        <button type="submit" class="btn btn-primary">Submit Rating</button>#}
+{#    </form>#}
+<div class="container">
+    <form method="POST" action="" class="reset-password-form">
+    {% csrf_token %}
+    <div class="rating-form">
+        <label for="rating">Rate the shelter:</label>
+        <div class="star-rating">
+            {% for star in "54321" %}
+            <input type="radio" id="star{{ star }}" name="rating" value="{{ star }}">
+            <label for="star{{ star }}" title="{{ star }} star{{ star|pluralize }}">&#9733;</label>
+            {% endfor %}
         </div>
 
-        Rating here
+        <div class="feedback-section">
+            <label for="feedback">Feedback message:</label>
+            <textarea id="feedback" name="feedback" rows="10" cols="46" placeholder="Write your feedback here..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Rating</button>
     </div>
+</form>
+
+</div> 
 {% endblock %}

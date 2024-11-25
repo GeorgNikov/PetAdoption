@@ -7,6 +7,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth.views import LoginView
 
 from django.core.mail import send_mail
+from django.db.models import Avg
 from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_str, force_bytes
@@ -40,12 +41,24 @@ class UserProfileView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        adoptions = AdoptionRequest.objects.filter(adopter=self.request.user).order_by('-created_at')
-        print(adoptions)
+        adoptions = AdoptionRequest.objects.filter(adopter=self.request.user).order_by('-created_at')[:3]
         context['adoptions'] = adoptions
+
+        # Retrieve rated adoption requests by the user
+        rated_adoptions = ShelterRating.objects.filter(adopter=self.get_object()).values_list('adoption_request', flat=True)
+
+        context['rated_adoptions'] = rated_adoptions
+
+        # Determine if there are unrated adoption requests
+        unrated_adoptions = AdoptionRequest.objects.filter(
+            adopter=self.request.user,
+            status="Approved",
+        ).exclude(id__in=rated_adoptions)
+
         context['user_profile'] = self.get_object()  # This is the profile of the logged-in user
         pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
         context['pets'] = pets
+
         return context
 
 
@@ -155,9 +168,7 @@ class ShelterProfileView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         adoption_requests = AdoptionRequest.objects.filter(pet__owner=self.request.user, status='Pending').order_by('-created_at')
-        print(adoption_requests)
         context['adoption_requests'] = adoption_requests
-
         context['shelter_profile'] = self.get_object()  # This is the profile of the logged-in user
         pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
         context['pets'] = pets
@@ -218,7 +229,12 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
         return get_object_or_404(ShelterProfile, slug=slug)
 
     def get_context_data(self, **kwargs):
+        shelter = self.get_object()
         context = super().get_context_data(**kwargs)
+        average_rating = ShelterRating.objects.filter(shelter=shelter.pk).aggregate(Avg('rating'))['rating__avg'] or 0.00
+        average_rating_percent = int((average_rating / 5) * 100)
+        context['average_rating_percent'] = average_rating_percent
+        print(average_rating_percent)
 
         # Get the shelter's profile
         shelter_profile = self.get_object()

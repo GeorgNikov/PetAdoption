@@ -8,6 +8,10 @@ UserModel = get_user_model()
 
 # Create your models here.
 class ShelterRating(models.Model):
+    RATING_DECIMAL_PLACES = 2
+    RATING_MAX_DIGITS = 3
+    RATING_DEFAULT_VALUE = 0.00
+
     adopter = models.ForeignKey(
         'accounts.UserProfile',
         on_delete=models.CASCADE,
@@ -24,11 +28,12 @@ class ShelterRating(models.Model):
 
     feedback = models.TextField()
 
-    rating = models.PositiveIntegerField(
-        validators=[
-            MinValueValidator(1),
-            MaxValueValidator(5)
-        ]
+    rating = models.DecimalField(
+        decimal_places=RATING_DECIMAL_PLACES,
+        max_digits=RATING_MAX_DIGITS,
+        default=RATING_DEFAULT_VALUE,
+        null=True,
+        blank=True
     )
 
     adoption_request = models.OneToOneField(
@@ -43,7 +48,7 @@ class ShelterRating(models.Model):
     )
 
     class Meta:
-        unique_together = ('shelter', 'adopter')  # Prevent multiple ratings by the same user for the same shelter
+        unique_together = ('shelter', 'adopter', 'adoption_request')  # Prevent multiple ratings by the same user for the same shelter
 
 
 class ContactForm(models.Model):
