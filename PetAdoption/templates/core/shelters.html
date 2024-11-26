@@ -8,8 +8,8 @@
         <div class="shelter-container">
             {% for shelter in shelters %}
                 <div class="shelter-card">
-                    <img src="{{ shelter.shelter.image.url }}" alt="{{ shelter.shelter.organization_name }}"
-                         height="200" width="auto">
+                {% cloudinary shelter.shelter.image quality='auto' width=515 height=200 crop='fit' %}
+
                     <h2>{{ shelter.shelter.organization_name }}</h2>
                     <p><strong>Address:</strong> {{ shelter.shelter }}</p>
                     <p><strong>Phone:</strong> {{ shelter.shelter.phone_number }}</p>

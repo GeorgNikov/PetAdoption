@@ -21,13 +21,13 @@ urlpatterns = [
         # path('rate/', submit_rating, name='submit rating'),
         path('edit/', ShelterEditView.as_view(), name='shelter edit view'),
         path('preview/', ShelterProfilePreview.as_view(), name='shelter page preview'),
-        path('adoption_requests/', AdoptionRequestsListView.as_view(), name='shelter adoption requests'),
-        path('adoption_requests/<int:request_pk>/update/', UpdateAdoptionRequestStatusView.as_view(), name='update adoption request status'),
+        path('adoption-requests/', AdoptionRequestsListView.as_view(), name='shelter adoption requests'),
+        path('adoption-requests/<int:request_pk>/update/', UpdateAdoptionRequestStatusView.as_view(), name='update adoption request status'),
 
     ]),
          ),
     path('shelter/<slug:slug>/', include([
-        path('preview/', ShelterProfilePreview.as_view(), name='shelter page preview'),
+        path('', ShelterProfilePreview.as_view(), name='shelter page preview'),
         # path('rate/', ShelterRatingCreateView.as_view(), name='submit rating'),
     ]),
 

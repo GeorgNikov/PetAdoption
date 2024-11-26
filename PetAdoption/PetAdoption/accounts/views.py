@@ -1,3 +1,5 @@
+from cloudinary.utils import cloudinary_url
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import login_required
@@ -110,17 +112,35 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 # DELETE USER PROFILE
 @login_required
 def user_profile_delete_view(request, pk):
-    profile = get_object_or_404(UserProfile, pk=pk)
+    # Try to get the profile from either UserProfile or ShelterProfile
+    profile = None
+    profile_type = None
+
+    try:
+        profile = UserProfile.objects.get(pk=pk)
+    except UserProfile.DoesNotExist:
+        try:
+            profile = ShelterProfile.objects.get(pk=pk)
+        except ShelterProfile.DoesNotExist:
+            messages.error(request, "Profile not found.")
+            return redirect('index')
+
+    # Ensure the user matches the profile
+    if profile.user != request.user:
+        messages.error(request, "You are not authorized to delete this profile.")
+        return redirect('index')
+
     user = profile.user
+
+    # Delete the profile
     if request.method == 'POST':
         user.is_active = False
         user.save()
-        profile.delete()
 
         messages.success(request, "Your profile has been DELETED successfully.")
         return redirect('index')
 
-    return render(request, 'accounts/userprofile_confirm_delete.html')
+    return render(request, 'accounts/userprofile-confirm-delete.html')
 
 
 # REGISTRATION VIEW
@@ -157,7 +177,7 @@ class UserLoginView(LoginView):
 # SHELTER PROFILE
 class ShelterProfileView(LoginRequiredMixin, DetailView):
     model = ShelterProfile
-    template_name = 'accounts/shelter-profile-preview.html'
+    template_name = 'accounts/shelter-profile-view.html'
     context_object_name = 'shelter_profile'
     login_url = reverse_lazy('index')
 
@@ -165,11 +185,36 @@ class ShelterProfileView(LoginRequiredMixin, DetailView):
         # Returns the ShelterProfile instance for the logged-in user
         return get_object_or_404(ShelterProfile, user=self.request.user)
 
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Allow access only if the logged-in user matches the owner of the profile in the URL!!!
+        """
+        # Check if the user is authenticated
+        if not request.user.is_authenticated:
+            messages.error(request, "You need to log in to access this page.")
+            return redirect('index')
+
+        # Check if the logged-in user's pk matches the pk in the URL
+        profile_pk = kwargs.get('pk')  # Get the pk from the URL
+        if request.user.pk != profile_pk:
+            messages.error(request, "You are not authorized to access this profile.")
+            return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
+
+        # Allow access if the checks pass
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         adoption_requests = AdoptionRequest.objects.filter(pet__owner=self.request.user, status='Pending').order_by('-created_at')
         context['adoption_requests'] = adoption_requests
-        context['shelter_profile'] = self.get_object()  # This is the profile of the logged-in user
+
+        shelter_profile = self.get_object()
+        context['shelter_profile'] = shelter_profile  # This is the profile of the logged-in user
+
+        # Get the shelter's image
+        bg_image_url, _ = cloudinary_url(shelter_profile.image.url, quality="auto", crop="fit")
+        context['bg_image_url'] = bg_image_url
+
         pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
         context['pets'] = pets
         return context
@@ -183,14 +228,18 @@ class ShelterEditView(LoginRequiredMixin, UpdateView):
     context_object_name = 'shelter_profile'
     login_url = reverse_lazy('index')
 
+
+
     def get_object(self, queryset=None):
         profile = get_object_or_404(ShelterProfile, pk=self.kwargs['pk'])
-
-        if profile.user != self.request.user:
-            # Redirect to the user's own profile page if they attempt to edit someone else's profile
-            return get_object_or_404(ShelterProfile, user=self.request.user)
-        # Return the profile if the user is the owner
         return profile
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.user != request.user:
+            # Redirect to the user's own profile page if they attempt to edit someone else's profile
+            return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         # Save the form but don't commit to the database yet
@@ -234,19 +283,23 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
         average_rating = ShelterRating.objects.filter(shelter=shelter.pk).aggregate(Avg('rating'))['rating__avg'] or 0.00
         average_rating_percent = int((average_rating / 5) * 100)
         context['average_rating_percent'] = average_rating_percent
-        print(average_rating_percent)
+
 
         # Get the shelter's profile
         shelter_profile = self.get_object()
         context['shelter_profile'] = shelter_profile
+
+        # Get the shelter's image
+        bg_image_url, _ = cloudinary_url(shelter_profile.image.url, quality="auto", crop="fit")
+        context['bg_image_url'] = bg_image_url
 
         # Get the shelter's rating
         rating = ShelterRating.objects.filter(shelter=shelter_profile).order_by('-created_at')
         context['rating'] = rating
         context['rating_form'] = ShelterRatingForm()
 
-        # This is the profile of the logged-in user
-        context['pets'] = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
+        # This is return pets of the shelter
+        # context['pets'] = Pet.objects.filter(owner=shelter).order_by('-created_at')
 
         # Fetch coordinates for the shelter's address
         latitude, longitude = get_coordinates(shelter_profile.full_address)
@@ -263,7 +316,8 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
 
 
 # REDIRECT PROFILE
-class UserProfileRedirectView(View):
+
+class UserProfileRedirectView(LoginRequiredMixin, View):
     @staticmethod
     def get(request, *args, **kwargs):
         # Retrieve the user object

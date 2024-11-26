@@ -11,6 +11,7 @@
 }
 
 .pet-box {
+    position: relative;
     width: 400px;
     height: 180px;
     margin-top: 10px;
@@ -58,7 +59,7 @@
     border-radius: 5px;
     margin-top: 0;
     margin-left: 0;
-    box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.1);
+
 }
 
 .pet-box-image img {
@@ -72,7 +73,7 @@
 
 /* Button */
 
-.pet-box a:link, a:visited {
+.pet-box-button {
     background-color: #f39c12;
     color: white;
     padding: 3px 15px;
@@ -86,10 +87,35 @@
 
 }
 
-.pet-box a:hover {
+.pet-box-button:hover {
     background-color: #e67e22;
     text-shadow: none;
 }
+
+.pet-box-del-btn-danger {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: red; /* Trash icon color */
+    cursor: pointer;
+}
+
+.pet-box-del-btn-danger:hover {
+    color: darkred; /* Hover effect for trash icon */
+}
+
+.pet-box-del-btn-danger i {
+    color: red;  /* Set the desired icon color */
+}
+
+.pet-box-del-btn-danger:hover i {
+    color: darkred; /* Hover color */
+}
+
+
 
 /* Box styling */
 .box {

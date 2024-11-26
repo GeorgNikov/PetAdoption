@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    <div class="container">
+
+        <form method="post" action="{% url 'adoption request confirm delete' object.id %}" class="reset-password-form">
+                    <h2>Cancel Adoption Request</h2>
+        <p>Are you sure you want to cancel your adoption request for {{ object.pet.name }}?</p>
+        &nbsp;
+            {% csrf_token %}
+            <button type="submit" class="button delete-button-danger">Yes, Cancel Request</button>
+            &nbsp;
+            <a href="{% url 'dashboard' %}" class="button delete-button-success">No, Go Back</a>
+        </form>
+    </div>
+{% endblock %}

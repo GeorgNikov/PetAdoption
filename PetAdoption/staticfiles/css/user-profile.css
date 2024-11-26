@@ -226,7 +226,7 @@
 /* Button Styles */
 .button {
     display: block;
-    padding: 10px 15px;
+    padding: 5px 10px;
     background-color: #f39c12;
     color: white;
     text-align: center;
@@ -242,15 +242,15 @@
     background-color: #e67e22;
 }
 
-.button-danger {
+.button.button-danger {
     background-color: #dc3545;
 }
 
-.button-danger:hover {
+.button.button-danger:hover {
     background-color: #c82333;
 }
 
-.delete-button-danger {
+.button.delete-button-danger {
     color: white;
     background-color: #dc3545;
     padding: 5px 10px;
@@ -265,12 +265,12 @@
     text-transform: Uppercase;
 }
 
-.delete-button-danger:hover {
+.button.delete-button-danger:hover {
     background-color: #c82333;
 }
 
 
-.delete-button-success {
+.button.delete-button-success {
     color: white;
     background-color: #1fb23d;
     padding: 5px 10px;
@@ -285,7 +285,7 @@
     text-transform: Uppercase;
 }
 
-.delete-button-success:hover {
+.button.delete-button-success:hover {
     background-color: #1da639;
 }
 

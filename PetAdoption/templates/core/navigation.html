@@ -1,5 +1,4 @@
 {% load static %}
-{% load user_tags %}
 
 <nav class="navbar">
     <div class="nav-container">
@@ -20,55 +19,28 @@
 
         <div class="profile">
             {% if user.is_authenticated %}
-                {% if user|is_adopter %}
-                    <div class="dropdown">
-                        <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
-                            {{ userprofile.full_name|default:user.username }}
-                        </button>
-                        <div class="dropdown-content">
-                            <a href="{% url 'redirect-profile' user.pk %}">
-                                <i class="fas fa-user"></i> &nbsp; &nbsp; My Profile
-                            </a>
-                            <a href="#"><i class="fas fa-cog"></i> &nbsp; &nbsp; Settings</a>
+                <div class="dropdown">
+                    <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
+                        {{ userprofile.full_name|default:user.username }}
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'redirect-profile' user.pk %}">
+                            <i class="fas fa-user"></i> &nbsp; &nbsp; My Profile
+                        </a>
+                        <a href="#"><i class="fas fa-cog"></i> &nbsp; &nbsp; Settings</a>
 
-                            <a href="#"
-                               onclick="document.getElementById('logout-form').submit(); return false;">
-                                <i class="fas fa-sign-out-alt"></i>&nbsp; &nbsp; Logout</a>
-                        </div>
+                        <a href="#"
+                           onclick="document.getElementById('logout-form').submit(); return false;">
+                            <i class="fas fa-sign-out-alt"></i>&nbsp; &nbsp; Logout</a>
                     </div>
+                </div>
 
-                    <span>
+                <span>
                      <form method="post" action="{% url 'logout' %}" id="logout-form" style="display: none;">
                         {% csrf_token %}
                         <button class="button" type="submit">Logout</button>
                     </form>
                 </span>
-
-                {% elif user|is_shelter %}
-                    <div class="dropdown">
-                        <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
-                            {{ user.username }}
-                        </button>
-                        <div class="dropdown-content">
-                            <a href="{% url 'redirect-profile' user.pk %}">
-                                <i class="fas fa-user"></i> &nbsp; &nbsp; My Profile
-                            </a>
-                            <a href="#">
-                                <i class="fas fa-cog"></i> &nbsp; &nbsp; Settings</a>
-
-                            <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">
-                                <i class="fas fa-sign-out-alt"></i> &nbsp; &nbsp; Logout</a>
-                        </div>
-                    </div>
-
-                    <span>
-                     <form method="post" action="{% url 'logout' %}" id="logout-form" style="display: none;">
-                        {% csrf_token %}
-                        <button class="button" type="submit">Logout</button>
-                    </form>
-                </span>
-                {% endif %}
-
             {% endif %}
         </div>
 

@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseForbidden
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
@@ -90,16 +91,24 @@ class AddPetView(LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('index')
 
     def dispatch(self, request, *args, **kwargs):
-        # Proceed only if the user is authenticated
+        """
+        Ensure only users with a ShelterProfile can access this page.
+        Redirect unauthenticated users or those with a UserProfile to the dashboard page.
+        """
+        # Check if the user is authenticated
         if not request.user.is_authenticated:
-            messages.error(request, "Please log in to add a pet.")
-            return redirect(self.login_url)
+            messages.error(request, "You need to log in to access this page.")
+            return redirect('index')
 
-        # Check if the user has a completed profile
-        redirect_url = check_profile_completion(request)
-        if redirect_url:
-            return redirect_url  # Redirect if the profile is incomplete or doesn't exist
+        # Check if the user has a ShelterProfile
+        try:
+            shelter_profile = ShelterProfile.objects.get(user=request.user)
+        except ShelterProfile.DoesNotExist:
+            # If user does not have a ShelterProfile, redirect to index page
+            messages.error(request, "You are not authorized to access this page.")
+            return redirect('dashboard')
 
+        # If the user has a ShelterProfile, continue with the view
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -149,13 +158,29 @@ class EditPetView(LoginRequiredMixin, UpdateView):
     template_name = 'pets/edit-pet-new.html'
     context_object_name = 'pet'
 
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Allow access only if the logged-in user matches the owner of the profile in the URL!!!
+        """
+        # Check if the user is authenticated
+        if not request.user.is_authenticated:
+            messages.error(request, "You need to log in to access this page.")
+            return redirect('index')
+
+        # Check if the logged-in user's pk matches the pk in the URL
+        profile_pk = kwargs.get('pk')  # Get the pk from the URL
+        if request.user.pk != profile_pk:
+            messages.error(request, "You are not authorized to edit this pet.")
+            return redirect('dashboard')
+
+        # Allow access if the checks pass
+        return super().dispatch(request, *args, **kwargs)
+
     def get_object(self, queryset=None):
         # Use pet_slug instead of pk
         pet_slug = self.kwargs['pet_slug']
         pet = get_object_or_404(Pet, slug=pet_slug)
-        if pet.owner != self.request.user:
-            messages.error(self.request, "You are not allowed to edit this pet.")
-            return redirect('dashboard')
+
         return pet
 
 
@@ -165,14 +190,47 @@ class EditPetView(LoginRequiredMixin, UpdateView):
 
 
 # DELETE PET
-def delete_pet(request):
-    return render(request, 'pets/delete-pet.html')
+class PetDeleteView(LoginRequiredMixin, DeleteView):
+    model = Pet
+    template_name = 'pets/delete-pet-confirm.html'  # A confirmation template
+    slug_field = 'slug'
+    success_url = reverse_lazy('dashboard')  # Redirect after deletion
+
+    def get_object(self, queryset=None):
+        # Get the pet object and check ownership
+        pet = get_object_or_404(Pet, slug=self.kwargs['pet_slug'])
+        return pet
+
+    def dispatch(self, request, *args, **kwargs):
+        # Get the pet object
+        pet = self.get_object()
+
+        # Check if the logged-in user is the owner
+        if request.user != pet.owner:
+            messages.error(request, "You are not authorized to delete this pet.")
+            return redirect('dashboard')
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class AdoptionRequestView(LoginRequiredMixin, CreateView):
     model = AdoptionRequest
     form_class = AdoptionRequestForm
-    template_name = 'pets/adoption_request.html'
+    template_name = 'pets/adoption-request.html'
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     adoption_request = get_object_or_404(AdoptionRequest, pk=kwargs['request_pk'], shelter=self.request.user)
+    #     print(adoption_request)
+    #     # Proceed only if the user is authenticated
+    #     if not request.user.is_authenticated:
+    #         messages.error(request, "You are not logged-in.")
+    #         return redirect('index')
+    #     if adoption_request.adopter != request.user:
+    #         messages.error(request, "You are not authorized to view adoption request.")
+    #         return reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk})
+    #
+    #     return super().dispatch(request, *args, **kwargs)
+
 
     def form_valid(self, form):
         pet_slug = self.kwargs.get('pet_slug')
@@ -212,8 +270,32 @@ class AdoptionRequestView(LoginRequiredMixin, CreateView):
 
 class AdoptionRequestDeleteView(LoginRequiredMixin, DeleteView):
     model = AdoptionRequest
-    template_name = 'pets/adoption_request_confirm_delete.html'
+    template_name = 'pets/adoption-request-confirm-delete.html'
     context_object_name = 'request'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the user is authenticated
+        if not request.user.is_authenticated:
+            messages.error(request, "You need to log in to access this page.")
+            return redirect('index')
+
+        # Retrieve the pk from kwargs
+        pk = kwargs.get('pk')
+
+        # Try to retrieve the AdoptionRequest
+        try:
+            adoption_request = AdoptionRequest.objects.get(pk=pk)
+        except AdoptionRequest.DoesNotExist:
+            messages.error(request, "The requested adoption record does not exist.")
+            return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
+
+        # Check if the logged-in user is the adopter
+        if adoption_request.adopter != request.user:
+            messages.error(request, "You are not authorized to access this page.")
+            return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
+
+        # Allow access if the checks pass
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         # Restore the pet's status to "Available"

@@ -1,5 +1,4 @@
 {% extends 'core/base.html' %}
-{% load cloudinary %}
 {% load static %}
 
 {% block content %}
@@ -61,6 +60,7 @@
                                 <li>No reviews yet</li>
                             {% endfor %}
                         </ul>
+                    
                     </section>
 
 
@@ -88,6 +88,8 @@
                                     <a href="{% url 'shelter edit view' shelter_profile.pk %}" class="button">Manage
                                         Shelter</a>
                                 </li>
+                                <li><a href="{% url 'dashboard' %}?shelter={{ shelter_profile.user.pk }}" class="button delete-button-success">Manage Pets</a></li>
+                            
                                 <li>
                                 <div id="delete-container">
                                     <!-- Initial DELETE PROFILE link -->
@@ -97,7 +99,7 @@
                                     <!-- Hidden confirmation options -->
                                     <div id="confirmation-options" style="display: none;">
                                         <a href="{% url 'profile delete' pk=shelter_profile.pk %}"
-                                           class="button button-danger">Yes,
+                                           class="button delete-button-danger">Yes,
                                             delete</a>
                                         <a href="#" class="button delete-button-success" onclick="hideOptions(event)">No,
                                             cancel</a>
@@ -124,9 +126,7 @@
                             </li>
                             {% endif %}
 
-                            <li><a href="{% url 'dashboard' %}?shelter={{ shelter_profile.user.pk }}" class="button">View
-                                Adoptable Pets</a></li>
-                            <li><a href="#" class="button">Make a Donation</a></li>
+                            
                         </ul>
 
                         <!-- Center Section: Shelter Geolocation map -->

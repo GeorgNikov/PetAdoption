@@ -4,15 +4,13 @@
 
 {% block content %}
 
-
-
     {% if user|is_shelter %}
         <!-- Shelter-specific content -->
         <div class="add-pet">
             {% if user.is_authenticated %}
                 {% if user.shelter_profile.completed %}
-                <a href="{% url 'add pet' %}" class="add-pet-link" id="add-pet">
-                    <i class="fas fa-plus"></i>&nbsp; Add Pet for Adoption</a>
+                    <a href="{% url 'add pet' %}" class="add-pet-link" id="add-pet">
+                        <i class="fas fa-plus"></i>&nbsp; Add Pet for Adoption</a>
                 {% else %}
                     <a href="{% url 'shelter details view' user.pk %}" class="add-pet-link">
                         Complete Your Profile</a>
@@ -27,8 +25,8 @@
                     <div class="pet-box-image">
                         {% if pet.image %}
                             {% load cloudinary %}
-                            {% cloudinary pet.image quality='auto' width=130 height=125 crop='pad' background='gen_fill:ignore-foreground_true' %}
-                            {# <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="pet-box-image">#}
+                            {% cloudinary pet.image quality='auto' width=130 height=125 crop='fit' %}
+                            {# <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="pet-box-image" loading="lazy">#}
                         {% else %}
                             <img src="{% static 'images/no.png' %}" alt="Pet" class="pet-box-image">
                         {% endif %}
@@ -46,7 +44,14 @@
                             <i class="far fa-heart {% if pet.liked %}fas liked-heart{% endif %}"></i>
                             <span id="like-count-{{ pet.pk }}">{{ pet.total_likes }}</span>
                         </button>
-                        <a href="{% url 'pet details' pet.slug %}" class="" style="float: right">Preview</a>
+                        {% if user == pet.owner %}
+                            <a href="{% url 'delete pet' pet.slug %}" class="pet-box-del-btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'pet details' pet.slug %}" class="pet-box-button"
+                           style="float: right">Preview</a>
+
                     </div>
                 </main>
             </div>
@@ -54,8 +59,6 @@
 
 
     </div>
-
-
 
     <!-- Pagination Controls -->
 

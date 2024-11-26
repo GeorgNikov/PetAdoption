@@ -207,6 +207,30 @@ class ShelterRatingView(LoginRequiredMixin, FormView):
 class AdoptionRequestsListView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/adoption-requests-list.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        shelter_pk = self.kwargs.get('pk')
+        # Proceed only if the user is authenticated
+        if not request.user.is_authenticated:
+            messages.error(request, "You need to log in to access this page.")
+            return redirect('index')
+
+        try:
+            # Check if the requested user is the owner of the adoption request
+            owner_shelter_profile = ShelterProfile.objects.get(pk=shelter_pk)
+
+            if owner_shelter_profile.user.pk != request.user.pk:
+                messages.error(request, "You are not authorized to view this page.")
+                return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
+
+        except ShelterProfile.DoesNotExist:
+            # Redirect users to their profile page
+            messages.error(request, "You are not authorized to view this page.")
+            return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
+
+
+        return super().dispatch(request, *args, **kwargs)
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
