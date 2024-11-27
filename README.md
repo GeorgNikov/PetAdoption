@@ -55,33 +55,43 @@ The **Pet Adoption Platform** is designed to streamline the pet adoption process
 Follow these steps to set up the project locally:
 
 1. **Clone the Repository**:
-    ```bash
+    ```terminal
+   
     git clone https://github.com/GeorgNikov/PetAdoption.git
     cd PetAdoption
+   
     ```
 
 2. **Set Up Virtual Environment**:
-    ```bash
-    python3 -m venv env
-    source env/bin/activate
+    ```terminal
+   
+    python -m venv .venv
+    source .venv/Scripts/activate
+   
     ```
 
 3. **Install Dependencies**:
-    ```bash
+    ```terminal
+   
     pip install -r requirements.txt
+   
     ```
 
 4. **Configure the Database**:
     - Update database settings in `settings.py`.
     - Run migrations:
-        ```bash
+        ```terminal
+      
         python manage.py makemigrations
         python manage.py migrate
+      
         ```
 
 5. **Run the Development Server**:
-    ```bash
+    ```terminal
+   
     python manage.py runserver
+   
     ```
 
 6. **Access the Application**:
