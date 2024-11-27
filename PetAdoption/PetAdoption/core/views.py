@@ -18,16 +18,13 @@ from PetAdoption.pets.utils import check_user_type
 
 UserModel = get_user_model()
 
+# HOME PAGE
 def index(request):
     form = UserLoginForm(request.POST or None)
     register_form = UserRegistrationForm(request.POST or None)
-    try:
-        pets = Pet.objects.filter(
-            status="Adopted"
-        ).order_by(
-            '-updated_at'
-        )[:4]
-    except:
+    pets = Pet.objects.filter(status="Adopted").order_by('-updated_at')[:4]
+
+    if not pets:
         pets = []
 
     if request.user.is_authenticated:
@@ -68,15 +65,16 @@ def index(request):
     return render(request, 'core/index.html', context)
 
 
+# ABOUT
 def about_view(request):
     return render(request, 'core/about.html')
 
 
+# CONTACTS
 def contact_view(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            name = request.POST.get('name')
             email = request.POST.get('email')
             subject = request.POST.get('subject')
             message = request.POST.get('message')
@@ -102,37 +100,18 @@ def contact_view(request):
     return render(request, 'core/contacts.html', {'form': form})
 
 
+# F.A.Q.
 class FAQView(TemplateView):
     template_name = 'core/faq.html'
 
 
-# View to show shelter ratings
-# def show_ratings(request, slug):
-#     shelter = get_object_or_404(ShelterProfile, slug=slug)
-#     ratings = ShelterRating.objects.filter(shelter=shelter.pk).all()
-#
-#     # Calculate the average rating
-#     average_rating = ratings.aggregate(Avg('rating'))['rating__avg']
-#
-#     # Ensure a fallback value if there are no ratings
-#     average_rating = average_rating if average_rating is not None else 0
-#
-#     context = {
-#         'shelter': shelter,
-#         'ratings': ratings,
-#         'average_rating': average_rating,
-#     }
-#
-#     return render(request, 'core/show-rating.html', context)
-
-
+# SHELTERS
 class SheltersView(TemplateView):
     model = ShelterProfile
     template_name = 'core/shelters.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         shelters = ShelterProfile.objects.all()
 
         # For each shelter, get the count of available pets
@@ -141,6 +120,7 @@ class SheltersView(TemplateView):
         for shelter in shelters:
             # Count the number of available pets for this shelter
             available_pets_count = Pet.objects.filter(owner=shelter.user.pk, status="Available").count()
+            # Get the shelter's average rating
             average_rating = ShelterRating.objects.filter(shelter=shelter.pk).aggregate(Avg('rating'))['rating__avg'] or 0.00
             average_rating_percent = int((average_rating / 5) * 100)
 
@@ -162,11 +142,12 @@ class ShelterRatingView(LoginRequiredMixin, FormView):
     template_name = 'accounts/shelter-feedback-rating.html'
     form_class = ShelterRatingForm
 
+
+
     def get_user_profile(self):
         return get_object_or_404(UserProfile, user=self.request.user)
 
     def dispatch(self, request, *args, **kwargs):
-        # Ensure the user is authorized to rate the shelter
         self.adoption_request = get_object_or_404(
             AdoptionRequest,
             pk=self.kwargs.get('adoption_request_pk'),
@@ -195,7 +176,6 @@ class ShelterRatingView(LoginRequiredMixin, FormView):
         rating.save()
 
         messages.success(self.request, "Thank you for your feedback!")
-
         return redirect(reverse_lazy('shelter page preview', kwargs={'slug': self.shelter.slug}))
 
     def get_context_data(self, **kwargs):
@@ -226,7 +206,6 @@ class AdoptionRequestsListView(LoginRequiredMixin, TemplateView):
             # Redirect users to their profile page
             messages.error(request, "You are not authorized to view this page.")
             return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
-
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -263,8 +242,10 @@ class AdoptionRequestsListView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class UpdateAdoptionRequestStatusView(View):
-    def post(self, request, pk, request_pk):
+class UpdateAdoptionRequestStatusView(LoginRequiredMixin, View):
+
+    @staticmethod
+    def post(request, pk, request_pk):
         adoption_request = get_object_or_404(AdoptionRequest, pk=request_pk)
         status = request.POST.get('status')
         if status in ['Approved', 'Rejected']:
@@ -273,6 +254,3 @@ class UpdateAdoptionRequestStatusView(View):
             adoption_request.pet.save()
             adoption_request.save()
         return redirect('shelter adoption requests', pk=pk)
-
-
-

@@ -39,6 +39,9 @@
                         </p>
                         <p><strong>Email:</strong> <a
                                 href="mailto:{{ shelter_profile.user.email }}">{{ shelter_profile.user.email }}</a></p>
+                    <p><strong>Website:</strong> <a
+                                href="{{ shelter_profile.website }}" target="_blank"> {{ shelter_profile.website|default:"N/A" }}</a>
+                        </p>
                         <p><strong>Established:</strong> {{ shelter_profile.created_at|date:"j M Y" }}</p>
 
                         <!-- Shelter ratings and feedback section -->

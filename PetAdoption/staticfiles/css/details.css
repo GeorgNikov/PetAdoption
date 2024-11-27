@@ -92,6 +92,22 @@
     text-shadow: none;
 }
 
+.pet-box-edit-btn {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: red; /* Trash icon color */
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.pet-box-edit-btn i {
+    margin-right: 5px;
+}
+
 .pet-box-del-btn-danger {
     position: absolute;
     top: 10px;
@@ -108,6 +124,7 @@
 }
 
 .pet-box-del-btn-danger i {
+    margin-right: 5px;
     color: red;  /* Set the desired icon color */
 }
 

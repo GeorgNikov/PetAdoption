@@ -5,12 +5,9 @@
         <div class="logo">
             <a href="{% url 'index' %}"> PetAdoption</a>
         </div>
+    
         <ul class="nav-links">
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'dashboard' %}"> Find Pets</a></li>
-            {% else %}
-                <li><a href="{% url 'index' %}"> Home</a></li>
-            {% endif %}
+            <li><a href="{% url 'dashboard' %}"> Find Pets</a></li>
             <li><a href="{% url 'shelters' %}"> Shelters</a></li>
             <li><a href="{% url 'about' %}"> About</a></li>
             <li><a href="{% url 'contact' %}"> Contacts</a></li>
@@ -21,13 +18,14 @@
             {% if user.is_authenticated %}
                 <div class="dropdown">
                     <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
-                        {{ userprofile.full_name|default:user.username }}
+                        {{ user.email|default:user.username }}
                     </button>
+                    
                     <div class="dropdown-content">
                         <a href="{% url 'redirect-profile' user.pk %}">
                             <i class="fas fa-user"></i> &nbsp; &nbsp; My Profile
                         </a>
-                        <a href="#"><i class="fas fa-cog"></i> &nbsp; &nbsp; Settings</a>
+                        <a href="{% url 'reset_password' %}"><i class="fas fa-cog"></i> &nbsp; &nbsp; Settings</a>
 
                         <a href="#"
                            onclick="document.getElementById('logout-form').submit(); return false;">
@@ -54,17 +52,12 @@
 <!-- Dropdown Mobile Menu -->
 <div class="mobile-menu" id="mobile-menu">
     <ul>
-        {% if user.is_authenticated %}
-            <li><a href="{% url 'dashboard' %}"> Find Pets</a></li>
-        {% else %}
-            <li><a href="{% url 'index' %}"> Home</a></li>
-        {% endif %}
+        <li><a href="{% url 'dashboard' %}"> Find Pets</a></li>
         <li><a href="{% url 'shelters' %}"> Shelters</a></li>
         <li><a href="{% url 'about' %}"> About</a></li>
         <li><a href="{% url 'contact' %}"> Contacts</a></li>
         <li><a href="{% url 'faq' %}"> FAQ</a></li>
-
-
+    
         {% if user.is_authenticated %}
             <li> &nbsp;</li>
             <li>
@@ -74,14 +67,13 @@
             </li>
 
             <li>
-                <a href="#">Settings</a>
+                <a href="{% url 'reset_password' %}">Settings</a>
             </li>
 
             <li>
                 <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>
             </li>
-
-
+            
         {% endif %}
     </ul>
 </div>

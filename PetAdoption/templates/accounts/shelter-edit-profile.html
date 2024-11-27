@@ -4,57 +4,31 @@
 {% block content %}
 
     <div class="profile-container">
-
         <div class="profile-left-content">
-
             <div class="profile-image-container">
-
                 {% if shelter_profile.image %}
-                    
-                    <img src="{{ shelter_profile.image.url }}" alt="{{ shelter_profile.image.url }}">
+                    {% load cloudinary %}
+                    {% cloudinary shelter_profile.image quality='auto' crop='fit' %}
+                   
                 {% else %}
                     <img src="https://via.placeholder.com/1200X300" alt="User Profile Picture">
                 {% endif %}
             </div>
-
-
+        
             <div class="profile-info">
                 {% if user.is_authenticated %}
-                        {% if shelter_profile.completed %}
-                            <div class="user-username-email">
-                            <span>
-                               
-                                <a href="{% url 'shelter details view' shelter_profile.pk %}">My Profile</a>
-                            </span>
-
-                            <span>
-                                <i class="fas fa-user"></i>
-                                <b>{{ user.username }}</b>
- 
-                            </span>
-                            
-                            <span>
-                                <i class="fas fa-arrow-left"></i>
-                                <a href="{% url 'shelter details view' shelter_profile.pk %}">&nbsp; Back to Profile</a>
-                            </span>
-                            </div>
-
-                        
-                        {% else %}
+                    {% if not shelter_profile.completed %}
                         <h2> {{ user.username }} </h2>
-                            <p>Please, complete your profile to start the adoption process.</p>
-                            <span><a href="{% url 'shelter edit view' shelter_profile.pk %}">Complete Profile</a></span>
-                        {% endif %}
-
+                        <p>Please, complete your profile to start using our services.</p>
+                        <span><a href="{% url 'shelter edit view' shelter_profile.pk %}">Complete Profile</a></span>
+                    {% endif %}
                 {% endif %}
-
             </div>
         
-
         </div>
 
         <div class="right-content">
-            <form method="post" action="{% url 'shelter edit view' shelter_profile.pk %}"  enctype="multipart/form-data">
+            <form method="post" action="{% url 'shelter edit view' shelter_profile.pk %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form }}
                 <button type="submit">Save Changes</button>

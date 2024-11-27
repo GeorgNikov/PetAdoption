@@ -3,14 +3,17 @@
 {% load user_tags %}
 
 {% block content %}
-
+<div class="dashboard-container">
+    {% include 'pets/pet-filter.html' %}
+</div>
     {% if user|is_shelter %}
         <!-- Shelter-specific content -->
         <div class="add-pet">
             {% if user.is_authenticated %}
                 {% if user.shelter_profile.completed %}
-                    <a href="{% url 'add pet' %}" class="add-pet-link" id="add-pet">
-                        <i class="fas fa-plus"></i>&nbsp; Add Pet for Adoption</a>
+                    <a href="{% url 'add pet' %}" class="k" id="">
+                    <img src="{% static 'images/add.png' %}" alt="Add Pet" height="38" title="Add Pet for adoption" style="margin-top: -10px;">
+                        </a>
                 {% else %}
                     <a href="{% url 'shelter details view' user.pk %}" class="add-pet-link">
                         Complete Your Profile</a>
@@ -18,7 +21,9 @@
             {% endif %}
         </div>
     {% endif %}
+    
     <div class="dashboard-container">
+
         {% for pet in pets %}
             <div class="box">
                 <main class="pet-box">

@@ -31,7 +31,10 @@ class ShelterEditProfileForm(forms.ModelForm):
 
     class Meta:
         model = ShelterProfile
-        fields = ['organization_name', 'phone_number', 'province', 'city', 'address', 'image']
+        fields = ['organization_name', 'phone_number', 'province', 'city', 'address', 'website', 'image']
+        widgets = {
+            'website': forms.URLInput(attrs={'placeholder': 'http://website.com'}),
+        }
 
 
 

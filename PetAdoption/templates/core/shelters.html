@@ -8,7 +8,7 @@
         <div class="shelter-container">
             {% for shelter in shelters %}
                 <div class="shelter-card">
-                {% cloudinary shelter.shelter.image quality='auto' width=515 height=200 crop='fit' %}
+                {% cloudinary shelter.shelter.image quality='auto' width=410 height=200 crop='fit'  class='responsive-image'%}
 
                     <h2>{{ shelter.shelter.organization_name }}</h2>
                     <p><strong>Address:</strong> {{ shelter.shelter }}</p>
@@ -30,9 +30,9 @@
                     </div>
 
                     <div class="button-container">
-                        <a href="{% url 'dashboard' %}?shelter={{ shelter.shelter.user.pk }}" class="btn-count-pets">View
+                        <a href="{% url 'dashboard' %}?shelter={{ shelter.shelter.user.pk }}" class="button-shelter-available">
                             Available Pets: {{ shelter.available_pets_count }}</a>
-                        <a href="{% url 'shelter page preview' shelter.slug %}" class="button">View Shelter page</a>
+                        <a href="{% url 'shelter page preview' shelter.slug %}" class="button-shelter">Visit Shelter</a>
                     </div>
                 </div>
 

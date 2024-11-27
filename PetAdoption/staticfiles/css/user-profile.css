@@ -93,7 +93,7 @@
     color: white;
     border: none;
     min-width: 30px;
-    padding: 3px 15px;
+    padding: 1px 15px;
     border-radius: 4px;
     cursor: pointer;
     text-decoration: none;
@@ -105,23 +105,12 @@
 }
 
 .btn-count-requests {
-    background-color: #f39c12;
-    color: white;
-    border: none;
+    color: darkgreen;
     max-width: 30px;
     padding: 3px 15px;
-    border-radius: 4px;
     cursor: pointer;
     text-decoration: none;
-    font-size: 20px;
-}
-
-.btn-count-requests:hover {
-    background-color: #e67e22;
-}
-
-.btn-count-requests.active {
-    background-color: green;
+    font-size: 16px;
 }
 
 .button-container {
@@ -142,30 +131,29 @@
 
 .adoption-requests.pending {
         font-size: 16px;
-    color: orange;
+    color: darkorange;
 
 }
 
 .adoption-requests.rejected {
-        font-size: 16px;
+    font-size: 16px;
     color: red;
 
 }
 
 .adoption-requests.approved {
     font-size: 14px;
-    color: green;
+    color: darkgreen;
 
 }
 
 .adoption-requests.pending a{
     text-decoration: underline;
-    color: red;
+    color: darkred;
     font-size: 15px;
 }
 
 .adoption-requests.approved a{
-
     color: darkgreen;
 }
 
@@ -235,11 +223,43 @@
     font-weight: bold;
     text-transform: Uppercase;
     text-decoration: none;
-
 }
 
 .button:hover {
     background-color: #e67e22;
+}
+
+.button-shelter {
+    display: block;
+    padding: 5px 10px;
+    background-color: #f39c12;
+    color: white;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 16px;
+
+    text-decoration: none;
+}
+
+.button-shelter:hover {
+    background-color: #e67e22;
+}
+
+.button-shelter-available {
+        display: block;
+    padding: 5px 10px;
+    background-color: #1fb23d;
+    color: white;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 16px;
+
+    text-decoration: none;
+}
+
+.button-shelter-available:hover {
+    background-color: #155724;
+    color: white;
 }
 
 .button.button-danger {

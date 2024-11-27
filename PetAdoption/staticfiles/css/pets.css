@@ -30,6 +30,7 @@
     border: none;
     color: white;
     padding: 5px 22px;
+    margin-top: -10px;
     text-align: center;
 }
 
@@ -267,6 +268,25 @@
     text-decoration: none;
 }
 
+.image-container .delete-button {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    padding: 10px 15px;
+    background-color: #FF4C4C ;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 2; /* Ensure it appears above other elements */
+}
+
+.image-container .delete-button:hover {
+    background-color: #F44336;
+    text-decoration: none;
+}
+
 
 
 /* Content Wrapper */
@@ -287,6 +307,7 @@
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 65%;
+    width: 100%;
 }
 
 .pet-details-section h2 {
@@ -356,6 +377,7 @@
     .pet-details-section {
         margin-right: 0;
         margin-bottom: 20px;
+        max-width: 100%;
     }
 }
 
@@ -470,6 +492,46 @@ margin-top: 8px;
 .pet-edit-form .submit-button:focus {
     outline: none;
 }
+
+/* In your CSS file or within a <style> block */
+/*.pet-filter-form {*/
+/*    display: flex;               !* Use flexbox to align items in a row *!*/
+/*    flex-wrap: wrap;             !* Allow wrapping if screen is too small *!*/
+/*    justify-content: space-between; !* Distribute space evenly *!*/
+/*    gap: 15px;                   !* Space between form elements *!*/
+/*    align-items: center;*/
+/*    border: 1px solid #ccc;*/
+/*}*/
+
+
+.filter-option {
+    display: inline-block;
+    flex-direction: column;
+    width: 150px;
+    margin-right: 20px;
+    float: left;
+    border: 1px solid #ccc;     /* Set fixed width for the selects */
+}
+
+.filter-option select {
+    display:table-row;
+}
+.filter-option option {
+    display:table-cell;
+}
+
+.filter-option label {
+    font-weight: bold;
+    margin-bottom: 5px;          /* Space between label and select */
+}
+
+.filter-option select {
+    padding: 8px;
+    width: 100%;                 /* Make select fill the container */
+    box-sizing: border-box;      /* Ensure padding doesn't affect width */
+}
+
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

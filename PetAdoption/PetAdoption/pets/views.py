@@ -1,13 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.http import HttpResponseForbidden
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
 from PetAdoption.accounts.models import UserProfile, ShelterProfile
-from PetAdoption.pets.forms import AddPetForm, EditPetForm, AdoptionRequestForm
+from PetAdoption.pets.forms import AddPetForm, EditPetForm, AdoptionRequestForm, PetFilterForm
 from PetAdoption.pets.models import Pet, AdoptionRequest
 
 from rest_framework.views import APIView
@@ -46,15 +45,31 @@ class Dashboard(ListView):
         # Handle other filtering logic like shelter, age, city
         shelter_param = self.request.GET.get('shelter')
         age_param = self.request.GET.get('age')
-        city_param = self.request.GET.get('city')
+        type_param = self.request.GET.get('type')
+        gender_param = self.request.GET.get('gender')
+        size_param = self.request.GET.get('size')
 
         pets = Pet.objects.filter(status="Available").order_by('-created_at')
+
+        if age_param:
+            if age_param == '0-12':
+                pets = pets.filter(age__gte=0, age__lt=12)
+            elif age_param == '12-24':
+                pets = pets.filter(age__gte=12, age__lt=24)
+            elif age_param == '24-48':
+                pets = pets.filter(age__gte=24, age__lt=48)
+            elif age_param == '48+':
+                pets = pets.filter(age__gte=48)
+
+
         if shelter_param:
             pets = pets.filter(owner__pk=shelter_param)
-        if age_param:
-            pets = pets.filter(age=age_param)
-        if city_param:
-            pets = pets.filter(city__iexact=city_param)
+        if type_param:
+            pets = pets.filter(type__iexact=type_param)
+        if gender_param:
+            pets = pets.filter(gender__iexact=gender_param)
+        if size_param:
+            pets = pets.filter(size__iexact=size_param)
 
         for pet in pets:
             pet.liked = pet.likes.filter(pk=self.request.user.pk).exists()
@@ -70,18 +85,18 @@ class Dashboard(ListView):
         context['paginator'] = paginator
         return context
 
-    def dispatch(self, request, *args, **kwargs):
-        # Proceed only if the user is authenticated
-        if not request.user.is_authenticated:
-            messages.error(request, "Please login to view our pets.")
-            return redirect('index')
-
-        # Check if the user has a completed profile
-        redirect_url = check_profile_completion(request)
-        if redirect_url:
-            return redirect_url  # Redirect if the profile is incomplete or doesn't exist
-
-        return super().dispatch(request, *args, **kwargs)
+    # def dispatch(self, request, *args, **kwargs):
+    #     # Proceed only if the user is authenticated
+    #     if not request.user.is_authenticated:
+    #         messages.error(request, "Please login to view our pets.")
+    #         return redirect('index')
+    #
+    #     # Check if the user has a completed profile
+    #     redirect_url = check_profile_completion(request)
+    #     if redirect_url:
+    #         return redirect_url  # Redirect if the profile is incomplete or doesn't exist
+    #
+    #     return super().dispatch(request, *args, **kwargs)
 
 
 class AddPetView(LoginRequiredMixin, CreateView):
@@ -312,6 +327,33 @@ class AdoptionRequestDeleteView(LoginRequiredMixin, DeleteView):
         adoption_request = self.get_object()
         return adoption_request.adopter == self.request.user
 
+
+
+# Pet Filter List View
+def pet_list(request):
+    # Get filter form
+    form = PetFilterForm(request.GET)
+
+    # Start with all pets
+    pets = Pet.objects.all()
+
+    # Apply filters based on selected options
+    if form.is_valid():
+        type = form.cleaned_data.get('type')
+        age = form.cleaned_data.get('age')
+        gender = form.cleaned_data.get('gender')
+        size = form.cleaned_data.get('size')
+
+        if type:
+            pets = pets.filter(type=type)
+        if age:
+            pets = pets.filter(age=age)
+        if gender:
+            pets = pets.filter(gender=gender)
+        if size:
+            pets = pets.filter(size=size)
+
+    return render(request, 'core/pet-list.html', {'form': form, 'pets': pets})
 
 
 

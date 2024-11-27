@@ -1,0 +1,50 @@
+<form method="GET" action="" class="">
+
+<div class="filter-container">
+<h3>&nbsp; Filter by:</h3>
+
+        <select name="type" id="type" onchange="this.form.submit()" class="minimal">
+            <option value="">All Types</option>
+            <option value="Dog" {% if request.GET.type == 'Dog' %}selected{% endif %}>Dog</option>
+            <option value="Cat" {% if request.GET.type == 'Cat' %}selected{% endif %}>Cat</option>
+            <option value="Bird" {% if request.GET.type == 'Bird' %}selected{% endif %}>Bird</option>
+            <option value="Reptile" {% if request.GET.type == 'Reptile' %}selected{% endif %}>Reptile</option>
+            <option value="Fish" {% if request.GET.type == 'Fish' %}selected{% endif %}>Fish</option>
+            <option value="Other" {% if request.GET.type == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+
+    <!-- Age filter -->
+
+    <select name="age" id="age" onchange="this.form.submit()" class="minimal">
+        <option value="">All Ages</option>
+        <option value="0-12" {% if request.GET.age == '0-12' %}selected{% endif %}>0 - 12 months</option>
+        <option value="12-24" {% if request.GET.age == '12-24' %}selected{% endif %}>12 - 24 months</option>
+        <option value="24-48" {% if request.GET.age == '24-48' %}selected{% endif %}>24 - 48 months</option>
+        <option value="48+" {% if request.GET.age == '48+' %}selected{% endif %}>48+ months</option>
+    </select>
+
+
+    <!-- Size filter -->
+        <select name="gender" id="gender" onchange="this.form.submit()" class="minimal">
+            <option value="">All Genders</option>
+            <option value="Male" {% if request.GET.gender == 'Male' %}selected{% endif %}>Male</option>
+            <option value="Female" {% if request.GET.gender == 'Female' %}selected{% endif %}>Female</option>
+        </select>
+
+
+    <!-- Location filter -->
+        <select name="size" id="size" onchange="this.form.submit()" class="minimal">
+            <option value="">All Sizes</option>
+            <option value="Small" {% if request.GET.size == 'Small' %}selected{% endif %}>Small</option>
+            <option value="Medium" {% if request.GET.size == 'Medium' %}selected{% endif %}>Medium</option>
+            <option value="Large" {% if request.GET.size == 'Large' %}selected{% endif %}>Large</option>
+        </select>
+     <!-- Filter button -->
+
+    
+</div>
+
+</form>
+
+
+

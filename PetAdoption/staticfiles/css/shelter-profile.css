@@ -14,6 +14,7 @@
     background-position: center;
     position: relative;
     color: white;
+    flex-wrap: wrap;
 }
 
 .header-overlay {
@@ -50,8 +51,7 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    flex: 1;
-    max-width: 515px;
+
 }
 
 .shelter-details,
@@ -61,15 +61,17 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     flex: 1;
-    min-width: 400px;
+    min-width: 300px; /* Ensures they don’t shrink too much */
 }
 
 .shelter-details {
     max-width: 60%;
+    width: 100%;
 }
 
 .shelter-actions {
     max-width: 35%;
+    width: 100%;
 }
 
 .shelter-actions h3 {
@@ -103,10 +105,21 @@
 @media (max-width: 768px) {
     .shelter-container {
         flex-direction: column;
+        width: 100%;
     }
 
     .shelter-details,
     .shelter-actions {
         max-width: 100%;
+        width: 100%;
+    }
+
+    .shelter-card {
+        max-width: 100%; /* Allow full width on smaller screens */
+    }
+
+    .responsive-image {
+        height: auto; /* Fixed height for mobile */
+        width: 100%;
     }
 }

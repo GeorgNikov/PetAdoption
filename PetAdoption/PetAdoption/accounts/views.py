@@ -1,5 +1,4 @@
 from cloudinary.utils import cloudinary_url
-
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import login_required
@@ -7,7 +6,6 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth.views import LoginView
-
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import redirect, get_object_or_404, render
@@ -23,9 +21,7 @@ from PetAdoption.accounts.services.geolocation import get_coordinates
 from PetAdoption.accounts.utils import redirect_ot_profile
 from PetAdoption.core.forms import ShelterRatingForm
 from PetAdoption.core.models import ShelterRating
-
 from PetAdoption.pets.models import Pet, AdoptionRequest
-from PetAdoption.settings import EMAIL_HOST_USER
 
 UserModel = get_user_model()
 
@@ -47,15 +43,11 @@ class UserProfileView(LoginRequiredMixin, DetailView):
         context['adoptions'] = adoptions
 
         # Retrieve rated adoption requests by the user
-        rated_adoptions = ShelterRating.objects.filter(adopter=self.get_object()).values_list('adoption_request', flat=True)
+        rated_adoptions = ShelterRating.objects.filter(
+            adopter=self.get_object()
+        ).values_list('adoption_request', flat=True)
 
         context['rated_adoptions'] = rated_adoptions
-
-        # Determine if there are unrated adoption requests
-        unrated_adoptions = AdoptionRequest.objects.filter(
-            adopter=self.request.user,
-            status="Approved",
-        ).exclude(id__in=rated_adoptions)
 
         context['user_profile'] = self.get_object()  # This is the profile of the logged-in user
         pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
@@ -106,7 +98,6 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('profile details view', kwargs={'pk': self.kwargs.get('pk')})
-
 
 
 # DELETE USER PROFILE
@@ -163,7 +154,6 @@ class UserRegisterView(CreateView):
         return reverse('index')
 
 
-
 # USER LOGIN
 class UserLoginView(LoginView):
     template_name = 'core/index.html'
@@ -185,27 +175,28 @@ class ShelterProfileView(LoginRequiredMixin, DetailView):
         # Returns the ShelterProfile instance for the logged-in user
         return get_object_or_404(ShelterProfile, user=self.request.user)
 
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Allow access only if the logged-in user matches the owner of the profile in the URL!!!
-        """
-        # Check if the user is authenticated
-        if not request.user.is_authenticated:
-            messages.error(request, "You need to log in to access this page.")
-            return redirect('index')
-
-        # Check if the logged-in user's pk matches the pk in the URL
-        profile_pk = kwargs.get('pk')  # Get the pk from the URL
-        if request.user.pk != profile_pk:
-            messages.error(request, "You are not authorized to access this profile.")
-            return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
-
-        # Allow access if the checks pass
-        return super().dispatch(request, *args, **kwargs)
+    # def dispatch(self, request, *args, **kwargs):
+    #     """
+    #     Allow access only if the logged-in user matches the owner of the profile in the URL!!!
+    #     """
+    #     # Check if the user is authenticated
+    #     if  not request.user.is_authenticated:
+    #         messages.error(request, "You need to log in to access this page.")
+    #         return redirect('index')
+    #
+    #     # Check if the logged-in user's pk matches the pk in the URL
+    #     # profile_pk = kwargs.get('pk')  # Get the pk from the URL
+    #     # if request.user.pk != profile_pk:
+    #     #     messages.error(request, "You are not authorized to access this profile.")
+    #     #     return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
+    #
+    #     # Allow access if the checks pass
+    #     return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        adoption_requests = AdoptionRequest.objects.filter(pet__owner=self.request.user, status='Pending').order_by('-created_at')
+        adoption_requests = AdoptionRequest.objects.filter(pet__owner=self.request.user, status='Pending').order_by(
+            '-created_at')
         context['adoption_requests'] = adoption_requests
 
         shelter_profile = self.get_object()
@@ -228,18 +219,21 @@ class ShelterEditView(LoginRequiredMixin, UpdateView):
     context_object_name = 'shelter_profile'
     login_url = reverse_lazy('index')
 
-
-
     def get_object(self, queryset=None):
         profile = get_object_or_404(ShelterProfile, pk=self.kwargs['pk'])
-        return profile
 
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.user != request.user:
+        # Check if the logged-in user is the owner of the profile
+        if profile.user != self.request.user:
             # Redirect to the user's own profile page if they attempt to edit someone else's profile
-            return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
-        return super().dispatch(request, *args, **kwargs)
+            return get_object_or_404(ShelterProfile, user=self.request.user)
+
+        return profile
+    # def dispatch(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     if self.object.user != request.user:
+    #         # Redirect to the user's own profile page if they attempt to edit someone else's profile
+    #         return redirect('redirect-profile', self.kwargs['pk'])
+    #     return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         # Save the form but don't commit to the database yet
@@ -266,7 +260,7 @@ class ShelterEditView(LoginRequiredMixin, UpdateView):
 
 
 # SHELTER PROFILE PREVIEW
-class ShelterProfilePreview(LoginRequiredMixin, DetailView):
+class ShelterProfilePreview(DetailView):
     model = ShelterProfile
     template_name = 'accounts/shelter-profile-preview.html'
     context_object_name = 'shelter_profile'
@@ -280,10 +274,10 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         shelter = self.get_object()
         context = super().get_context_data(**kwargs)
-        average_rating = ShelterRating.objects.filter(shelter=shelter.pk).aggregate(Avg('rating'))['rating__avg'] or 0.00
+        average_rating = ShelterRating.objects.filter(shelter=shelter.pk).aggregate(Avg('rating'))[
+                             'rating__avg'] or 0.00
         average_rating_percent = int((average_rating / 5) * 100)
         context['average_rating_percent'] = average_rating_percent
-
 
         # Get the shelter's profile
         shelter_profile = self.get_object()
@@ -297,9 +291,6 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
         rating = ShelterRating.objects.filter(shelter=shelter_profile).order_by('-created_at')
         context['rating'] = rating
         context['rating_form'] = ShelterRatingForm()
-
-        # This is return pets of the shelter
-        # context['pets'] = Pet.objects.filter(owner=shelter).order_by('-created_at')
 
         # Fetch coordinates for the shelter's address
         latitude, longitude = get_coordinates(shelter_profile.full_address)
@@ -316,7 +307,6 @@ class ShelterProfilePreview(LoginRequiredMixin, DetailView):
 
 
 # REDIRECT PROFILE
-
 class UserProfileRedirectView(LoginRequiredMixin, View):
     @staticmethod
     def get(request, *args, **kwargs):
@@ -340,6 +330,7 @@ class UserProfileRedirectView(LoginRequiredMixin, View):
         messages.error(request, "Invalid user type")
         return redirect('index')
 
+
 class ResetPasswordView(FormView):
     template_name = 'accounts/reset-password.html'
     form_class = PasswordResetForm
@@ -348,7 +339,7 @@ class ResetPasswordView(FormView):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
-
+    # send password reset email for all users
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email')
         try:
@@ -363,7 +354,7 @@ class ResetPasswordView(FormView):
             send_mail(
                 subject="Reset Your Password",
                 message=f"Click the link below to reset your password:\n{reset_link}",
-                from_email=EMAIL_HOST_USER,
+                from_email=email,
                 recipient_list=[email],
                 fail_silently=False,
             )

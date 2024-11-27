@@ -1,10 +1,11 @@
 from django.urls import path, include
 
 from .views import AddPetView, Dashboard, PetDetailView, EditPetView, LikePetView, AdoptionRequestView, \
-    AdoptionRequestDeleteView, PetDeleteView
+    AdoptionRequestDeleteView, PetDeleteView, pet_list
 
 urlpatterns = [
     path('', Dashboard.as_view(), name='dashboard'),
+    path('pet-list/', pet_list, name='pet list'),
     path('add/', AddPetView.as_view(), name='add pet'),
     path('<slug:pet_slug>/', include([
         path('', PetDetailView.as_view(), name='pet details'),
