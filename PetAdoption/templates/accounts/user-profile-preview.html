@@ -106,7 +106,7 @@
 
                                     <!-- Hidden confirmation options -->
                                     <div id="confirmation-options" style="display: none;">
-                                        <a href="{% url 'profile delete' pk=user_profile.pk %}"
+                                        <a href="{% url 'profile delete' pk=user_profile.user.pk %}"
                                            class="button button-danger">Yes,
                                             delete</a>
                                         <a href="#" class="button delete-button-success" onclick="hideOptions(event)">No,

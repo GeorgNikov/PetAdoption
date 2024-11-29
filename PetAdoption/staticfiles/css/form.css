@@ -83,6 +83,7 @@ form input, form select {
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: content-box;
 }
 
 form button {
@@ -129,5 +130,93 @@ form button:hover {
     .form-grid {
         grid-template-columns: 1fr; /* Stack columns on smaller screens */
     }
+}
+
+
+/* Alert Styles */
+.custom-alert {
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.custom-alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.custom-alert ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.custom-alert li {
+    margin-bottom: 5px;
+}
+
+/* Input Field Styles */
+.custom-label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.custom-form-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.custom-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.custom-select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.custom-image-upload {
+    margin-top: 20px;
+}
+
+.custom-image-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.custom-image-preview {
+    margin-top: 10px;
+}
+
+.custom-file-input {
+    margin-top: 10px;
+}
+
+.custom-submit-btn {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.custom-submit-btn:hover {
+    background-color: #218838;
 }
 

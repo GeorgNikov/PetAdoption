@@ -30,7 +30,7 @@ class EditPetForm(PetBaseForm):
     image = CloudinaryFileField(required=False)
 
     class Meta(PetBaseForm.Meta):
-        fields = ('name', 'breed', 'age', 'gender', 'size', 'description', 'image')
+        fields = ('name', 'breed', 'age', 'size', 'description', 'image')
 
 
 

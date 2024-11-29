@@ -2,6 +2,11 @@ import requests
 
 
 def get_coordinates(address):
+    """
+        Returns the latitude and longitude of a given address
+         using the OpenStreetMap Nominatim API.
+    """
+
     url = "https://nominatim.openstreetmap.org/search"
     params = {
         'q': address,
@@ -9,7 +14,7 @@ def get_coordinates(address):
         'limit': 1,
     }
     headers = {
-        'User-Agent': 'PetAdoption/1.0 (petadoption.smtp@gmail.com)',  # Replace with your app info
+        'User-Agent': 'PetAdoption/1.0 (petadoption.smtp@gmail.com)',
     }
     response = requests.get(url, params=params, headers=headers)
 

@@ -5,7 +5,7 @@ from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
-from PetAdoption.accounts.models import UserProfile, ShelterProfile
+from PetAdoption.accounts.models import UserProfile, ShelterProfile, CustomUser
 from PetAdoption.pets.forms import AddPetForm, EditPetForm, AdoptionRequestForm, PetFilterForm
 from PetAdoption.pets.models import Pet, AdoptionRequest
 
@@ -61,7 +61,6 @@ class Dashboard(ListView):
             elif age_param == '48+':
                 pets = pets.filter(age__gte=48)
 
-
         if shelter_param:
             pets = pets.filter(owner__pk=shelter_param)
         if type_param:
@@ -84,20 +83,6 @@ class Dashboard(ListView):
         context['page_obj'] = page_obj
         context['paginator'] = paginator
         return context
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     # Proceed only if the user is authenticated
-    #     if not request.user.is_authenticated:
-    #         messages.error(request, "Please login to view our pets.")
-    #         return redirect('index')
-    #
-    #     # Check if the user has a completed profile
-    #     redirect_url = check_profile_completion(request)
-    #     if redirect_url:
-    #         return redirect_url  # Redirect if the profile is incomplete or doesn't exist
-    #
-    #     return super().dispatch(request, *args, **kwargs)
-
 
 class AddPetView(LoginRequiredMixin, CreateView):
     model = Pet
@@ -127,8 +112,11 @@ class AddPetView(LoginRequiredMixin, CreateView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        pet = form.save(commit=False)
+        pet = form.save(commit=False)  # Form instance created but not saved
         pet.owner = self.request.user
+        print(f"Saving pet with owner: {pet.owner}, name: {pet.name}")
+        pet.save()  # Object is saved here
+        print(f"Pet saved with ID: {pet.id}")
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -138,7 +126,7 @@ class AddPetView(LoginRequiredMixin, CreateView):
 
 class PetDetailView(DetailView):
     model = Pet
-    template_name = 'pets/pet-details-new.html'
+    template_name = 'pets/pet-details.html'
     context_object_name = 'pet'
     slug_url_kwarg = 'pet_slug'
     slug_field = 'slug'
@@ -152,14 +140,19 @@ class PetDetailView(DetailView):
             return redirect(self.login_url)
 
         # Check if the user has a completed profile
-        redirect_url = check_profile_completion(request)
+        message = "Please complete your profile to view details."
+        redirect_url = check_profile_completion(request, message)
         if redirect_url:
             return redirect_url  # Redirect if the profile is incomplete or doesn't exist
 
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        # Add context for share buttons
         context = super().get_context_data(**kwargs)
+        context['page_url']= self.request.build_absolute_uri(),
+        context['page_title']= f'Adopt this awesome pet: {context["pet"].name}',
+
         pet_owner = Pet.objects.get(slug=self.kwargs['pet_slug']).owner
         context['shelter_owner_profile'] = ShelterProfile.objects.filter(user=pet_owner).first()
         context['user_user_profile'] = UserProfile.objects.filter(user=pet_owner).first()
@@ -170,34 +163,28 @@ class PetDetailView(DetailView):
 class EditPetView(LoginRequiredMixin, UpdateView):
     model = Pet
     form_class = EditPetForm
-    template_name = 'pets/edit-pet-new.html'
+    template_name = 'pets/edit-pet.html'
     context_object_name = 'pet'
 
+    def get_object(self, queryset=None):
+        pet_slug = self.kwargs['pet_slug']
+        pet = get_object_or_404(Pet, slug=pet_slug)
+
+        return pet
+
     def dispatch(self, request, *args, **kwargs):
-        """
-        Allow access only if the logged-in user matches the owner of the profile in the URL!!!
-        """
         # Check if the user is authenticated
         if not request.user.is_authenticated:
             messages.error(request, "You need to log in to access this page.")
             return redirect('index')
 
         # Check if the logged-in user's pk matches the pk in the URL
-        profile_pk = kwargs.get('pk')  # Get the pk from the URL
+        profile_pk = Pet.objects.get(slug=kwargs['pet_slug']).owner.pk
         if request.user.pk != profile_pk:
             messages.error(request, "You are not authorized to edit this pet.")
             return redirect('dashboard')
 
-        # Allow access if the checks pass
         return super().dispatch(request, *args, **kwargs)
-
-    def get_object(self, queryset=None):
-        # Use pet_slug instead of pk
-        pet_slug = self.kwargs['pet_slug']
-        pet = get_object_or_404(Pet, slug=pet_slug)
-
-        return pet
-
 
     def get_success_url(self):
         messages.success(self.request, "Pet details updated successfully!")
@@ -232,20 +219,6 @@ class AdoptionRequestView(LoginRequiredMixin, CreateView):
     model = AdoptionRequest
     form_class = AdoptionRequestForm
     template_name = 'pets/adoption-request.html'
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     adoption_request = get_object_or_404(AdoptionRequest, pk=kwargs['request_pk'], shelter=self.request.user)
-    #     print(adoption_request)
-    #     # Proceed only if the user is authenticated
-    #     if not request.user.is_authenticated:
-    #         messages.error(request, "You are not logged-in.")
-    #         return redirect('index')
-    #     if adoption_request.adopter != request.user:
-    #         messages.error(request, "You are not authorized to view adoption request.")
-    #         return reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk})
-    #
-    #     return super().dispatch(request, *args, **kwargs)
-
 
     def form_valid(self, form):
         pet_slug = self.kwargs.get('pet_slug')

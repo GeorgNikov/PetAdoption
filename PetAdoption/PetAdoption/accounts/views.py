@@ -8,18 +8,19 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth.views import LoginView
 from django.core.mail import send_mail
 from django.db.models import Avg
+from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_str, force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views import View
-from django.views.generic import UpdateView, CreateView, DetailView, FormView
+from django.views.generic import UpdateView, CreateView, DetailView, FormView, DeleteView
 
+from PetAdoption.accounts.choices import BulgarianProvinces
 from PetAdoption.accounts.forms import UserRegistrationForm, UserEditProfileForm, ShelterEditProfileForm
 from PetAdoption.accounts.models import UserProfile, ShelterProfile
 from PetAdoption.accounts.services.geolocation import get_coordinates
-from PetAdoption.accounts.utils import redirect_ot_profile
-from PetAdoption.core.forms import ShelterRatingForm
+from PetAdoption.accounts.utils import redirect_ot_profile, load_bulgarian_cities
 from PetAdoption.core.models import ShelterRating
 from PetAdoption.pets.models import Pet, AdoptionRequest
 
@@ -79,14 +80,17 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         # Save the form but don't commit to the database yet
         profile = form.save(commit=False)
-
+        excluded_fields = ['phone_number']
         # Check if all specified fields are filled
+        fields_to_check = [field for field in form.fields if field not in excluded_fields]
+        # Check if all the specified fields are filled
         all_fields_filled = all([
-            getattr(profile, field) for field in form.fields
+            getattr(profile, field) for field in fields_to_check
         ])
 
         # Set `completed` to True if all fields are filled
         profile.completed = all_fields_filled
+
         profile.save()  # Now save to the database
 
         if profile.completed:
@@ -96,42 +100,153 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        cities = load_bulgarian_cities()
+        city_names = [city[1] for city in cities]
+        context['cities'] = city_names
+
+        provinces = [province[1] for province in BulgarianProvinces.choices]  # Get the second value in each tuple
+        context['provinces'] = provinces
+
+        return context
+
     def get_success_url(self):
         return reverse_lazy('profile details view', kwargs={'pk': self.kwargs.get('pk')})
 
 
 # DELETE USER PROFILE
-@login_required
-def user_profile_delete_view(request, pk):
-    # Try to get the profile from either UserProfile or ShelterProfile
-    profile = None
-    profile_type = None
+class ProfileDeleteView(LoginRequiredMixin, View):
+    template_name = 'accounts/userprofile-confirm-delete.html'
 
-    try:
-        profile = UserProfile.objects.get(pk=pk)
-    except UserProfile.DoesNotExist:
-        try:
-            profile = ShelterProfile.objects.get(pk=pk)
-        except ShelterProfile.DoesNotExist:
+    def get_profile(self, pk):
+        """
+            Fetch the user profile by primary key (pk).
+        """
+        return UserModel.objects.filter(pk=pk).first()
+
+    def check_authorization(self, request, profile):
+        """
+            Check if the current user is authorized to manage the profile.
+        """
+        if profile.pk != request.user.pk:
+            return False
+        return True
+
+    def get(self, request, pk, *args, **kwargs):
+        profile = self.get_profile(pk)
+        if not profile:
             messages.error(request, "Profile not found.")
             return redirect('index')
 
-    # Ensure the user matches the profile
-    if profile.user != request.user:
-        messages.error(request, "You are not authorized to delete this profile.")
-        return redirect('index')
+        if not self.check_authorization(request, profile):
+            messages.error(request, "You are not authorized to delete this profile.")
+            return redirect('index')
 
-    user = profile.user
+        return render(request, self.template_name, {'profile': profile})
 
-    # Delete the profile
-    if request.method == 'POST':
-        user.is_active = False
-        user.save()
+    def post(self, request, pk, *args, **kwargs):
+        profile = self.get_profile(pk)
+        if not profile:
+            messages.error(request, "Profile not found.")
+            return redirect('index')
+
+        if not self.check_authorization(request, profile):
+            return HttpResponseForbidden("You are not authorized to delete this profile.")
+
+        # Deactivate the user
+        profile.is_active = False
+        profile.save()
 
         messages.success(request, "Your profile has been DELETED successfully.")
         return redirect('index')
 
-    return render(request, 'accounts/userprofile-confirm-delete.html')
+
+# class ShelterProfileDeleteView(LoginRequiredMixin, View):
+#     template_name = 'accounts/userprofile-confirm-delete.html'
+#
+#     def get(self, request, pk, *args, **kwargs):
+#
+#         profile = UserModel.objects.filter(pk=pk).first()
+#         if not profile:
+#             messages.error(request, "Profile not found.")
+#             return redirect('index')
+#
+#         #Ensure the user matches the profile
+#         if profile.pk != request.user.pk:
+#             messages.error(request, "You are not authorized to delete this profile.")
+#             return redirect('index')
+#
+#         return render(request, self.template_name, {'profile': profile})
+#
+#     def post(self, request, pk, *args, **kwargs):
+#         profile = UserModel.objects.filter(pk=pk).first()
+#         if not profile:
+#             messages.error(request, "Profile not found.")
+#             return redirect('index')
+#
+#         # Ensure the user matches the profile
+#         if profile.pk != request.user.pk:
+#             return HttpResponseForbidden("You are not authorized to delete this profile.")
+#
+#         # Deactivate the user and delete the profile
+#         user = profile
+#         user.is_active = False
+#         user.save()
+#
+#         messages.success(request, "Your shelter profile has been DELETED successfully.")
+#         return redirect('index')
+#
+#
+# @login_required
+# def user_profile_delete_view(request, pk):
+#     # Try to get the profile from either UserProfile or ShelterProfile
+#     id = request.GET.get('pk')
+#     user_profile = UserProfile.objects.filter(pk=pk).first()
+#     shelter_profile = ShelterProfile.objects.filter(pk=pk).first()
+#
+#     if user_profile:
+#         profile = user_profile
+#         print(f"UP{profile.pk}")
+#     elif shelter_profile:
+#         profile = shelter_profile
+#         print(f"SP{profile}")
+#     else:
+#         messages.error(request, "Profile not found.")
+#         return redirect('index')
+#
+#     print(f"ID is {id}")
+#     print(profile.pk)
+#     print(profile.user.pk)
+#     print(request.user.pk)
+#
+#     try:
+#         profile = UserProfile.objects.get(pk=pk)
+#     except UserProfile.DoesNotExist:
+#         try:
+#             profile = ShelterProfile.objects.get(pk=pk)
+#         except ShelterProfile.DoesNotExist:
+#             messages.error(request, "Profile not found.")
+#             return redirect('index')
+#
+#     # Ensure the user matches the profile
+#     if profile.user != request.user:
+#         print(profile.user.pk, request.user.pk)
+#         messages.error(request, "You are not authorized to delete this profile.")
+#         return redirect('index')
+#
+#     user = profile.user
+#
+#     # Delete the profile
+#     if request.method == 'POST':
+#         user.is_active = False
+#         user.save()
+#
+#         messages.success(request, "Your profile has been DELETED successfully.")
+#         return redirect('index')
+#
+#     return render(request, 'accounts/userprofile-confirm-delete.html')
 
 
 # REGISTRATION VIEW
@@ -145,9 +260,7 @@ class UserRegisterView(CreateView):
         user = self.object
         login(self.request, user)
 
-        # Redirect to the appropriate profile page after registration
-        redirect_ot_profile(user)
-
+        messages.success(self.request, "Registration successful. Welcome to PetAdoption!")
         return response
 
     def get_success_url(self):
@@ -172,39 +285,27 @@ class ShelterProfileView(LoginRequiredMixin, DetailView):
     login_url = reverse_lazy('index')
 
     def get_object(self, queryset=None):
-        # Returns the ShelterProfile instance for the logged-in user
+        # Returns the ShelterProfile instance for the logged user
         return get_object_or_404(ShelterProfile, user=self.request.user)
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     """
-    #     Allow access only if the logged-in user matches the owner of the profile in the URL!!!
-    #     """
-    #     # Check if the user is authenticated
-    #     if  not request.user.is_authenticated:
-    #         messages.error(request, "You need to log in to access this page.")
-    #         return redirect('index')
-    #
-    #     # Check if the logged-in user's pk matches the pk in the URL
-    #     # profile_pk = kwargs.get('pk')  # Get the pk from the URL
-    #     # if request.user.pk != profile_pk:
-    #     #     messages.error(request, "You are not authorized to access this profile.")
-    #     #     return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
-    #
-    #     # Allow access if the checks pass
-    #     return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        adoption_requests = AdoptionRequest.objects.filter(pet__owner=self.request.user, status='Pending').order_by(
-            '-created_at')
+        adoption_requests = AdoptionRequest.objects.filter(
+            pet__owner=self.request.user,
+            status='Pending'
+        ).order_by(
+            '-created_at'
+        )
         context['adoption_requests'] = adoption_requests
 
         shelter_profile = self.get_object()
-        context['shelter_profile'] = shelter_profile  # This is the profile of the logged-in user
+        context['shelter_profile'] = shelter_profile  # This is the profile of the logged user
 
         # Get the shelter's image
-        bg_image_url, _ = cloudinary_url(shelter_profile.image.url, quality="auto", crop="fit")
-        context['bg_image_url'] = bg_image_url
+        if shelter_profile.image:
+            bg_image_url, _ = cloudinary_url(shelter_profile.image.url, quality="auto", crop="fit")
+            if bg_image_url:
+                context['bg_image_url'] = bg_image_url
 
         pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
         context['pets'] = pets
@@ -222,30 +323,45 @@ class ShelterEditView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         profile = get_object_or_404(ShelterProfile, pk=self.kwargs['pk'])
 
-        # Check if the logged-in user is the owner of the profile
+        # Check if the logged user is the owner of the profile
         if profile.user != self.request.user:
             # Redirect to the user's own profile page if they attempt to edit someone else's profile
             return get_object_or_404(ShelterProfile, user=self.request.user)
 
         return profile
-    # def dispatch(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     if self.object.user != request.user:
-    #         # Redirect to the user's own profile page if they attempt to edit someone else's profile
-    #         return redirect('redirect-profile', self.kwargs['pk'])
-    #     return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        cities = load_bulgarian_cities()
+        city_names = [city[1] for city in cities]
+        context['cities'] = city_names
+
+        provinces = [province[1] for province in BulgarianProvinces.choices]  # Get the second value in each tuple
+        context['provinces'] = provinces
+
+        return context
+
 
     def form_valid(self, form):
         # Save the form but don't commit to the database yet
         profile = form.save(commit=False)
 
-        # Check if all specified fields are filled
+        # Fields to exclude from the completion check
+        excluded_fields = ['website', 'phone_number']
+
+        # Fields to check for being filled
+        fields_to_check = [field for field in form.fields if field not in excluded_fields]
+
+        # Ensure all required fields are filled (non-empty values)
         all_fields_filled = all([
-            getattr(profile, field) for field in form.fields
+            bool(getattr(profile, field)) for field in fields_to_check
         ])
 
-        # Set `completed` to True if all fields are filled, otherwise False
+        # Set `completed` to True if all fields are filled
         profile.completed = all_fields_filled
+
+        # Save the profile to the database
         profile.save()
 
         if profile.completed:
@@ -274,27 +390,45 @@ class ShelterProfilePreview(DetailView):
     def get_context_data(self, **kwargs):
         shelter = self.get_object()
         context = super().get_context_data(**kwargs)
+
+        # Get the shelters average rating
         average_rating = ShelterRating.objects.filter(shelter=shelter.pk).aggregate(Avg('rating'))[
                              'rating__avg'] or 0.00
         average_rating_percent = int((average_rating / 5) * 100)
+        context['average_rating'] = average_rating
         context['average_rating_percent'] = average_rating_percent
 
-        # Get the shelter's profile
+        # Get the shelters overall average rating
+        overall_average_rating = ShelterRating.objects.filter(shelter=shelter.pk).aggregate(Avg('rating'))[
+                                     'rating__avg'] or 0.00
+        overall_average_rating_percent = int((overall_average_rating / 5) * 100)
+        context['overall_average_rating_percent'] = overall_average_rating_percent
+
+        # Get shelter reviews
+        reviews = ShelterRating.objects.filter(shelter=shelter.pk, feedback__isnull=False).order_by('-created_at')
+        context['total_reviews'] = len(reviews)
+
+        # Process each review to add the percentage rating
+        for review in reviews:
+            if review.rating is not None:  # Ensure the review has a rating
+                review.rating_percent = int((review.rating / 5) * 100)
+            else:
+                review.rating_percent = 0  # If not rating default: 0
+
+        context['reviews'] = reviews[:5]  # Limit the number of reviews to 5
+
+        # Get the shelters profile
         shelter_profile = self.get_object()
         context['shelter_profile'] = shelter_profile
 
-        # Get the shelter's image
-        bg_image_url, _ = cloudinary_url(shelter_profile.image.url, quality="auto", crop="fit")
-        context['bg_image_url'] = bg_image_url
+        # Get the shelters image
+        if shelter_profile.image:
+            bg_image_url, _ = cloudinary_url(shelter_profile.image.url, quality="auto", crop="fit")
+            if bg_image_url:
+                context['bg_image_url'] = bg_image_url
 
-        # Get the shelter's rating
-        rating = ShelterRating.objects.filter(shelter=shelter_profile).order_by('-created_at')
-        context['rating'] = rating
-        context['rating_form'] = ShelterRatingForm()
-
-        # Fetch coordinates for the shelter's address
+        # Fetch coordinates for the shelters address
         latitude, longitude = get_coordinates(shelter_profile.full_address)
-
         if latitude and longitude:
             context['map_coordinates'] = {
                 'latitude': latitude,
@@ -308,6 +442,10 @@ class ShelterProfilePreview(DetailView):
 
 # REDIRECT PROFILE
 class UserProfileRedirectView(LoginRequiredMixin, View):
+    """
+        Redirects the user to the appropriate profile view based on their user type.
+    """
+
     @staticmethod
     def get(request, *args, **kwargs):
         # Retrieve the user object
@@ -339,18 +477,19 @@ class ResetPasswordView(FormView):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
-    # send password reset email for all users
+    # Send password reset email for all users
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email')
         try:
             user = UserModel.objects.get(email=email)
             token = PasswordResetTokenGenerator().make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            # You would typically generate a token here for the password reset link
+
+            # Generate a token for the password reset link
             reset_link = request.build_absolute_uri(
                 reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token}))
 
-            # Send email (replace send_mail with actual configuration)
+            # Send email
             send_mail(
                 subject="Reset Your Password",
                 message=f"Click the link below to reset your password:\n{reset_link}",

@@ -223,6 +223,7 @@
     font-weight: bold;
     text-transform: Uppercase;
     text-decoration: none;
+    text-shadow: #343a40 1px 1px 1px;
 }
 
 .button:hover {

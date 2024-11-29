@@ -8,12 +8,12 @@
 </div>
     {% if user|is_shelter %}
         <!-- Shelter-specific content -->
+        &nbsp;
         <div class="add-pet">
             {% if user.is_authenticated %}
                 {% if user.shelter_profile.completed %}
-                    <a href="{% url 'add pet' %}" class="k" id="">
-                    <img src="{% static 'images/add.png' %}" alt="Add Pet" height="38" title="Add Pet for adoption" style="margin-top: -10px;">
-                        </a>
+                    <a href="{% url 'add pet' %}" class="add-pet-link" id="add-pet">
+                    <i class="fas fa-plus"></i>&nbsp; Add Pet for Adoption</a>
                 {% else %}
                     <a href="{% url 'shelter details view' user.pk %}" class="add-pet-link">
                         Complete Your Profile</a>

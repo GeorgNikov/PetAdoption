@@ -43,28 +43,7 @@
                                 href="{{ shelter_profile.website }}" target="_blank"> {{ shelter_profile.website|default:"N/A" }}</a>
                         </p>
                         <p><strong>Established:</strong> {{ shelter_profile.created_at|date:"j M Y" }}</p>
-
-                        <!-- Shelter ratings and feedback section -->
-                        &nbsp;
-                                        <p>Rating:</p>
-                        <div class="shelter-stars">
-                            <span class="shelter-stars-filled" style="width: {{ average_rating_percent }}%;">★★★★★</span>
-                            <span class="shelter-stars-empty">★★★★★</span>
-                        </div>
-                        
-                        <h2>Reviews</h2>
-                        <ul>
-                            {% for rating in ratings %}
-                                <li>
-                                    <strong>{{ rating.adopter.username }}</strong>: {{ rating.rating }} stars
-                                    <p>{{ rating.review }}</p>
-                                    <small>{{ rating.created_at|date:"F j, Y" }}</small>
-                                </li>
-                            {% empty %}
-                                <li>No reviews yet</li>
-                            {% endfor %}
-                        </ul>
-                    
+                                            
                     </section>
 
 
@@ -90,20 +69,29 @@
                         <ul>
                             {% if request.user == shelter_profile.user %}
                                 <li>
-                                    <a href="{% url 'shelter edit view' shelter_profile.pk %}" class="button">Manage
-                                        Shelter</a>
+                                    <a href="{% url 'shelter page preview' shelter_profile.slug %}" class="button delete-button-success">
+                                        Public Preview</a>
                                 </li>
-                                <li><a href="{% url 'dashboard' %}?shelter={{ shelter_profile.user.pk }}" class="button delete-button-success">Manage Pets</a></li>
+                                <li>
+                                    <a href="{% url 'shelter edit view' shelter_profile.pk %}" class="button">
+                                        Manage Profile</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'dashboard' %}?shelter={{ shelter_profile.user.pk }}" class="button">
+                                        Manage Pets</a>
+                                </li>
                             
                                 <li>
+                                
                                 <div id="delete-container">
                                     <!-- Initial DELETE PROFILE link -->
                                     <a href="#" id="delete-profile" class="button delete-button-danger"
                                        onclick="showOptions(event)">DELETE PROFILE</a>
 
                                     <!-- Hidden confirmation options -->
+                                    
                                     <div id="confirmation-options" style="display: none;">
-                                        <a href="{% url 'profile delete' pk=shelter_profile.pk %}"
+                                        <a href="{% url 'profile delete' pk=shelter_profile.user.pk %}"
                                            class="button delete-button-danger">Yes,
                                             delete</a>
                                         <a href="#" class="button delete-button-success" onclick="hideOptions(event)">No,

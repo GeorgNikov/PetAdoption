@@ -1,10 +1,15 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
 
     <div class="container">
+        
+        <h1 style="display: flex; align-items: center; gap: 10px;">
+    <img src="{% static 'images/faq.png' %}" alt="FAQ">
+    Frequently Asked Questions (FAQ)
+</h1>
 
-        <h1>Frequently Asked Questions (FAQ)</h1>
         <div class="faq-item">
         <p>Welcome to our FAQ page! Below are answers to some common questions about pet adoption,
             fostering, and how we work with shelters to help animals find their forever homes.

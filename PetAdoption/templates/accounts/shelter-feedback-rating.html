@@ -14,6 +14,7 @@
 {#    </form>#}
 <div class="container">
     <form method="POST" action="" class="reset-password-form">
+    {{ form.errors }}
     {% csrf_token %}
     <div class="rating-form">
         <label for="rating">Rate the shelter:</label>

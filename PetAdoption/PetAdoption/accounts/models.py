@@ -8,6 +8,8 @@ from django.utils.text import slugify
 from PetAdoption.accounts.choices import UserTypeChoices, BulgarianProvinces
 from PetAdoption.accounts.managers import AppUserManager
 from PetAdoption.accounts.utils import load_bulgarian_cities
+from PetAdoption.accounts.validators import validate_letters_and_spaces_only, validate_organization_name, \
+    validate_letters_only, validate_phone_number
 
 
 # Extended AbstractBaseUser model
@@ -62,6 +64,10 @@ class BaseProfile(models.Model):
         max_length=PHONE_NUMBER_MAX_LENGTH,
         null=True,
         blank=True,
+        validators=[
+            validate_phone_number,
+        ],
+        help_text='Phone number must contain only digits, spaces, parentheses, and dashes.'
     )
 
     address = models.CharField(
@@ -71,7 +77,7 @@ class BaseProfile(models.Model):
     city = models.CharField(
         max_length=CITY_MAX_LENGTH,
         choices=load_bulgarian_cities(),
-        default=load_bulgarian_cities()[0],
+        default=load_bulgarian_cities()[0][1],
     )
 
     province = models.CharField(
@@ -118,20 +124,23 @@ class UserProfile(BaseProfile):
     LAST_NAME_MAX_LENGTH = 30
     LAST_NAME_MIN_LENGTH = 3
 
-    IMG_UPLOAD_TO = 'user_profile_images/'  # Cloudinary
 
     first_name = models.CharField(
         max_length=FIRST_NAME_MAX_LENGTH,
         validators=[
-            MinLengthValidator(FIRST_NAME_MIN_LENGTH)
+            MinLengthValidator(FIRST_NAME_MIN_LENGTH),
+            validate_letters_only,
         ],
+        help_text='Can contain only letters.'
     )
 
     last_name = models.CharField(
         max_length=LAST_NAME_MAX_LENGTH,
         validators=[
-            MinLengthValidator(LAST_NAME_MIN_LENGTH)
+            MinLengthValidator(LAST_NAME_MIN_LENGTH),
+            validate_letters_only,
         ],
+        help_text='Can contain only letters.'
     )
 
     slug = models.SlugField(
@@ -177,10 +186,12 @@ class ShelterProfile(BaseProfile):
         max_length=ORGANIZATION_NAME_MAX_LENGTH,
         unique=True,
         validators=[
-            MinLengthValidator(ORGANIZATION_NAME_MIN_LENGTH)
+            MinLengthValidator(ORGANIZATION_NAME_MIN_LENGTH),
+            validate_organization_name,
         ],
         null=True,
         blank=True,
+        help_text='Can contain letters, numbers and spaces.'
     )
 
     slug = models.SlugField(

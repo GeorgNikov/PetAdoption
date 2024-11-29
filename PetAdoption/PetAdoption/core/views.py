@@ -48,13 +48,15 @@ def index(request):
             password = register_form.cleaned_data.get('password1')
             user = authenticate(request, username=username, password=password)
             login(request, user)
-            # return redirect('profile details view', pk=user.pk)
 
-            if check_user_type(request) == "Adopter":
-                return redirect('profile details view', pk=user.pk)
-            elif check_user_type(request) == "Shelter":
-                return redirect('shelter page preview', pk=user.pk)
-            return redirect('index')
+            # Redirect to user's profile
+            return redirect('redirect-profile', pk=user.pk)
+
+            # if check_user_type(request) == "Adopter":
+            #     return redirect('profile details view', pk=user.pk)
+            # elif check_user_type(request) == "Shelter":
+            #     return redirect('shelter page preview', pk=user.pk)
+            # return redirect('index')
 
     context = {
         'form': form,
@@ -79,7 +81,7 @@ def contact_view(request):
             subject = request.POST.get('subject')
             message = request.POST.get('message')
 
-            # Send an email (optional)
+            # Send email
             send_mail(
                 subject,
                 message,
@@ -92,12 +94,21 @@ def contact_view(request):
 
             # Display success message
             messages.success(request, 'Your message has been sent successfully!')
-            return redirect('contact')  # Redirect back to the contact page
+            return redirect('contact')
 
     else:
         form = ContactForm()
 
-    return render(request, 'core/contacts.html', {'form': form})
+    context = {
+        'form': form,
+        'facebook_url': settings.FACEBOOK_PAGE,
+        'instagram_url': settings.INSTAGRAM_PAGE,
+        'twitter_url': settings.TWITTER_PAGE,
+        'contact_email': settings.CONTACT_EMAIL_ADDRESS,
+        'contact_phone': settings.CONTACT_NUMBER,
+        'contact_address': settings.CONTACT_ADDRESS,
+    }
+    return render(request, 'core/contacts.html', context)
 
 
 # F.A.Q.
@@ -118,6 +129,8 @@ class SheltersView(TemplateView):
         shelters_with_pet_count = []
 
         for shelter in shelters:
+            # Check if shelter profile is completed to show on Shelters page
+            completed = ShelterProfile.objects.filter(user=shelter.user.pk, completed=True).exists()
             # Count the number of available pets for this shelter
             available_pets_count = Pet.objects.filter(owner=shelter.user.pk, status="Available").count()
             # Get the shelter's average rating
@@ -129,7 +142,8 @@ class SheltersView(TemplateView):
                 'available_pets_count': available_pets_count,
                 'slug': shelter.slug,
                 'average_rating': average_rating,
-                'average_rating_percent': average_rating_percent
+                'average_rating_percent': average_rating_percent,
+                'completed': completed,
             })
 
         # Add the shelter information with the pet count to the context
@@ -142,12 +156,15 @@ class ShelterRatingView(LoginRequiredMixin, FormView):
     template_name = 'accounts/shelter-feedback-rating.html'
     form_class = ShelterRatingForm
 
-
-
     def get_user_profile(self):
+
         return get_object_or_404(UserProfile, user=self.request.user)
 
     def dispatch(self, request, *args, **kwargs):
+        if request.user.is_anonymous:
+            messages.error(self.request, "You need to log in to access this page.")
+            return redirect('index')
+
         self.adoption_request = get_object_or_404(
             AdoptionRequest,
             pk=self.kwargs.get('adoption_request_pk'),

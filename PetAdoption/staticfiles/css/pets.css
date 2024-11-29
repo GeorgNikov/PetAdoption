@@ -16,10 +16,9 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 10px 2px;
+    margin: 15px 0 0 0;
     cursor: pointer;
 }
-
 
 .add-pet-link:hover {
     background-color: #e67e22;
@@ -30,7 +29,7 @@
     border: none;
     color: white;
     padding: 5px 22px;
-    margin-top: -10px;
+    margin: 15px 0 0 0;
     text-align: center;
 }
 
@@ -55,7 +54,7 @@
     padding: 20px;
     background-color: #f9f9f9;
     text-align: center;
-        flex: auto;
+    flex: auto;
 }
 
 .section-title {
@@ -273,7 +272,7 @@
     top: 60px;
     right: 10px;
     padding: 10px 15px;
-    background-color: #FF4C4C ;
+    background-color: #FF4C4C;
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -286,7 +285,6 @@
     background-color: #F44336;
     text-decoration: none;
 }
-
 
 
 /* Content Wrapper */
@@ -319,10 +317,10 @@
     height: 300px; /* Adjust height as needed */
     width: 100%;
 }
+
 .card-body {
     text-align: left;
 }
-
 
 
 /* Owner Details Section */
@@ -351,7 +349,7 @@
     color: white;
     background-color: #f39c12;
     border-radius: 5px;
-        opacity: 0.9;
+    opacity: 0.9;
 }
 
 .owner-actions-container a.donation-link {
@@ -361,7 +359,7 @@
 
 .owner-actions-container a.visit-link {
     background-color: #28a745;
-        opacity: 0.9;
+    opacity: 0.9;
 }
 
 .owner-actions-container a:hover {
@@ -379,9 +377,14 @@
         margin-bottom: 20px;
         max-width: 100%;
     }
+
+    .add-pet {
+        width: 100%;
+        justify-content: right;
+        margin: -30px auto 0;
+        padding-right: 60px;
 }
-
-
+}
 
 
 .pet-edit-form {
@@ -456,7 +459,7 @@
 }
 
 .pet-edit-form .image-preview {
-margin-top: 8px;
+    margin-top: 8px;
     width: 300px;
     height: 150px;
     border-radius: 6px;
@@ -510,27 +513,27 @@ margin-top: 8px;
     width: 150px;
     margin-right: 20px;
     float: left;
-    border: 1px solid #ccc;     /* Set fixed width for the selects */
+    border: 1px solid #ccc; /* Set fixed width for the selects */
 }
 
 .filter-option select {
-    display:table-row;
+    display: table-row;
 }
+
 .filter-option option {
-    display:table-cell;
+    display: table-cell;
 }
 
 .filter-option label {
     font-weight: bold;
-    margin-bottom: 5px;          /* Space between label and select */
+    margin-bottom: 5px; /* Space between label and select */
 }
 
 .filter-option select {
     padding: 8px;
-    width: 100%;                 /* Make select fill the container */
-    box-sizing: border-box;      /* Ensure padding doesn't affect width */
+    width: 100%; /* Make select fill the container */
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
 }
-
 
 
 /* Responsive Design */
@@ -540,3 +543,61 @@ margin-top: 8px;
         flex: 1 0 100%;
     }
 }
+
+.share-buttons-hide {
+    display: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.share-buttons-hide.show {
+    display: block;
+}
+
+.share-buttons {
+    display: flex;
+    gap: 1px;
+    align-items: center;
+    background: none;
+    margin-left: 10px;
+}
+
+.share-buttons a {
+    text-decoration: none;
+    color: #000; /* Change this to the desired color */
+    background: none;
+}
+
+.share-buttons a:hover {
+    color: #007bff; /* Optional: Hover color */
+}
+
+.share-buttons a:first-child {
+    color: #4267B2;
+}
+.share-buttons a:nth-child(2) {
+    color: #4267B2;
+}
+.share-buttons a:nth-child(3) {
+    color: #000000;
+}
+.share-buttons a:nth-child(4) {
+    color: #BD081C;
+}
+.share-buttons a:nth-child(5) {
+    color: #25D366;
+}
+
+
+.fa.fa-twitter{
+	font-family:sans-serif;
+}
+.fa.fa-twitter::before{
+	content:"𝕏";
+	font-size:1.2em;
+}
+
+    /* Colors */
+    /*.share-buttons a:first-child { background: #4267B2; } !* Facebook *!*/
+    /*.share-buttons a:nth-child(2) { background: #4267B2; } !* Twitter *!*/
+    /*.share-buttons a:nth-child(3) { background: #0077b5; } !* LinkedIn *!*/
+    /*.share-buttons a:last-child { background: #0077b5; } !* WhatsApp *!*/

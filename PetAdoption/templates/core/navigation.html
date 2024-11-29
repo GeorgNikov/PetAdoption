@@ -39,6 +39,12 @@
                         <button class="button" type="submit">Logout</button>
                     </form>
                 </span>
+
+            {% else %}
+                <ul class="nav-links">
+                <li><a href="{% url 'register' %}" class="">Register</a></li>
+                <li><a href="{% url 'index' %}" class="">Login</a></li>
+                </ul>
             {% endif %}
         </div>
 
@@ -59,7 +65,7 @@
         <li><a href="{% url 'faq' %}"> FAQ</a></li>
     
         {% if user.is_authenticated %}
-            <li> &nbsp;</li>
+            <li> &nbsp; </li>
             <li>
                 <a href="{% url 'redirect-profile' user.pk %}">
                     My Profile
@@ -73,6 +79,11 @@
             <li>
                 <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>
             </li>
+                        {% else %}
+                <li> &nbsp; </li>
+                <li><a href="{% url 'register' %}" class="">Register</a></li>
+                <li><a href="{% url 'index' %}" class="">Login</a></li>
+             
             
         {% endif %}
     </ul>

@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.db import models
 
 from PetAdoption.accounts.models import ShelterProfile
@@ -11,6 +11,9 @@ class ShelterRating(models.Model):
     RATING_DECIMAL_PLACES = 2
     RATING_MAX_DIGITS = 3
     RATING_DEFAULT_VALUE = 0.00
+
+    FEEDBACK_MIN_LENGTH = 10
+    FEEDBACK_MAX_LENGTH = 500
 
     adopter = models.ForeignKey(
         'accounts.UserProfile',
@@ -26,7 +29,16 @@ class ShelterRating(models.Model):
         null=True
     )
 
-    feedback = models.TextField()
+    feedback = models.TextField(
+        max_length=FEEDBACK_MAX_LENGTH,
+        validators=[
+            MinLengthValidator(FEEDBACK_MIN_LENGTH),
+            MaxLengthValidator(
+                FEEDBACK_MAX_LENGTH,
+                message=f'Feedback must be between {FEEDBACK_MIN_LENGTH} and {FEEDBACK_MAX_LENGTH} characters'
+            ),
+        ]
+    )
 
     rating = models.DecimalField(
         decimal_places=RATING_DECIMAL_PLACES,
@@ -52,7 +64,14 @@ class ShelterRating(models.Model):
 
 
 class ContactForm(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100
+    )
+
     email = models.EmailField()
-    subject = models.CharField(max_length=200)
+
+    subject = models.CharField(
+        max_length=200
+    )
+
     message = models.TextField()

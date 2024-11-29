@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static %}
 {% load cloudinary %}
 
 {% block content %}
@@ -7,9 +8,13 @@
 
         <div class="shelter-container">
             {% for shelter in shelters %}
+                {% if shelter.completed %}
                 <div class="shelter-card">
+                {% if shelter.shelter.image %}
                 {% cloudinary shelter.shelter.image quality='auto' width=410 height=200 crop='fit'  class='responsive-image'%}
-
+                {% else %}
+                    <img src="{% static 'images/no-pet-image.jpg' %}" alt="No Image" class="responsive-image" width="410" height="170">
+                {% endif %}
                     <h2>{{ shelter.shelter.organization_name }}</h2>
                     <p><strong>Address:</strong> {{ shelter.shelter }}</p>
                     <p><strong>Phone:</strong> {{ shelter.shelter.phone_number }}</p>
@@ -35,7 +40,7 @@
                         <a href="{% url 'shelter page preview' shelter.slug %}" class="button-shelter">Visit Shelter</a>
                     </div>
                 </div>
-
+                {% endif %}
             {% endfor %}
         </div>
     </div>

@@ -5,35 +5,100 @@
 
     <div class="profile-container">
         <div class="profile-left-content">
-            <div class="profile-image-container">
+            <div class="profile-image-container shelter">
                 {% if shelter_profile.image %}
                     {% load cloudinary %}
                     {% cloudinary shelter_profile.image quality='auto' crop='fit' %}
-                   
+
                 {% else %}
-                    <img src="https://via.placeholder.com/1200X300" alt="User Profile Picture">
+                    <img src="{% static 'images/1200X300.png' %}" alt="User Profile Picture">
                 {% endif %}
             </div>
-        
+
             <div class="profile-info">
                 {% if user.is_authenticated %}
-                    {% if not shelter_profile.completed %}
-                        <h2> {{ user.username }} </h2>
-                        <p>Please, complete your profile to start using our services.</p>
-                        <span><a href="{% url 'shelter edit view' shelter_profile.pk %}">Complete Profile</a></span>
+                    {% if shelter_profile.completed %}
+                        
+                        <h3 style="color: #3e8e41 ">✔️ Congratulations! Your profile is completed!</h3>
+                        
+                    {% else %}
+                        <br>
+                        <h3 style="color: darkred">🚨 Profile is not completed yet!</h3>
+                        <p style="color: darkred;">Please complete your profile to start using our services.
+                            Your page is currently not visible to adopters!</p>
+                        <h3>🎯 Benefits:</h3>
+                        <ul>
+                            <li>Ability to add, edit, and delete pets listed for adoption</li>
+                            <li>Receive ratings and feedback from adopters</li>
+                            <li>Ability to interact with potential adopters through messaging</li>
+                            <li>Access to support and resources for managing your shelter</li>
+                            <li>Customize your shelter's profile with additional information and images</li>
+                        </ul>
                     {% endif %}
                 {% endif %}
             </div>
-        
+
         </div>
 
         <div class="right-content">
-            <form method="post" action="{% url 'shelter edit view' shelter_profile.pk %}" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form }}
-                <button type="submit">Save Changes</button>
-            </form>
+        
+           <form method="post" action="{% url 'shelter edit view' shelter_profile.pk %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Non-field errors -->
+    {% if form.non_field_errors %}
+        <div class="custom-alert custom-alert-danger">
+            <ul>
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <!-- Loop through each form field -->
+    {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}" class="custom-label">{{ field.label }}</label>
+            {% if field.help_text %}
+                <small class="custom-form-text">{{ field.help_text }}</small>
+            {% endif %}
+            {{ field }}
+            {% if field.errors %}
+                <div class="custom-alert custom-alert-danger">
+                    <ul>
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="custom-submit-btn">Save Changes</button>
+</form>
+
+
         </div>
     </div>
 
+
+    {#    Image Preview#}
+    <script>
+        const imageInput = document.querySelector('input[type="file"]');
+        const imagePreview = document.getElementById('image-preview');
+        const currentImagePreview = document.getElementById('current-image-preview');
+
+        imageInput.addEventListener('change', function () {
+            const file = imageInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    currentImagePreview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 {% endblock %}

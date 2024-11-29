@@ -102,14 +102,18 @@ Follow these steps to set up the project locally:
 ## 📋 Usage
 
 1. **For Adopters**:
-   - Browse available pets.
-   - Filter and search to find the perfect pet.
-   - Submit an adoption request.
+   - Explore a wide range of available pets.
+   - Use advanced filters (type, age, gender, size) to find your ideal companion.
+   - Submit adoption requests effortlessly.
+   - Track the progress and status of your requests in real-time.
+   - Rate and review shelters or adoption providers to share your experience.
 
 2. **For Shelters**:
-   - Log in to the admin dashboard.
-   - Add, update, or delete pet listings.
-   - Review adoption requests.
+   - Access a dedicated dashboard for efficient management.
+   - Showcase your shelter with a publicly accessible profile page.
+   - Add, update, or remove pet listings seamlessly.
+   - View and manage adoption requests from potential adopters.
+   - Leverage a rating system to build trust and credibility.
 
 ---
 

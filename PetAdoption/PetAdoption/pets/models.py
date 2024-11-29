@@ -1,5 +1,6 @@
 from cloudinary.models import CloudinaryField
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.template.defaultfilters import slugify
 
@@ -43,7 +44,13 @@ class Pet(TimeStampBaseModel):
         default='Unknown'
     )
 
-    age = models.PositiveSmallIntegerField()  # In months
+    age = models.PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(240),
+        ],
+        default=1,
+    )  # In months
 
     # noinspection PyUnresolvedReferences
     gender = models.CharField(
@@ -100,11 +107,8 @@ class Pet(TimeStampBaseModel):
     )
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        if not self.slug:
+        if not self.slug and self.id:  # Ensure slug is only created after id is assigned
             self.slug = slugify(f"{self.name}-{self.id}")
-
         super().save(*args, **kwargs)
 
     def total_likes(self):

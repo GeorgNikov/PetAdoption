@@ -31,6 +31,12 @@
     border-radius: 50%;
 }
 
+.pet-thumbnail-review {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
 .pet-image {
     width: 80px;
     height: 80px;
@@ -167,7 +173,7 @@
     flex-direction: row-reverse;
     font-size: 2rem;
     cursor: pointer;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .star-rating input[type="radio"] {
@@ -216,11 +222,60 @@
   white-space: nowrap;
   overflow: hidden;
   color: gold; /* Color for filled stars */
-  width: 0%; /* Dynamic width for filled stars */
+  width: 0; /* Dynamic width for filled stars */
 }
 
 .shelter-stars-empty {
   color: #ccc; /* Empty star color */
+}
+
+.feedback-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px 15px 5px 0;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s; /* Add transition for hover effect */
+}
+
+.feedback-rating {
+    margin-bottom: 5px; /* Space between rating and message */
+    margin-top: -10px;
+    font-size: 16px; /* Optional: Adjust font size for user name */
+}
+
+.feedback-message {
+    margin: -35px 0 0 20px; /* No extra margin at the top */
+    font-size: 14px; /* Feedback font size */
+    color: #555; /* Neutral text color */
+    line-height: 1.5; /* Improved readability */
+    padding-bottom: 5px;
+}
+
+.feedback-rating-user {
+    margin: 3px 10px;
+    float: left;
+}
+
+.feedback-rating-image {
+    margin: 0 0;
+    float: left;
+}
+
+.feedback-rating-user img{
+    margin: 1px 10px;
+    float: left;
+}
+
+.feedback-message small {
+    padding-top: 20px;
+    font-size: 12px; /* Smaller font size for the date */
+    color: #888; /* Subtle color for the date */
+    display: block; /* Ensures the date is on its own line */
+    float: right;
 }
 
 

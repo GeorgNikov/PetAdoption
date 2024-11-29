@@ -27,10 +27,10 @@ cloudinary.config(
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Only localhost
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
+ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(", ")
 
 # Application definition
 INSTALLED_APPS = [
@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'PetAdoption.pets.apps.PetsConfig',
     'PetAdoption.accounts.apps.AccountsConfig',
     'PetAdoption.core.apps.CoreConfig',
-    'PetAdoption.shelters.apps.SheltersConfig',
+    #'PetAdoption.shelters.apps.SheltersConfig',
 ]
 
 MIDDLEWARE = [
@@ -99,20 +99,20 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+# AUTH_PASSWORD_VALIDATORS = [
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+#     },
+# ]
 
 
 # Internationalization
@@ -140,13 +140,9 @@ STATICFILES_DIRS = [
 ]
 
 # if DEBUG:
+
 #     MEDIA_URL = '/media/'
 #     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-#     CELERY_BROKER_URL = 'redis://localhost:6379/0'
-#     CELERY_ACCEPT_CONTENT = ['json']
-#     CELERY_TASK_SERIALIZER = 'json'
-
 
 
 # SMTP Server configuration
@@ -158,10 +154,6 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 CONTACT_EMAIL = config('CONTACT_EMAIL')  # The email where you'd like to receive messages
 
-#Salary Configuration
-# CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Example Redis broker
-# CELERY_ACCEPT_CONTENT = ['json']
-# CELERY_TASK_SERIALIZER = 'json'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -169,5 +161,13 @@ CONTACT_EMAIL = config('CONTACT_EMAIL')  # The email where you'd like to receive
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
-# LOGIN_REDIRECT_URL = reverse_lazy('redirect-profile')
 LOGOUT_REDIRECT_URL = reverse_lazy('index')
+
+# For follow us links in contact page
+FACEBOOK_PAGE = 'https://www.facebook.com/petadoption/'
+INSTAGRAM_PAGE = 'https://www.instagram.com/petadoption/'
+TWITTER_PAGE = 'https://twitter.com/petadoption/'
+
+CONTACT_EMAIL_ADDRESS = 'petadoption-support@example.com'
+CONTACT_NUMBER = '+359 123 456789'
+CONTACT_ADDRESS = "123 Pet Avenue, Pet City, Pet State, 0000"
