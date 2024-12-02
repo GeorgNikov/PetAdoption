@@ -22,6 +22,11 @@ class AddPetForm(PetBaseForm):
     class Meta(PetBaseForm.Meta):
         fields = ('name', 'type', 'breed', 'age', 'gender', 'size', 'description', 'image')
 
+    def clean_age(self):
+        age = self.cleaned_data.get('age')
+        if age < 0:
+            raise forms.ValidationError('Ensure this value is greater than or equal to 0.')
+        return age
 
 
 class EditPetForm(PetBaseForm):
@@ -40,9 +45,6 @@ class AdoptionRequestForm(forms.ModelForm):
         fields = ['message']  # Allow the adopter to write a message
 
 
-from django import forms
-from .models import Pet
-
 
 class PetFilterForm(forms.Form):
     # Filter by pet type
@@ -51,9 +53,6 @@ class PetFilterForm(forms.Form):
         required=False
     )
 
-    # # Filter by species
-    # species = forms.ChoiceField(choices=[('', 'All Species')] + [(sp, sp) for sp in Pet.SPECIES_CHOICES],
-    #                             required=False)
 
     # Filter by age
     age = forms.ChoiceField(choices=[('', 'All Ages')] + [(str(i), str(i) + ' years') for i in range(1, 21)],

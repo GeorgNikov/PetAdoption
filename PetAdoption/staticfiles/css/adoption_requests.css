@@ -77,7 +77,6 @@
     font-size: 1.1rem;
     text-decoration: none;
     color: darkgreen;
-
 }
 
 .adoption-request-details a:hover {
@@ -86,13 +85,14 @@
     color: #007BFF;
 
 }
-.button-container {
-    display: flex;
-    gap: 10px; /* Space between the buttons */
-    justify-content: center; /* Center the buttons horizontally */
-    align-items: center; /* Align items vertically if needed */
-    margin-top: 10px; /* Add spacing above the buttons */
-}
+
+/*.button-container {*/
+/*    display: flex;*/
+/*    gap: 10px; !* Space between the buttons *!*/
+/*    justify-content: space-between;*/
+/*    align-items: center; !* Align items vertically if needed *!*/
+/*    margin-top: 10px; !* Add spacing above the buttons *!*/
+/*}*/
 
 .btn-approve-request {
     padding: 10px 20px;
@@ -208,25 +208,25 @@
 }
 
 .shelter-stars {
-  position: relative;
-  display: inline-block;
-  font-size: 24px; /* Adjust size */
-  color: #ccc; /* Color for empty stars */
-  overflow: hidden; /* Ensure stars don't overflow */
+    position: relative;
+    display: inline-block;
+    font-size: 24px; /* Adjust size */
+    color: #ccc; /* Color for empty stars */
+    overflow: hidden; /* Ensure stars don't overflow */
 }
 
 .shelter-stars-filled {
-  position: absolute;
-  top: 0;
-  left: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  color: gold; /* Color for filled stars */
-  width: 0; /* Dynamic width for filled stars */
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    color: gold; /* Color for filled stars */
+    width: 0; /* Dynamic width for filled stars */
 }
 
 .shelter-stars-empty {
-  color: #ccc; /* Empty star color */
+    color: #ccc; /* Empty star color */
 }
 
 .feedback-container {
@@ -265,7 +265,7 @@
     float: left;
 }
 
-.feedback-rating-user img{
+.feedback-rating-user img {
     margin: 1px 10px;
     float: left;
 }

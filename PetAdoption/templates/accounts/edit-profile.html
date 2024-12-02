@@ -6,28 +6,27 @@
     <div class="profile-container">
         <div class="profile-left-content">
             <div class="profile-image-container">
-                {% if user_profile.image %}
+                {% if user_profile.image.url %}
                     {% load cloudinary %}
                     {% cloudinary user_profile.image quality='auto' width=450 crop='fit' %}
                 {% else %}
                     <img src="{% static 'images/200X200.png' %}" alt="User Profile Picture" width="450">
                 {% endif %}
             </div>
-           <br>
+            <br>
             <div class="profile-info">
                 {% if user.is_authenticated %}
                     {% if user_profile.completed %}
-                       
-                            <h3 style="color: #3e8e41 ">✔️ Congratulations! Your profile is completed!</h3>
-                    
+
+                        <h3 style="color: #3e8e41 ">✔️ Congratulations! Your profile is completed!</h3>
+
                     {% else %}
                         <h3 style="color: darkred">🚨 Profile is not completed yet!</h3>
                         <p style="color: darkred;">Complete your profile to access all the benefits and features!
-                            Fields with * are required</p>
+                        </p>
                         <h3>Benefits:</h3>
                         <ul>
-                            <li>Find and adopt pets</li>
-                            <li>Browse and filter pets by species, age, size and other criteria</li>
+                            <li>View pets details</li>
                             <li>Ability to apply for adoption</li>
                             <li>Rate and leave feedback for shelters and pets you’ve interacted with</li>
                             <li>Track your adoption progress and manage your profile details</li>
@@ -40,19 +39,54 @@
         <div class="right-content">
             <form method="post" action="{% url 'profile edit view' user_profile.pk %}" enctype="multipart/form-data">
                 {% csrf_token %}
-                <label for="first_name">* First Name:</label>
+
+                <!-- First Name -->
+                <label for="first_name" class="custom-label">* First Name:</label>
                 <input type="text" id="first_name" name="first_name" placeholder="Enter First Name"
-                       value="{{ user_profile.first_name }}" required>
+                       value="{{ user_profile.first_name }}" class="" required>
 
-                <label for="last_name">* Last Name:</label>
+                {% if form.first_name.errors %}
+                    <div class="custom-alert custom-alert-danger">
+                        <ul>
+                            {% for error in form.first_name.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <!-- Last Name -->
+                <label for="last_name" class="custom-label">* Last Name:</label>
                 <input type="text" id="last_name" name="last_name" placeholder="Enter Last Name"
-                       value="{{ user_profile.last_name }}" required>
+                       value="{{ user_profile.last_name }}" class="" required>
 
-                <label for="phone_number">Phone Number:</label>
+                {% if form.last_name.errors %}
+                    <div class="custom-alert custom-alert-danger">
+                        <ul>
+                            {% for error in form.last_name.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <!-- Phone Number -->
+                <label for="phone_number" class="custom-label">Phone Number:</label>
                 <input type="number" id="phone_number" name="phone_number" value="{{ user_profile.phone_number }}"
-                       placeholder="Enter Phone Number">
+                       placeholder="Enter Phone Number" class="">
 
-                <label for="province">* Province</label>
+                {% if form.phone_number.errors %}
+                    <div class="custom-alert custom-alert-danger">
+                        <ul>
+                            {% for error in form.phone_number.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <!-- Province -->
+                <label for="province" class="custom-label">* Province:</label>
                 <select id="province" name="province" class="minimal" required>
                     <option value="" disabled {% if not user_profile.province %}selected{% endif %}>Select Province
                     </option>
@@ -62,7 +96,18 @@
                     {% endfor %}
                 </select>
 
-                <label for="city">* City</label>
+                {% if form.province.errors %}
+                    <div class="custom-alert custom-alert-danger">
+                        <ul>
+                            {% for error in form.province.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <!-- City -->
+                <label for="city" class="custom-label">* City:</label>
                 <select id="city" name="city" class="minimal" required>
                     <option value="" disabled {% if not user_profile.city %}selected{% endif %}>Select City</option>
                     {% for city in cities %}
@@ -71,34 +116,64 @@
                     {% endfor %}
                 </select>
 
+                {% if form.city.errors %}
+                    <div class="custom-alert custom-alert-danger">
+                        <ul>
+                            {% for error in form.city.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
 
-                <label for="address">* Address:</label>
-                <input type="text" id="address" name="address" value="{{ user_profile.address }}" placeholder="Enter Address"
-                       required>
+                <!-- Address -->
+                <label for="address" class="custom-label">* Address:</label>
+                <input type="text" id="address" name="address" value="{{ user_profile.address }}"
+                       placeholder="Enter Address"
+                       class="" required>
 
+                {% if form.address.errors %}
+                    <div class="custom-alert custom-alert-danger">
+                        <ul>
+                            {% for error in form.address.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
 
+                <!-- Image Field -->
                 <div class="form-right">
-                    <!-- Image Field -->
                     <div class="form-group">
-                        <label for="image" id="image">* Upload Image</label>
-
+                        <label for="image" class="custom-label">* Upload Image</label>
                         <div id="image-preview" class="image-preview">
                             {% if user_profile.image %}
-                                
                                 <div>
                                     <input type="checkbox" id="clear_image" name="clear_image">&nbsp; Clear current
                                     image
                                 </div>
                             {% else %}
-                                 <p><small>No image uploaded yet</small></p>
+                                <p><small>No image uploaded yet</small></p>
                             {% endif %}
-
-                            <input type="file" id="image" name="image">
+                            <input type="file" id="image" name="image" class="custom-file-input">
                         </div>
                     </div>
                 </div>
-                <button type="submit">Save Changes</button>
+
+                {% if form.image.errors %}
+                    <div class="custom-alert custom-alert-danger">
+                        <ul>
+                            {% for error in form.image.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <!-- Submit Button -->
+                <button type="submit" class="custom-submit-btn">Save Changes</button>
             </form>
+
         </div>
     </div>
 

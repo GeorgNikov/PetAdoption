@@ -24,7 +24,7 @@ class ProfileDeleteViewTest(TestCase):
         # URL for the delete view for user1
         self.delete_url = reverse('profile delete', kwargs={'pk': self.user1.pk})
 
-    def test_delete_profile_authorized(self):
+    def test__delete_profile_authorized(self):
 
         self.client.login(username='user1', password='password1')
         response = self.client.post(self.delete_url)
@@ -39,7 +39,7 @@ class ProfileDeleteViewTest(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), "Your profile has been DELETED successfully.")
 
-    def test_delete_profile_unauthorized(self):
+    def test__delete_profile_unauthorized(self):
 
         self.client.login(username='user2', password='password2')
         response = self.client.post(self.delete_url)
@@ -51,7 +51,7 @@ class ProfileDeleteViewTest(TestCase):
         # Check for forbidden response
         self.assertEqual(response.status_code, 403)
 
-    def test_delete_profile_not_logged_in(self):
+    def test__delete_profile_not_logged_in(self):
 
         response = self.client.post(self.delete_url)
 
@@ -62,7 +62,7 @@ class ProfileDeleteViewTest(TestCase):
         # Check if redirected to login page
         self.assertRedirects(response, f"{reverse('login')}?next={self.delete_url}")
 
-    def test_delete_nonexistent_profile(self):
+    def test__delete_nonexistent_profile(self):
 
         self.client.login(username='user1', password='password1')
         non_existent_url = reverse('profile delete', kwargs={'pk': 9999})
@@ -78,7 +78,7 @@ class ProfileDeleteViewTest(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), "Profile not found.")
 
-    def test_get_profile_delete_page(self):
+    def test__get_profile_delete_page(self):
 
         self.client.login(username='user1', password='password1')
         response = self.client.get(self.delete_url)
@@ -86,7 +86,7 @@ class ProfileDeleteViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'accounts/userprofile-confirm-delete.html')
 
-    def test_get_profile_delete_page_unauthorized(self):
+    def test__get_profile_delete_page_unauthorized(self):
 
         self.client.login(username='user2', password='password2')
         response = self.client.get(self.delete_url)

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import connection
-from django.test import TestCase, RequestFactory
-from django.urls import reverse, reverse_lazy
+from django.test import TestCase
+from django.urls import reverse
 
 from PetAdoption.pets.models import Pet
 
@@ -29,48 +29,45 @@ class IndexViewTest(TestCase):
             'password1': 'newpassword123',
             'password2': 'newpassword123',
             'email': 'newuser@example.com',
-            'type_user': 'adopter',  # Assuming the user is an adopter
+            'type_user': 'adopter',
         }
 
-    def test_authenticated_user_redirected_to_dashboard(self):
+    def test__authenticated_user__redirected_to_dashboard(self):
         self.client.login(username='testuser', password='password123')
         response = self.client.get(self.url)
 
-        # Check that the user was redirected to the dashboard
         self.assertRedirects(response, reverse('dashboard'))
 
-    def test_login_with_valid_credentials_redirects_to_dashboard(self):
+    def test__login_with_valid_credentials__redirects_to_dashboard(self):
         self.client.login(username='testuser', password='password123')
         response = self.client.post(self.url, self.form_data)
 
-        # Check that the user was redirected to the dashboard
         self.assertRedirects(response, reverse('dashboard'))
 
-    def test_login_with_invalid_credentials_shows_error(self):
+    def test__login_with_invalid_credentials__shows_error(self):
         response = self.client.post(self.url, self.invalid_form_data)
 
-        # Check that the error message is displayed
         self.assertContains(response, "Invalid username or password.")
 
-    def test_no_pets_in_database_shows_empty_list(self):
+    def test__no_pets_in_database__shows_empty_list(self):
         Pet.objects.all().delete()  # Remove all pets
         response = self.client.get(self.url)
         self.assertEqual(response.context['pets'], [])
 
-    def test_pets_are_displayed_correctly(self):
+    def test__pets_are_displayed_correctly(self):
         response = self.client.get(self.url)
         self.assertIn(self.pet1, response.context['pets'])
 
-    def test_pets_are_displayed_on_index(self):
+    def test__pets_are_displayed_on_index(self):
         response = self.client.get(self.url)
         self.assertContains(response, "Fido")
         self.assertContains(response, "Bella")
 
-    def test_correct_template_used(self):
+    def test__correct_template_used(self):
         response = self.client.get(self.url)
         self.assertTemplateUsed(response, 'core/index.html')
 
-    def test_context_data(self):
+    def test__context_data(self):
         response = self.client.get(self.url)
         self.assertIn('form', response.context)
         self.assertIn('register_form', response.context)

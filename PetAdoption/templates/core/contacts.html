@@ -6,7 +6,7 @@
             {% include 'core/contact-info.html' %}
         </div>
         <div class="right-content">
-            <section >
+            <section>
                 <div class="container">
                     <!-- Form -->
                     <form action="{% url 'contact' %}" method="post">
@@ -15,8 +15,8 @@
 
                         <div class="form-group">
                             <label for="name">Your Name</label>
-                            {% if user.is_authenticated and user.username%}
-                                <input type="text" id="name" name="name"  placeholder="Enter your name"
+                            {% if user.is_authenticated and user.username %}
+                                <input type="text" id="name" name="name" placeholder="Enter your name"
                                        required readonly value="{{ full_name|default:user.username }}">
                             {% else %}
                                 <input type="text" id="name" name="name" placeholder="Enter your name" required>
@@ -42,15 +42,25 @@
 
                         <div class="form-group">
                             <label for="message">Your Message</label>
-                            <textarea id="message" name="message" rows="5"  placeholder="Write your message"
+                            <textarea id="message" name="message" rows="5" placeholder="Write your message"
                                       required></textarea>
                         </div>
 
-<div class="form-group captcha-group">
-    <div class="captcha-container">
-        {{ form.captcha }} <!-- CAPTCHA field, if included -->
-    </div>
-</div>
+                        <div class="form-group captcha-group">
+                            <div class="captcha-container">
+                                {{ form.captcha }}
+                            </div>
+                            <!-- Display captcha error if any -->
+                            {% if form.captcha.errors %}
+                                <div class="custom-alert custom-alert-danger">
+                                    <ul>
+                                        {% for error in form.captcha.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
 
                         <button type="submit">Send Message</button>
                     </form>

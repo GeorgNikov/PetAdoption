@@ -6,10 +6,9 @@
     <div class="profile-container">
         <div class="profile-left-content">
             <div class="profile-image-container shelter">
-                {% if shelter_profile.image %}
+                {% if object.image.url %}
                     {% load cloudinary %}
-                    {% cloudinary shelter_profile.image quality='auto' crop='fit' %}
-
+                    {% cloudinary object.image quality='auto' crop='fit' %}
                 {% else %}
                     <img src="{% static 'images/1200X300.png' %}" alt="User Profile Picture">
                 {% endif %}
@@ -18,9 +17,9 @@
             <div class="profile-info">
                 {% if user.is_authenticated %}
                     {% if shelter_profile.completed %}
-                        
+
                         <h3 style="color: #3e8e41 ">✔️ Congratulations! Your profile is completed!</h3>
-                        
+
                     {% else %}
                         <br>
                         <h3 style="color: darkred">🚨 Profile is not completed yet!</h3>
@@ -41,7 +40,7 @@
         </div>
 
         <div class="right-content">
-        
+
            <form method="post" action="{% url 'shelter edit view' shelter_profile.pk %}" enctype="multipart/form-data">
     {% csrf_token %}
 

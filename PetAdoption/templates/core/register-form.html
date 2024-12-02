@@ -1,32 +1,87 @@
 <h2>Register Now</h2>
-{% if form.errors %}
-    <div class="error">
-        <p>{{ form.errors }}</p>
-    </div>
-{% endif %}
-<form action="{% url 'register' %}" method="post">
-    
+
+<form action="{% url 'register' %}" method="post" class="custom-form">
     {% csrf_token %}
-    
-    <label for="type_user">Select Account Type</label>
+
+    <!-- Non-field errors -->
+    {% if form.non_field_errors %}
+        <div class="custom-alert custom-alert-danger">
+            <ul>
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <!-- Account Type -->
+    <label for="type_user" class="custom-label">* Select Account Type</label>
     <select id="type_user" name="type_user" class="minimal" required>
-        <option value="Adopter" selected>Adopter - User Profile</option>
-        <option value="Shelter">Shelter - Shelter Organization</option>
+        <option value="Adopter" {% if form.type_user.value == "Adopter" %}selected{% endif %}>Adopter - User Profile</option>
+        <option value="Shelter" {% if form.type_user.value == "Shelter" %}selected{% endif %}>Shelter - Shelter Organization</option>
     </select>
+    {% if form.type_user.errors %}
+        <div class="custom-alert custom-alert-danger">
+            <ul>
+                {% for error in form.type_user.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
-    <label for="email">Email</label>
-    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+    <!-- Email -->
+    <label for="email" class="custom-label">* Email</label>
+    <input type="email" id="email" name="email" class="" placeholder="Enter your email" value="{{ form.email.value|default_if_none:'' }}" required>
+    {% if form.email.errors %}
+        <div class="custom-alert custom-alert-danger">
+            <ul>
+                {% for error in form.email.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
-    <label for="username">Username</label>
-    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+    <!-- Username -->
+    <label for="username" class="custom-label">* Username</label>
+    <input type="text" id="username" name="username" placeholder="Enter your username" value="{{ form.username.value|default_if_none:'' }}" required>
+    {% if form.username.errors %}
+        <div class="custom-alert custom-alert-danger">
+            <ul>
+                {% for error in form.username.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
-    <label for="password1">Password</label>
-    <input type="password" id="password1" name="password1" placeholder="Enter your password" required>
+    <!-- Password -->
+    <label for="password1" class="custom-label">* Password</label>
+    <input type="password" id="password1" name="password1" class="" placeholder="Enter your password" required>
+    {% if form.password1.errors %}
+        <div class="custom-alert custom-alert-danger">
+            <ul>
+                {% for error in form.password1.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
-    <label for="password2">Confirm Password</label>
-    <input type="password" id="password2" name="password2" placeholder="Confirm your password" required>
+    <!-- Confirm Password -->
+    <label for="password2" class="custom-label">* Confirm Password</label>
+    <input type="password" id="password2" name="password2" class="" placeholder="Confirm your password" required>
+    {% if form.password2.errors %}
+        <div class="custom-alert custom-alert-danger">
+            <ul>
+                {% for error in form.password2.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
-
-    <button type="submit">Register</button>
+    <!-- Submit Button -->
+    <button type="submit" class="custom-submit-btn">Register</button>
 </form>
-

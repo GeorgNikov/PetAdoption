@@ -11,10 +11,9 @@ from django.views.generic import TemplateView, FormView
 
 from PetAdoption.accounts.forms import UserLoginForm, UserRegistrationForm
 from PetAdoption.accounts.models import ShelterProfile, UserProfile
-from PetAdoption.core.forms import ContactForm, ShelterRatingForm
-from PetAdoption.core.models import ShelterRating
+from PetAdoption.core.forms import ShelterRatingForm, ContactFormForm
+from PetAdoption.core.models import ShelterRating, ContactForm
 from PetAdoption.pets.models import Pet, AdoptionRequest
-from PetAdoption.pets.utils import check_user_type
 
 UserModel = get_user_model()
 
@@ -52,12 +51,6 @@ def index(request):
             # Redirect to user's profile
             return redirect('redirect-profile', pk=user.pk)
 
-            # if check_user_type(request) == "Adopter":
-            #     return redirect('profile details view', pk=user.pk)
-            # elif check_user_type(request) == "Shelter":
-            #     return redirect('shelter page preview', pk=user.pk)
-            # return redirect('index')
-
     context = {
         'form': form,
         'register_form': register_form,
@@ -75,11 +68,13 @@ def about_view(request):
 # CONTACTS
 def contact_view(request):
     if request.method == 'POST':
-        form = ContactForm(request.POST)
+        form = ContactFormForm(request.POST)
         if form.is_valid():
+            name = request.POST.get('name')
             email = request.POST.get('email')
             subject = request.POST.get('subject')
             message = request.POST.get('message')
+
 
             # Send email
             send_mail(
@@ -90,14 +85,21 @@ def contact_view(request):
                 fail_silently=False,
             )
 
-            # TODO: Save contact form data to the database model-ContactForm in core
+            # Save contact form data to the database
+            contact_data = ContactForm(
+                name=name,
+                email=email,
+                subject=subject,
+                message=message
+            )
+            contact_data.save()
 
             # Display success message
             messages.success(request, 'Your message has been sent successfully!')
             return redirect('contact')
 
     else:
-        form = ContactForm()
+        form = ContactFormForm()
 
     context = {
         'form': form,
@@ -125,7 +127,6 @@ class SheltersView(TemplateView):
         context = super().get_context_data(**kwargs)
         shelters = ShelterProfile.objects.all()
 
-        # For each shelter, get the count of available pets
         shelters_with_pet_count = []
 
         for shelter in shelters:
@@ -134,7 +135,10 @@ class SheltersView(TemplateView):
             # Count the number of available pets for this shelter
             available_pets_count = Pet.objects.filter(owner=shelter.user.pk, status="Available").count()
             # Get the shelter's average rating
-            average_rating = ShelterRating.objects.filter(shelter=shelter.pk).aggregate(Avg('rating'))['rating__avg'] or 0.00
+            average_rating = ShelterRating.objects.filter(
+                shelter=shelter.pk
+            ).aggregate(Avg('rating'))['rating__avg'] or 0.00
+
             average_rating_percent = int((average_rating / 5) * 100)
 
             shelters_with_pet_count.append({
@@ -230,7 +234,6 @@ class AdoptionRequestsListView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get the shelter object
         shelter_pk = self.kwargs.get('pk')
         shelter = get_object_or_404(ShelterProfile, pk=shelter_pk)
         context['shelter'] = shelter
@@ -252,7 +255,6 @@ class AdoptionRequestsListView(LoginRequiredMixin, TemplateView):
                 context['request_id'] = request_id
                 context['request_detail'] = request_detail
             except AdoptionRequest.DoesNotExist:
-                # Optionally handle invalid request_id
                 context['request_id'] = None
                 context['request_detail'] = None
 

@@ -2,17 +2,10 @@ from cloudinary.forms import CloudinaryFileField
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.urls import reverse_lazy
 
-from .models import UserProfile, CustomUser, ShelterProfile
-from .validators import validate_letters_only, validate_organization_name, validate_phone_number
+from .models import UserProfile, ShelterProfile
 
 UserModel = get_user_model()
-
-class UserForm(forms.ModelForm):
-    class Meta:
-        model = CustomUser
-        fields = ('email',)
 
 
 class UserEditProfileForm(forms.ModelForm):
@@ -23,62 +16,6 @@ class UserEditProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['first_name', 'last_name', 'phone_number', 'province', 'city', 'address', 'image']
-
-    first_name = forms.CharField(
-        validators=[
-            validate_letters_only,
-        ],
-        help_text='Enter the first name (letters and spaces only).'
-    )
-
-    last_name = forms.CharField(
-        validators=[
-            validate_letters_only,
-        ],
-        help_text='Enter the last name (letters and spaces only).'
-    )
-
-
-# class ShelterEditProfileForm(forms.ModelForm):
-#     user = forms.HiddenInput()
-#     slug = forms.HiddenInput()
-#     image = CloudinaryFileField(required=False)
-#
-#     class Meta:
-#         model = ShelterProfile
-#         fields = ['organization_name', 'phone_number', 'province', 'city', 'address', 'website', 'image']
-#         widgets = {
-#             'website': forms.URLInput(attrs={'placeholder': 'http://website.com'}),
-#         }
-#
-#     organization_name = forms.CharField(
-#         validators=[
-#             validate_organization_name,
-#         ],
-#         help_text='Can contain letters, numbers and spaces.'
-#     )
-#
-#     phone_number = forms.CharField(
-#         validators=[
-#             validate_phone_number,
-#         ],
-#         help_text='Phone number must contain only digits, spaces, parentheses, and dashes.'
-#     )
-#
-#     def clean(self):
-#         cleaned_data = super().clean()
-#
-#         # Clean organization name with the custom validator
-#         organization_name = cleaned_data.get('organization_name')
-#         if organization_name:
-#             validate_organization_name(organization_name)
-#
-#         # Clean phone number with the custom validator
-#         phone_number = cleaned_data.get('phone_number')
-#         if phone_number:
-#             validate_phone_number(phone_number)
-#
-#         return cleaned_data
 
 
 class ShelterEditProfileForm(forms.ModelForm):
@@ -133,12 +70,6 @@ class ShelterEditProfileForm(forms.ModelForm):
             ),
         }
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     # Add help text and customize placeholders dynamically
-    #     self.fields["organization_name"].help_text = "Can contain letters, numbers, and spaces."
-
-
 
 class UserRegistrationForm(UserCreationForm):
     # noinspection PyUnresolvedReferences
@@ -152,7 +83,6 @@ class UserLoginForm(forms.Form):
     class Meta:
         model = UserModel
         fields = ('user', 'password')
-
 
 
 # From lector

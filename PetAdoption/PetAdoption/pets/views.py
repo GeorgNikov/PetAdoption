@@ -1,3 +1,5 @@
+from http.client import responses
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
@@ -5,7 +7,7 @@ from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
-from PetAdoption.accounts.models import UserProfile, ShelterProfile, CustomUser
+from PetAdoption.accounts.models import UserProfile, ShelterProfile
 from PetAdoption.pets.forms import AddPetForm, EditPetForm, AdoptionRequestForm, PetFilterForm
 from PetAdoption.pets.models import Pet, AdoptionRequest
 
@@ -95,20 +97,17 @@ class AddPetView(LoginRequiredMixin, CreateView):
         Ensure only users with a ShelterProfile can access this page.
         Redirect unauthenticated users or those with a UserProfile to the dashboard page.
         """
-        # Check if the user is authenticated
-        if not request.user.is_authenticated:
+
+        if request.user.is_authenticated:
+            try:
+                shelter_profile = ShelterProfile.objects.get(user=request.user)
+            except ShelterProfile.DoesNotExist:
+                messages.error(request, "You are not authorized to access this page.")
+                return redirect('index')  # Redirect to index if user doesn't have ShelterProfile
+        else:
             messages.error(request, "You need to log in to access this page.")
             return redirect('index')
 
-        # Check if the user has a ShelterProfile
-        try:
-            shelter_profile = ShelterProfile.objects.get(user=request.user)
-        except ShelterProfile.DoesNotExist:
-            # If user does not have a ShelterProfile, redirect to index page
-            messages.error(request, "You are not authorized to access this page.")
-            return redirect('dashboard')
-
-        # If the user has a ShelterProfile, continue with the view
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -199,7 +198,7 @@ class PetDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('dashboard')  # Redirect after deletion
 
     def get_object(self, queryset=None):
-        # Get the pet object and check ownership
+        # Get the pet object and check owner
         pet = get_object_or_404(Pet, slug=self.kwargs['pet_slug'])
         return pet
 
@@ -207,7 +206,7 @@ class PetDeleteView(LoginRequiredMixin, DeleteView):
         # Get the pet object
         pet = self.get_object()
 
-        # Check if the logged-in user is the owner
+        # Check if the logged user is the owner
         if request.user != pet.owner:
             messages.error(request, "You are not authorized to delete this pet.")
             return redirect('dashboard')
@@ -247,7 +246,7 @@ class AdoptionRequestView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         pet_slug = self.kwargs.get('pet_slug')
         pet = get_object_or_404(Pet, slug=pet_slug)
-        context['pet'] = get_object_or_404(Pet, slug=pet_slug)  # Pass the pet to the template
+        context['pet'] = get_object_or_404(Pet, slug=pet_slug)
         context['shelter_owner_profile'] = ShelterProfile.objects.get(user=pet.owner)
         return context
 
@@ -277,7 +276,7 @@ class AdoptionRequestDeleteView(LoginRequiredMixin, DeleteView):
             messages.error(request, "The requested adoption record does not exist.")
             return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
 
-        # Check if the logged-in user is the adopter
+        # Check if the logged user is the adopter
         if adoption_request.adopter != request.user:
             messages.error(request, "You are not authorized to access this page.")
             return redirect(reverse_lazy('redirect-profile', kwargs={'pk': request.user.pk}))
@@ -286,20 +285,19 @@ class AdoptionRequestDeleteView(LoginRequiredMixin, DeleteView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
-        # Restore the pet's status to "Available"
+        # Restore the pet status to "Available"
         adoption_request = self.get_object()
         pet = adoption_request.pet
         pet.status = "Available"
         pet.save()
 
-        # Redirect the user after deletion
+        # Redirect the dashboard page after deletion
         return reverse_lazy('dashboard')
 
     def test_func(self):
         # Ensure only the adopter who created the request can delete it
         adoption_request = self.get_object()
         return adoption_request.adopter == self.request.user
-
 
 
 # Pet Filter List View
@@ -327,8 +325,6 @@ def pet_list(request):
             pets = pets.filter(size=size)
 
     return render(request, 'core/pet-list.html', {'form': form, 'pets': pets})
-
-
 
 
 # REST FRAMEWORK API

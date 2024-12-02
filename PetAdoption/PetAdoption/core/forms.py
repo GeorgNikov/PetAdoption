@@ -4,13 +4,16 @@ from captcha.fields import CaptchaField
 from PetAdoption.core.models import ShelterRating
 
 
-class ContactForm(forms.Form):
+class ContactFormForm(forms.Form):
     name = forms.CharField(max_length=100, required=True)
     email = forms.EmailField(required=True)
     subject = forms.CharField(max_length=100, required=True)
     message = forms.CharField(widget=forms.Textarea, required=True)
     captcha = CaptchaField()  # Add CAPTCHA field
 
+    def clean(self):
+        cleaned_data = super().clean()
+        return cleaned_data
 
 class ShelterRatingForm(forms.ModelForm):
     class Meta:

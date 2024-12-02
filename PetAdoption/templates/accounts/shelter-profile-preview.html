@@ -47,7 +47,7 @@
                             <p><strong>Established:</strong> {{ shelter_profile.created_at|date:"j M Y" }}</p>
                         <br>
                             <!-- Shelter ratings and feedback section -->
-                        
+
                             <h3>Recent 5 Feedbacks</h3>
                             {% for review in reviews %}
                                 <div class="feedback-container">
@@ -58,7 +58,7 @@
                                                  alt="{{ review.adopter.username }}'s profile image"
                                                  class="pet-thumbnail-review">
                                             </div>
-                                            <div class="feedback-rating-user">                                           
+                                            <div class="feedback-rating-user">
                                                 <strong>{{ review.adopter|truncatechars:16 }}</strong>
                                             </div>
                                         </div>
@@ -80,7 +80,7 @@
 
                         </div>
                     </section>
-                
+
                     <!-- Right Section: Links and Actions -->
                     <section class="shelter-actions">
                         {% if request.user == shelter_profile.user %}
@@ -98,7 +98,7 @@
                                 {% endif %}
                             </ul>
                         {% endif %}
-                            
+
                         <h3>Rating</h3>
                         <p> &nbsp; &nbsp;{{ average_rating|floatformat:2 }} | {{ total_reviews }} Feedback(s)</p>
                     &nbsp; &nbsp;
@@ -108,14 +108,14 @@
                                 <span class="shelter-stars-empty">★★★★★</span>
                             </div>
                         <h3>Actions</h3>
-                    
+
                         <ul>
                             {% if request.user == shelter_profile.user %}
                                 <li>
                                     <a href="{% url 'shelter edit view' shelter_profile.pk %}" class="button">Manage
                                         Shelter</a>
                                 </li>
-                                
+
                             {% endif %}
 
                             <li><a href="{% url 'dashboard' %}?shelter={{ shelter_profile.user.pk }}" class="button">View

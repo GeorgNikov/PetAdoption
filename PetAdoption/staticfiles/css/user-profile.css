@@ -119,6 +119,38 @@
     margin-top: 20px;
 }
 
+.button-container .available a {
+    display: block;
+    padding: 5px 10px;
+    background-color: #1fb23d;
+    color: white;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.button-container .available a:hover {
+    background-color: #155724;
+    color: white;
+}
+
+.button-container .visit a {
+    display: block;
+    padding: 5px 10px;
+    background-color: #f39c12;
+    color: white;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.button-container .visit a:hover {
+    background-color: #e67e22;
+    color: white;
+}
+
 /* Adoption Requests Section */
 .adoption-requests {
     background-color: white;
@@ -212,6 +244,7 @@
 
 
 /* Button Styles */
+
 .button {
     display: block;
     padding: 5px 10px;
@@ -247,14 +280,13 @@
 }
 
 .button-shelter-available {
-        display: block;
+    display: block;
     padding: 5px 10px;
     background-color: #1fb23d;
     color: white;
     text-align: center;
     border-radius: 4px;
     font-size: 16px;
-
     text-decoration: none;
 }
 

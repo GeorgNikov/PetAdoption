@@ -34,11 +34,18 @@
 
                     </div>
 
-                    <div class="button-container">
-                        <a href="{% url 'dashboard' %}?shelter={{ shelter.shelter.user.pk }}" class="button-shelter-available">
-                            Available Pets: {{ shelter.available_pets_count }}</a>
-                        <a href="{% url 'shelter page preview' shelter.slug %}" class="button-shelter">Visit Shelter</a>
-                    </div>
+<div class="button-container">
+    <div class="available">
+        <a href="{% url 'dashboard' %}?shelter={{ shelter.shelter.user.pk }}" id="available">
+            Available Pets: {{ shelter.available_pets_count }}
+        </a>
+    </div>
+    <div class="visit">
+        <a href="{% url 'shelter page preview' shelter.slug %}" id="visit">
+            Visit Shelter
+        </a>
+    </div>
+</div>
                 </div>
                 {% endif %}
             {% endfor %}

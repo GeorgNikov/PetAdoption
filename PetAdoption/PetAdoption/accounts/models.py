@@ -8,8 +8,8 @@ from django.utils.text import slugify
 from PetAdoption.accounts.choices import UserTypeChoices, BulgarianProvinces
 from PetAdoption.accounts.managers import AppUserManager
 from PetAdoption.accounts.utils import load_bulgarian_cities
-from PetAdoption.accounts.validators import validate_letters_and_spaces_only, validate_organization_name, \
-    validate_letters_only, validate_phone_number
+from PetAdoption.accounts.validators import validate_organization_name, \
+    validate_letters_only, validate_phone_number, validate_type_user
 
 
 # Extended AbstractBaseUser model
@@ -23,6 +23,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         max_length=USER_TYPE_MAX_LENGTH,
         choices=UserTypeChoices,
         default=UserTypeChoices.ADOPTER,
+        validators=[
+            validate_type_user,
+        ],
+        error_messages={
+            'invalid': "Invalid user type. Please select 'Adopter' or 'Shelter'."
+        },
     )
 
     username = models.CharField(
@@ -31,11 +37,20 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             MinLengthValidator(USERNAME_MIN_LENGTH),
             AbstractUser.username_validator
         ],
+        error_messages={
+            'username': [
+                'This field may contain only letters, digits and @/./+/-/_ characters.'
+            ],
+            'unique': 'A user with that username already exists.'
+        },
         unique=True,
     )
 
     email = models.EmailField(
         unique=True,
+        error_messages={
+            'unique': 'A user with that email already exists.'
+        },
     )
 
     is_staff = models.BooleanField(
@@ -119,35 +134,39 @@ class BaseProfile(models.Model):
 
 class UserProfile(BaseProfile):
     FIRST_NAME_MAX_LENGTH = 30
-    FIRST_NAME_MIN_LENGTH = 3
+    FIRST_NAME_MIN_LENGTH = 2
 
     LAST_NAME_MAX_LENGTH = 30
-    LAST_NAME_MIN_LENGTH = 3
-
+    LAST_NAME_MIN_LENGTH = 2
 
     first_name = models.CharField(
         max_length=FIRST_NAME_MAX_LENGTH,
         validators=[
-            MinLengthValidator(FIRST_NAME_MIN_LENGTH),
+            MinLengthValidator(FIRST_NAME_MIN_LENGTH,
+                               message=f"The first name must be at least {FIRST_NAME_MIN_LENGTH} characters long."),
             validate_letters_only,
         ],
-        help_text='Can contain only letters.'
+        help_text=f'Must contain only letters and be between {LAST_NAME_MIN_LENGTH} and {LAST_NAME_MAX_LENGTH} characters long.',
+        error_messages={
+            'invalid': 'The first name can only contain letters.',
+            'max_length': f'The first name must not exceed {FIRST_NAME_MAX_LENGTH} characters.',
+            'min_length': f'The first name must be at least {FIRST_NAME_MIN_LENGTH} characters long.'
+        }
     )
 
     last_name = models.CharField(
         max_length=LAST_NAME_MAX_LENGTH,
         validators=[
-            MinLengthValidator(LAST_NAME_MIN_LENGTH),
+            MinLengthValidator(LAST_NAME_MIN_LENGTH,
+                               message=f"The last name must be at least {LAST_NAME_MIN_LENGTH} characters long."),
             validate_letters_only,
         ],
-        help_text='Can contain only letters.'
-    )
-
-    slug = models.SlugField(
-        unique=True,
-        blank=True,
-        null=True,
-        editable=True,
+        help_text=f'Must contain only letters and be between {LAST_NAME_MIN_LENGTH} and {LAST_NAME_MAX_LENGTH} characters long.',
+        error_messages={
+            'invalid': 'The last name can only contain letters.',
+            'max_length': f'The last name must not exceed {LAST_NAME_MAX_LENGTH} characters.',
+            'min_length': f'The last name must be at least {LAST_NAME_MIN_LENGTH} characters long.'
+        }
     )
 
     user = models.OneToOneField(
@@ -159,17 +178,6 @@ class UserProfile(BaseProfile):
     @property
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
-
-    def save(self, *args, **kwargs):
-        if not self.slug:  # Ensure slug is only generated if it doesn't already exist
-            base_slug = slugify(self.full_name or f"user-{self.user.pk}")
-            slug = base_slug
-            counter = 1
-            while UserProfile.objects.filter(slug=slug).exists():
-                slug = f"{base_slug}-{counter}"
-                counter += 1
-            self.slug = slug
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.full_name or self.user.username}"
@@ -198,7 +206,6 @@ class ShelterProfile(BaseProfile):
         unique=True,
         blank=True,
         null=True,
-        editable=True,
     )
 
     website = models.URLField(
@@ -214,31 +221,9 @@ class ShelterProfile(BaseProfile):
     )
 
     def save(self, *args, **kwargs):
-        # Generate the slug when organization_name is set
-        if self.organization_name:
-            base_slug = slugify(self.organization_name)
-        else:
-            base_slug = slugify(f"user-{self.user.pk}")
+        if not self.slug:
+            self.slug = slugify(f"shelter-{self.user.username}-{self.user.pk}")
 
-        slug = base_slug
-        # Ensure we don't try to generate the slug if it's already set or during object creation
-        if not self.pk:  # Only when the object is being created
-            slug = f"{base_slug}-{self.pk}"  # Using the pk to create a unique slug
-        else:
-            # If the organization_name has changed, update the slug
-            if self.pk and self.slug != f"{base_slug}-{self.pk}":
-                slug = f"{base_slug}-{self.pk}"
-
-        # Ensure the final slug is unique
-        counter = 1
-        original_slug = slug
-        while ShelterProfile.objects.filter(slug=slug).exists():
-            slug = f"{original_slug}-{counter}"
-            counter += 1
-
-        self.slug = slug
-
-        # Call the parent save method
         super().save(*args, **kwargs)
 
     def __str__(self):

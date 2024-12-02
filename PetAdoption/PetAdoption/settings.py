@@ -22,15 +22,11 @@ cloudinary.config(
     secure=True
 )
 
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-# Only localhost
-ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(", ")
+ALLOWED_HOSTS = [config("ALLOWED_HOSTS")]
 
 # Application definition
 INSTALLED_APPS = [
@@ -99,20 +95,20 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
-# AUTH_PASSWORD_VALIDATORS = [
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-#     },
-# ]
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 
 # Internationalization
@@ -128,7 +124,7 @@ USE_TZ = True
 
 CSRF_COOKIE_SECURE = False
 
-SITE_NAME = 'Pet Adoption'
+SITE_NAME = config('SITE_NAME')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -138,12 +134,6 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "staticfiles",
 ]
-
-# if DEBUG:
-
-#     MEDIA_URL = '/media/'
-#     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 # SMTP Server configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND')
@@ -164,10 +154,10 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGOUT_REDIRECT_URL = reverse_lazy('index')
 
 # For follow us links in contact page
-FACEBOOK_PAGE = 'https://www.facebook.com/petadoption/'
-INSTAGRAM_PAGE = 'https://www.instagram.com/petadoption/'
-TWITTER_PAGE = 'https://twitter.com/petadoption/'
+FACEBOOK_PAGE = config('FACEBOOK_PAGE')
+INSTAGRAM_PAGE = config('INSTAGRAM_PAGE')
+TWITTER_PAGE = config('TWITTER_PAGE')
 
-CONTACT_EMAIL_ADDRESS = 'petadoption-support@example.com'
-CONTACT_NUMBER = '+359 123 456789'
-CONTACT_ADDRESS = "123 Pet Avenue, Pet City, Pet State, 0000"
+CONTACT_EMAIL_ADDRESS = config('CONTACT_EMAIL_ADDRESS')
+CONTACT_NUMBER = config('CONTACT_NUMBER')
+CONTACT_ADDRESS = config('CONTACT_ADDRESS')

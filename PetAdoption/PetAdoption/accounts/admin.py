@@ -34,12 +34,10 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     model = UserProfile
-    readonly_fields = ('created_at', 'updated_at', 'slug')
+    readonly_fields = ('created_at', 'updated_at')
 
 
 @admin.register(ShelterProfile)
 class ShelterProfileAdmin(admin.ModelAdmin):
     model = ShelterProfile
     readonly_fields = ('created_at', 'updated_at', 'slug')
-
-

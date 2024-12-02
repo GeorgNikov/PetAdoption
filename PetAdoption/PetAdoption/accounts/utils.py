@@ -4,6 +4,8 @@ import os
 from django.conf import settings
 from rest_framework.reverse import reverse_lazy
 
+from PetAdoption.accounts.choices import BulgarianProvinces
+
 
 def load_bulgarian_cities():
     # Define the path to the JSON file
@@ -25,3 +27,12 @@ def redirect_ot_profile(user):
         return reverse_lazy('shelter_profile', kwargs={'pk': user.shelter.pk})
     else:
         return reverse_lazy('index')
+
+
+def load_cities_and_provinces():
+    cities = load_bulgarian_cities()
+    city_names = [city[1] for city in cities]
+
+    provinces = [province[1] for province in BulgarianProvinces.choices]
+
+    return city_names, provinces
