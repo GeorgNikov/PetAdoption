@@ -8,5 +8,5 @@ from PetAdoption.core.models import ShelterRating
 class ShelterRatingAdmin(admin.ModelAdmin):
     list_display = ('shelter', 'rating', 'created_at')
     list_filter = ('rating',)
-    search_fields = ('shelter__name', 'adopter_username', 'rating')
+    search_fields = ('shelter__organization_name', 'shelter__user__username')
     list_per_page = 10

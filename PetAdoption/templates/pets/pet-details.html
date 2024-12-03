@@ -16,10 +16,17 @@
 
     {% endif %}
 <!-- Edit Pet Details link (visible only to the owner) -->
-{% if request.user == pet.owner %}
+{#{% if request.user == pet.owner %}#}
+{#    <a href="{% url 'edit pet' pet.slug %}" class="edit-button">Edit Pet Details</a>#}
+{#    &nbsp;#}
+{#    <a href="{% url 'delete pet' pet.slug %}" class="delete-button">Delete Pet </a>#}
+{#{% endif %}#}
+    
+    <!-- Edit Pet Details link (visible only to the owner, admin, or users with permissions) -->
+{% if request.user == pet.owner or request.user.is_superuser or has_permission %}
     <a href="{% url 'edit pet' pet.slug %}" class="edit-button">Edit Pet Details</a>
     &nbsp;
-    <a href="{% url 'delete pet' pet.slug %}" class="delete-button">Delete Pet </a>
+    <a href="{% url 'delete pet' pet.slug %}" class="delete-button">Delete Pet</a>
 {% endif %}
 </div>
 

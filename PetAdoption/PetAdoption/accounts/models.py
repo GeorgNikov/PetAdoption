@@ -180,7 +180,8 @@ class UserProfile(BaseProfile):
         return f'{self.first_name} {self.last_name}'
 
     def __str__(self):
-        return f"{self.full_name or self.user.username}"
+        return self.full_name if self.full_name is not None else f"{self.user.username}"
+
 
 
 class ShelterProfile(BaseProfile):
@@ -227,4 +228,4 @@ class ShelterProfile(BaseProfile):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.organization_name if self.organization_name else f"User-{self.user.pk}"
+        return self.organization_name if self.organization_name else f"{self.user.username}"

@@ -5,8 +5,11 @@
     <div class="container">
         <div class="left-content">
             <div class="step">
-
+                {% if pet.image.url %}
                 <img src="{{ pet.image.url }}" alt="Choose a Pet" style="height: 80px; width: auto">
+                {% else %}
+                <img src="{% static 'images/no.png' %}" alt="Choose a Pet" style="height: 80px; width: auto">
+                {% endif %}
                 <a href="{% url 'pet details' pet.slug %}">
                     <p> {{ pet.name }} is a {{ pet.age }} month old {{ pet.breed }} </p>
                 </a>

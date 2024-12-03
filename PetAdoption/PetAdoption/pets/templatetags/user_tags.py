@@ -24,3 +24,7 @@ def is_adopter(user):
 @register.filter
 def is_shelter(user):
     return user.is_authenticated and user.type_user == "Shelter"
+
+# @register.filter
+# def has_permission(user, perm_name):
+#     return user.has_perm(perm_name)

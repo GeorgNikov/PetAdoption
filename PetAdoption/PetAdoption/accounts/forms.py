@@ -87,15 +87,14 @@ class UserLoginForm(forms.Form):
 
 # From lector
 class CustomUserCreationForm(UserCreationForm):
-    # noinspection PyUnresolvedReferences
-    class Meta(UserCreationForm.Meta):
-        model = get_user_model()
-        fields = ('username', 'email',)
+    class Meta:
+        model = UserModel
+        fields = ('username', 'email', 'password1', 'password2', 'type_user')
 
 
 # From lector
 class CustomUserChangeForm(UserChangeForm):
-    class Meta(UserChangeForm.Meta):
-        model = get_user_model()
-        fields = "__all__"
+    class Meta:
+        model = UserModel
+        fields = ('email', 'username', 'is_active', 'is_staff', 'groups', 'user_permissions')
 

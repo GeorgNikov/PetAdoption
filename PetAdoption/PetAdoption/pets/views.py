@@ -1,5 +1,3 @@
-from http.client import responses
-
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
@@ -9,6 +7,7 @@ from django.views.generic import CreateView, ListView, DetailView, UpdateView, D
 
 from PetAdoption.accounts.models import UserProfile, ShelterProfile
 from PetAdoption.pets.forms import AddPetForm, EditPetForm, AdoptionRequestForm, PetFilterForm
+from PetAdoption.pets.mixins import UserAccessMixin, ShelterProfileRequiredMixin
 from PetAdoption.pets.models import Pet, AdoptionRequest
 
 from rest_framework.views import APIView
@@ -86,36 +85,18 @@ class Dashboard(ListView):
         context['paginator'] = paginator
         return context
 
-class AddPetView(LoginRequiredMixin, CreateView):
+class AddPetView(ShelterProfileRequiredMixin, CreateView):
     model = Pet
     form_class = AddPetForm
     template_name = 'pets/add-pet.html'
     login_url = reverse_lazy('index')
 
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Ensure only users with a ShelterProfile can access this page.
-        Redirect unauthenticated users or those with a UserProfile to the dashboard page.
-        """
-
-        if request.user.is_authenticated:
-            try:
-                shelter_profile = ShelterProfile.objects.get(user=request.user)
-            except ShelterProfile.DoesNotExist:
-                messages.error(request, "You are not authorized to access this page.")
-                return redirect('index')  # Redirect to index if user doesn't have ShelterProfile
-        else:
-            messages.error(request, "You need to log in to access this page.")
-            return redirect('index')
-
-        return super().dispatch(request, *args, **kwargs)
-
     def form_valid(self, form):
-        pet = form.save(commit=False)  # Form instance created but not saved
+        pet = form.save(commit=False)
         pet.owner = self.request.user
-        print(f"Saving pet with owner: {pet.owner}, name: {pet.name}")
-        pet.save()  # Object is saved here
-        print(f"Pet saved with ID: {pet.id}")
+
+        pet.save()
+
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -149,6 +130,12 @@ class PetDetailView(DetailView):
     def get_context_data(self, **kwargs):
         # Add context for share buttons
         context = super().get_context_data(**kwargs)
+
+        # Check if the user has the required permission, either directly or via groups
+        has_permission = self.request.user.has_perm('pets.change_pet') or self.request.user.groups.filter(
+            permissions__codename='change_pet').exists()
+        context['has_permission'] = has_permission
+
         context['page_url']= self.request.build_absolute_uri(),
         context['page_title']= f'Adopt this awesome pet: {context["pet"].name}',
 
@@ -159,31 +146,23 @@ class PetDetailView(DetailView):
         return context
 
 
-class EditPetView(LoginRequiredMixin, UpdateView):
+class EditPetView(UserAccessMixin, UpdateView):
     model = Pet
     form_class = EditPetForm
     template_name = 'pets/edit-pet.html'
     context_object_name = 'pet'
 
+    raise_exception = True
+    permission_required = 'pets.change_pets'
+    group_required = 'moderator'
+    permission_denied_message = ""
+    redirect_field_name = 'next'
+    login_url = reverse_lazy('index')
+
     def get_object(self, queryset=None):
         pet_slug = self.kwargs['pet_slug']
-        pet = get_object_or_404(Pet, slug=pet_slug)
+        return get_object_or_404(Pet, slug=pet_slug)
 
-        return pet
-
-    def dispatch(self, request, *args, **kwargs):
-        # Check if the user is authenticated
-        if not request.user.is_authenticated:
-            messages.error(request, "You need to log in to access this page.")
-            return redirect('index')
-
-        # Check if the logged-in user's pk matches the pk in the URL
-        profile_pk = Pet.objects.get(slug=kwargs['pet_slug']).owner.pk
-        if request.user.pk != profile_pk:
-            messages.error(request, "You are not authorized to edit this pet.")
-            return redirect('dashboard')
-
-        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         messages.success(self.request, "Pet details updated successfully!")
@@ -191,27 +170,23 @@ class EditPetView(LoginRequiredMixin, UpdateView):
 
 
 # DELETE PET
-class PetDeleteView(LoginRequiredMixin, DeleteView):
+class PetDeleteView(UserAccessMixin, DeleteView):
     model = Pet
     template_name = 'pets/delete-pet-confirm.html'  # A confirmation template
     slug_field = 'slug'
     success_url = reverse_lazy('dashboard')  # Redirect after deletion
 
+    raise_exception = True
+    permission_required = 'pets.delete_pets'
+    group_required = 'moderator'
+    permission_denied_message = ""
+    redirect_field_name = 'next'
+    login_url = reverse_lazy('index')
+
     def get_object(self, queryset=None):
         # Get the pet object and check owner
         pet = get_object_or_404(Pet, slug=self.kwargs['pet_slug'])
         return pet
-
-    def dispatch(self, request, *args, **kwargs):
-        # Get the pet object
-        pet = self.get_object()
-
-        # Check if the logged user is the owner
-        if request.user != pet.owner:
-            messages.error(request, "You are not authorized to delete this pet.")
-            return redirect('dashboard')
-
-        return super().dispatch(request, *args, **kwargs)
 
 
 class AdoptionRequestView(LoginRequiredMixin, CreateView):

@@ -42,7 +42,7 @@
     display: flex;
     gap: 10px;
     flex: 3;
-    justify-content: left; /* Center menu links */
+    justify-content: left;
     text-align: left;
 }
 
@@ -62,7 +62,6 @@
 .login {
     flex: 1;
     text-align: right;
-
 }
 
 .login a {
@@ -107,9 +106,9 @@
 /* Hamburger menu icon */
 .menu-icon {
     display: none; /* Hide by default for larger screens */
-    position: absolute; /* Position relative to parent */
-    right: 20px; /* Adjust distance from right edge */
-    top: 5px; /* Align vertically with the nav */
+    position: absolute;
+    right: 20px;
+    top: 5px;
     cursor: pointer;
     font-size: 30px;
 }
@@ -119,10 +118,8 @@
     background: none;
     text-align: center;
     padding: 2px 15px;
-/*    border-bottom: 1px solid #f39c12; */
     color: rgb(172, 170, 170);;
     font-size: 18px;
-
 }
 
 .user-info span p a {
@@ -141,52 +138,51 @@
     height: 26px;
     padding-top: 5px;
     margin-bottom: -5px;
-    font-size: 10px; /* Smaller icon size */
-    margin-right: 6px; /* Space between icon and text */
-    color: rgb(172, 170, 170); /* Matches text color */
+    font-size: 10px;
+    margin-right: 6px;
+    color: rgb(172, 170, 170);
     float: left;
 }
 
-
  /* Dropdown Button */
 .dropbtn {
-  background-color: #343a40;
-  color: rgb(172, 170, 170);
-  padding: 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-  transition: background 0.3s;
-  min-width: 150px;
+    background-color: #343a40;
+    color: rgb(172, 170, 170);
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    transition: background 0.3s;
+    min-width: 150px;
 }
 
 
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
-  position: relative;
-  display: inline-block;
+    position: relative;
+    display: inline-block;
 }
 
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #343a40;
-  min-width: 150px;
-  color: #e7f7e7;
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-  z-index: 1;
-  border-radius: 0 0 3px 3px;
+    display: none;
+    position: absolute;
+    background-color: #343a40;
+    min-width: 150px;
+    color: #e7f7e7;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 0 0 3px 3px;
     padding-top: 10px;
 }
 
 /* Links inside the dropdown */
 .dropdown-content a {
-  color: white;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  border-radius: 0 0 3px 3px;
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border-radius: 0 0 3px 3px;
 
 }
 
@@ -196,14 +192,14 @@
 }
 
 /* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropdown-content {
+    display: block;
+}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
     background-color: #343a40;
-
 }
-
 
 /* Message banner container */
 .message-banner {
@@ -243,8 +239,8 @@
 
 /* Pagination styling */
 .pagination {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 .pagination {
@@ -254,22 +250,24 @@
 
 
 .pagination a {
-  color: black;
-  float: left;
-  padding: 8px 16px;
-  text-decoration: none;
-  transition: background-color .3s;
-  border: 1px solid #ddd;
-  margin: 0 4px;
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+    margin: 0 4px;
 }
 
 .pagination a.active {
-  background-color: #f39c12;
-  color: white;
-  border: 1px solid #f39c12;
+    background-color: #f39c12;
+    color: white;
+    border: 1px solid #f39c12;
 }
 
-.pagination a:hover:not(.active) {background-color: #ddd;}
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
 
 
 /* Mobile menu */
@@ -299,20 +297,20 @@
 }
 
 #mobile-menu a {
-    color: white; /* Link color */
-    text-decoration: none; /* Remove underline */
-    font-size: 18px; /* Increase font size */
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
 }
 
 #mobile-menu a:hover {
     background-color: lightgray;
     color: #333333;
-    text-decoration: none; /* Add underline on hover */
+    text-decoration: none;
 }
 
 /* Show menu when active */
 #mobile-menu.active {
-    display: block; /* Display menu when toggled */
+    display: block;
 }
 
 .mobile-menu {

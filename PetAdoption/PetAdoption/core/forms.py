@@ -29,7 +29,7 @@ class ShelterRatingForm(forms.ModelForm):
         }
         error_messages = {
             'rating': {
-                'min_value': 'Rating must be between 10 and 500.',
-                'max_value': 'Rating must be between 10 and 500.',
+                'min_value': 'Rating must be between 1 and 5.',
+                'max_value': 'Rating must be between 1 and 5.',
             },
         }

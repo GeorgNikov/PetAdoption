@@ -46,7 +46,6 @@ body {
     justify-content: center;
 }
 
-
 /* Left content with steps */
 .left-content {
     flex: 1;
@@ -57,7 +56,7 @@ body {
     font-size: 24px;
     margin-bottom: 20px;
     color: #333;
-    text-align: center; /* Center the header */
+    text-align: center;
 }
 
 .step {
@@ -69,11 +68,11 @@ body {
     padding: 15px;
     margin-bottom: 15px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s; /* Add transition for hover effect */
+    transition: transform 0.3s;
 }
 
 .step:hover {
-    transform: translateY(-5px); /* Hover effect */
+    transform: translateY(-5px);
 }
 
 .step a {
@@ -110,12 +109,12 @@ body {
 
 .step-item {
     display: flex;
-    align-items: center; /* Vertically centers icon and text */
-    gap: 10px; /* Space between the icon and the text */
+    align-items: center;
+    gap: 10px;
 }
 
 .social-icon {
-    width: 24px; /* Adjust size of the icons */
+    width: 24px;
     height: 24px;
 }
 
@@ -191,7 +190,6 @@ body {
     background-color: #e67e22;
 }
 
-
 /* Main content styles */
 .main-content {
     flex: 1;
@@ -246,7 +244,6 @@ body {
     color: #ffa000;
 }
 
-
 /* Container to keep filters on one row */
 .filter-container {
     display: flex;
@@ -261,15 +258,15 @@ body {
 }
 
 .filter-label {
-    font-size: 15px; /* Adjust size for readability */
-    font-weight: bold; /* Make it stand out */
+    font-size: 15px;
+    font-weight: bold;
     max-width: 90px;
 }
 
 .filter-selects {
-    display: flex; /* Use flexbox for layout */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    gap: 10px; /* Add space between select elements */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .filter-container h3 {
@@ -443,7 +440,7 @@ select:-moz-focusring {
     max-width: 430px;
     display: flex;
     justify-content: center;
-    align-items: center; /* Center content vertically */
+    align-items: center;
     overflow: hidden;
     flex: 1;
     width: 200px;
@@ -496,7 +493,7 @@ select:-moz-focusring {
 }
 
 .custom-icon {
-    color: #f39c12; /* Your desired color */
+    color: #f39c12;
     font-size: 18px;
 }
 
@@ -516,13 +513,11 @@ select:-moz-focusring {
     text-align: left;
 }
 
-
 .user-username-email span:nth-child(3) {
     text-decoration: none;
     color: #fff;
     font-size: 20px;
 }
-
 
 .edit-profile a {
     margin: 10px 0;
@@ -552,16 +547,15 @@ select:-moz-focusring {
 
 /* Responsive design */
 @media (max-width: 768px) {
-    /* Ensure nav links are hidden in mobile view */
     .nav-links {
-        display: none; /* Hide links by default */
-        position: sticky; /* Position them absolutely */
-        top: 60px; /* Adjust based on your layout */
-        right: 0; /* Align to the right */
-        width: 100%; /* Full width */
-        background-color: #fff; /* Ensure visibility */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
-        z-index: 1001; /* Ensure it is above other content */
+        display: none;
+        position: sticky;
+        top: 60px;
+        right: 0;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1001;
         padding: 10px 0;
     }
 
@@ -573,7 +567,7 @@ select:-moz-focusring {
 
     /* Show nav links when menu is active */
     .nav-active {
-        display: block; /* Show nav links when active */
+        display: block;
     }
 
     .login {
@@ -605,16 +599,16 @@ select:-moz-focusring {
     .filter-container {
         flex-direction: column;
         align-items: flex-start;
-        display: grid; /* Switch to grid layout */
+        display: grid;
         grid-template-columns: repeat(1, 1fr);
         width: 100%;
     }
 
     .filter-selects {
-        display: grid; /* Switch to grid layout */
-        grid-template-columns: repeat(2, 1fr); /* 2 columns in the grid */
-        gap: 10px; /* Add spacing between rows and columns */
-        width: 100%; /* Ensure grid spans full width */
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        width: 100%;
     }
 
     .filter {
@@ -630,8 +624,8 @@ select:-moz-focusring {
 
     .step-item {
         display: flex;
-        align-items: center; /* Vertically centers icon and text */
-        gap: 1px; /* Space between the icon and the text */
+        align-items: center;
+        gap: 1px;
     }
 
     /* Button hover effect */
@@ -646,4 +640,3 @@ select:-moz-focusring {
     }
 
 }
-

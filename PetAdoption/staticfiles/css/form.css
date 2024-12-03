@@ -34,7 +34,6 @@
     background-color: green;
 }
 
-
 /* styles.css */
 .container {
     width: 80%;
@@ -53,16 +52,15 @@
     padding: 15px;
     margin-bottom: 15px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s; /* Add transition for hover effect */
+    transition: transform 0.3s;
 }
 
 .container_last_adopted_pets h2 {
     font-size: 24px;
     margin-bottom: 20px;
     color: #333;
-    text-align: center; /* Center the header */
+    text-align: center;
 }
-
 
 form {
     display: flex;
@@ -117,8 +115,8 @@ form button:hover {
 /* Grid Layout */
 .form-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two equal columns */
-    gap: 20px; /* Space between columns */
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
 .form-bottom {
@@ -131,7 +129,6 @@ form button:hover {
         grid-template-columns: 1fr; /* Stack columns on smaller screens */
     }
 }
-
 
 /* Alert Styles */
 .custom-alert {
@@ -203,4 +200,3 @@ form button:hover {
 .custom-file-input {
     margin-top: 10px;
 }
-

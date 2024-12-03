@@ -64,7 +64,6 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('index')
 
     def get_object(self, queryset=None):
-        # Retrieve the profile using `pk` from the URL
         profile = get_object_or_404(UserProfile, pk=self.kwargs['pk'])
 
         # Check if the logged user is the owner of the profile
@@ -72,7 +71,6 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
             # Redirect to the user's own profile page if they attempt to edit someone else's profile
             return get_object_or_404(UserProfile, user=self.request.user)
 
-        # Return the profile if the user is the owner
         return profile
 
     def form_valid(self, form):
@@ -113,6 +111,7 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 # DELETE USER PROFILE
 class ProfileDeleteView(LoginRequiredMixin, View):
+    model = UserModel
     template_name = 'accounts/userprofile-confirm-delete.html'
 
     @staticmethod

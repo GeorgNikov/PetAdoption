@@ -41,7 +41,6 @@
     height: 130px;
     padding-left: 5px;
     margin-left: 5px;
-
 }
 
 .pet-box div:nth-child(3) {
@@ -59,7 +58,6 @@
     border-radius: 5px;
     margin-top: 0;
     margin-left: 0;
-
 }
 
 .pet-box-image img {
@@ -84,7 +82,6 @@
     border-radius: 5px;
     border: 1px solid #f39c12;
     text-shadow: none;
-
 }
 
 .pet-box-button:hover {
@@ -125,13 +122,12 @@
 
 .pet-box-del-btn-danger i {
     margin-right: 5px;
-    color: red;  /* Set the desired icon color */
+    color: red;
 }
 
 .pet-box-del-btn-danger:hover i {
-    color: darkred; /* Hover color */
+    color: darkred;
 }
-
 
 
 /* Box styling */

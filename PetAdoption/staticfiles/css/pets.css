@@ -154,7 +154,6 @@
     justify-content: space-between;
 }
 
-
 .pagination {
     margin-top: 20px;
     text-align: center;
@@ -278,7 +277,7 @@
     border-radius: 5px;
     font-size: 14px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 2; /* Ensure it appears above other elements */
+    z-index: 2;
 }
 
 .image-container .delete-button:hover {
@@ -314,14 +313,13 @@
 
 .card-img-top {
     object-fit: cover;
-    height: 300px; /* Adjust height as needed */
+    height: 300px;
     width: 100%;
 }
 
 .card-body {
     text-align: left;
 }
-
 
 /* Owner Details Section */
 .owner-details-section {
@@ -400,20 +398,20 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 20px; /* Space between sections */
+    gap: 20px;
 }
 
 .pet-edit-form .form-left,
 .pet-edit-form .form-right {
-    flex: 1; /* Each takes up equal space */
+    flex: 1;
 }
 
 .pet-edit-form .form-left {
-    max-width: 48%; /* Keep it compact */
+    max-width: 48%;
 }
 
 .pet-edit-form .form-right {
-    max-width: 48%; /* Keep it compact */
+    max-width: 48%;
 }
 
 .pet-edit-form .form-group {
@@ -496,24 +494,13 @@
     outline: none;
 }
 
-/* In your CSS file or within a <style> block */
-/*.pet-filter-form {*/
-/*    display: flex;               !* Use flexbox to align items in a row *!*/
-/*    flex-wrap: wrap;             !* Allow wrapping if screen is too small *!*/
-/*    justify-content: space-between; !* Distribute space evenly *!*/
-/*    gap: 15px;                   !* Space between form elements *!*/
-/*    align-items: center;*/
-/*    border: 1px solid #ccc;*/
-/*}*/
-
-
 .filter-option {
     display: inline-block;
     flex-direction: column;
     width: 150px;
     margin-right: 20px;
     float: left;
-    border: 1px solid #ccc; /* Set fixed width for the selects */
+    border: 1px solid #ccc;
 }
 
 .filter-option select {
@@ -526,15 +513,14 @@
 
 .filter-option label {
     font-weight: bold;
-    margin-bottom: 5px; /* Space between label and select */
+    margin-bottom: 5px;
 }
 
 .filter-option select {
     padding: 8px;
-    width: 100%; /* Make select fill the container */
-    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    width: 100%;
+    box-sizing: border-box;
 }
-
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -563,12 +549,12 @@
 
 .share-buttons a {
     text-decoration: none;
-    color: #000; /* Change this to the desired color */
+    color: #000;
     background: none;
 }
 
 .share-buttons a:hover {
-    color: #007bff; /* Optional: Hover color */
+    color: #007bff;
 }
 
 .share-buttons a:first-child {
@@ -587,7 +573,6 @@
     color: #25D366;
 }
 
-
 .fa.fa-twitter{
 	font-family:sans-serif;
 }
@@ -595,9 +580,3 @@
 	content:"𝕏";
 	font-size:1.2em;
 }
-
-    /* Colors */
-    /*.share-buttons a:first-child { background: #4267B2; } !* Facebook *!*/
-    /*.share-buttons a:nth-child(2) { background: #4267B2; } !* Twitter *!*/
-    /*.share-buttons a:nth-child(3) { background: #0077b5; } !* LinkedIn *!*/
-    /*.share-buttons a:last-child { background: #0077b5; } !* WhatsApp *!*/

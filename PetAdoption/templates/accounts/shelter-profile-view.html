@@ -56,7 +56,7 @@
                                 <li>No requests yet.</li>
                             {% else %}
                                 <h3>Adoption Requests
-                                    <a class="btn-count-requests active">{{ adoption_requests.count }} New</a>
+                                    <a class="btn-count-requests active">( {{ adoption_requests.count }} )</a>
                                 </h3>
                                 <li>
                                     <a href="{% url 'shelter adoption requests' shelter_profile.pk %}" class="button">View Requests</a>

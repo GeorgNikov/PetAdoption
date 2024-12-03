@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [config("ALLOWED_HOSTS")]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(",")
 
 # Application definition
 INSTALLED_APPS = [
@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'PetAdoption.pets.apps.PetsConfig',
     'PetAdoption.accounts.apps.AccountsConfig',
     'PetAdoption.core.apps.CoreConfig',
-    #'PetAdoption.shelters.apps.SheltersConfig',
 ]
 
 MIDDLEWARE = [
@@ -110,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -122,7 +120,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=True, cast=bool)
 
 SITE_NAME = config('SITE_NAME')
 

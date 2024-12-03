@@ -1,5 +1,4 @@
 <!-- Hide and show password -->
-
 function togglePasswordVisibility(passwordFieldId, iconElement) {
     const passwordField = document.getElementById(passwordFieldId);
     const isPasswordVisible = passwordField.type === "text";
@@ -30,6 +29,7 @@ function showBoxes(boxesToShow) {
         // If you had a button, you could hide it here
     }
 }
+
 
 // Function to handle scroll event for auto-load
 function lazyLoadOnScroll() {
@@ -72,9 +72,9 @@ setTimeout(function () {
     }
 }, 4000); // 3 seconds
 
+
+
 // Like functionality using api
-
-
 function likePet(pet_pk) {
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
