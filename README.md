@@ -10,7 +10,7 @@ A comprehensive platform to connect loving families with pets in need of a home.
 
 Check out the live demo of the application:
 
-[![Pet Adoption](https://petadoption-era5h6c8efahg8he.germanywestcentral-01.azurewebsites.net)
+[Pet Adoption](https://petadoption-era5h6c8efahg8he.germanywestcentral-01.azurewebsites.net)
 
 ---
 
