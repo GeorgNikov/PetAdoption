@@ -17,8 +17,11 @@
     <!-- Account Type -->
     <label for="type_user" class="custom-label">* Select Account Type</label>
     <select id="type_user" name="type_user" class="minimal" required>
-        <option value="Adopter" {% if form.type_user.value == "Adopter" %}selected{% endif %}>Adopter - User Profile</option>
-        <option value="Shelter" {% if form.type_user.value == "Shelter" %}selected{% endif %}>Shelter - Shelter Organization</option>
+        <option value="Adopter" {% if form.type_user.value == "Adopter" %}selected{% endif %}>Adopter - User Profile
+        </option>
+        <option value="Shelter" {% if form.type_user.value == "Shelter" %}selected{% endif %}>Shelter - Shelter
+            Organization
+        </option>
     </select>
     {% if form.type_user.errors %}
         <div class="custom-alert custom-alert-danger">
@@ -32,7 +35,8 @@
 
     <!-- Email -->
     <label for="email" class="custom-label">* Email</label>
-    <input type="email" id="email" name="email" class="" placeholder="Enter your email" value="{{ form.email.value|default_if_none:'' }}" required>
+    <input type="email" id="email" name="email" class="" placeholder="Enter your email"
+           value="{{ form.email.value|default_if_none:'' }}" required>
     {% if form.email.errors %}
         <div class="custom-alert custom-alert-danger">
             <ul>
@@ -45,7 +49,8 @@
 
     <!-- Username -->
     <label for="username" class="custom-label">* Username</label>
-    <input type="text" id="username" name="username" placeholder="Enter your username" value="{{ form.username.value|default_if_none:'' }}" required>
+    <input type="text" id="username" name="username" placeholder="Enter your username"
+           value="{{ form.username.value|default_if_none:'' }}" required>
     {% if form.username.errors %}
         <div class="custom-alert custom-alert-danger">
             <ul>
@@ -82,6 +87,5 @@
         </div>
     {% endif %}
 
-    <!-- Submit Button -->
     <button type="submit" class="custom-submit-btn">Register</button>
 </form>

@@ -5,15 +5,35 @@ from PetAdoption.core.models import ShelterRating
 
 
 class ContactFormForm(forms.Form):
-    name = forms.CharField(max_length=100, required=True)
-    email = forms.EmailField(required=True)
-    subject = forms.CharField(max_length=100, required=True)
-    message = forms.CharField(widget=forms.Textarea, required=True)
+    NAME_MAX_LENGTH = 100
+    SUBJECT_MAX_LENGTH = 100
+
+    name = forms.CharField(
+        max_length=NAME_MAX_LENGTH,
+        required=True
+    )
+
+    email = forms.EmailField(
+        required=True
+    )
+
+    subject = forms.CharField(
+        max_length=SUBJECT_MAX_LENGTH,
+        required=True
+    )
+
+    message = forms.CharField(
+        widget=forms.Textarea,
+        required=True
+    )
+
     captcha = CaptchaField()  # Add CAPTCHA field
 
+    # NOT USED
     def clean(self):
         cleaned_data = super().clean()
         return cleaned_data
+
 
 class ShelterRatingForm(forms.ModelForm):
     class Meta:

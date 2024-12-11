@@ -4,7 +4,6 @@ from django.dispatch import receiver
 from PetAdoption.accounts.models import UserProfile, ShelterProfile, CustomUser
 
 
-
 # Create a profile when a user is created
 @receiver(post_save, sender=CustomUser)
 def create_profile(sender, instance, created, **kwargs):
@@ -13,8 +12,6 @@ def create_profile(sender, instance, created, **kwargs):
             UserProfile.objects.create(user=instance)
         elif instance.type_user == "Shelter" and not ShelterProfile.objects.filter(user=instance).exists():
             ShelterProfile.objects.create(user=instance)
-
-
 
 
 # Delete the Cloudinary image when the profile is deleted
@@ -27,6 +24,3 @@ def delete_cloudinary_image(sender, instance, **kwargs):
 
         # Delete the image from Cloudinary
         destroy(public_id)
-
-        # Delete the image from the database
-        # instance.image.delete()

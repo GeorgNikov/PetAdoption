@@ -30,7 +30,6 @@ urlpatterns = [
          ),
     path('shelter/<slug:slug>/', include([
         path('', ShelterProfilePreview.as_view(), name='shelter page preview'),
-        # path('rate/', ShelterRatingCreateView.as_view(), name='submit rating'),
     ]),
 
          ),

@@ -2,13 +2,15 @@
 {% load static %}
 
 {% block content %}
-    <div class="error-page">
-        <h1>404</h1>
-        <h2>Oops! Lost in the Paws...</h2>
-        <p>It seems this page wandered off like a playful puppy.</p>
-        <div class="image-container">
-            <img src="{% static 'images/404.jpg' %}" alt="Lost puppy illustration">
+    <div class="container">
+        <div class="error-page">
+            <h1>404</h1>
+            <h2>Oops! Lost in the Paws...</h2>
+            <p>It seems this page wandered off like a playful puppy.</p>
+            <div class="image-container">
+                <img src="{% static 'images/404.jpg' %}" alt="Lost puppy illustration">
+            </div>
+            <p>Maybe try sniffing out the <a href="{% url 'index' %}" class="back-button">homepage</a> instead?</p>
         </div>
-        <p>Maybe try sniffing out the <a href="{% url 'index' %}" class="back-button">homepage</a> instead?</p>
     </div>
 {% endblock %}

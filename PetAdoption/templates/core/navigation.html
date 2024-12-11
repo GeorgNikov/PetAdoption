@@ -5,7 +5,7 @@
         <div class="logo">
             <a href="{% url 'index' %}"> PetAdoption</a>
         </div>
-    
+
         <ul class="nav-links">
             <li><a href="{% url 'dashboard' %}"> Find Pets</a></li>
             <li><a href="{% url 'shelters' %}"> Shelters</a></li>
@@ -20,7 +20,7 @@
                     <button class="dropbtn"><i class="fas fa-user"></i>&nbsp;
                         {{ user.email|default:user.username }}
                     </button>
-                    
+
                     <div class="dropdown-content">
                         <a href="{% url 'redirect-profile' user.pk %}">
                             <i class="fas fa-user"></i> &nbsp; &nbsp; My Profile
@@ -42,8 +42,8 @@
 
             {% else %}
                 <ul class="nav-links">
-                <li><a href="{% url 'register' %}" class="">Register</a></li>
-                <li><a href="{% url 'index' %}" class="">Login</a></li>
+                    <li><a href="{% url 'register' %}" class="">Register</a></li>
+                    <li><a href="{% url 'index' %}" class="">Login</a></li>
                 </ul>
             {% endif %}
         </div>
@@ -63,9 +63,9 @@
         <li><a href="{% url 'about' %}"> About</a></li>
         <li><a href="{% url 'contact' %}"> Contacts</a></li>
         <li><a href="{% url 'faq' %}"> FAQ</a></li>
-    
+
         {% if user.is_authenticated %}
-            <li> &nbsp; </li>
+            <li> &nbsp;</li>
             <li>
                 <a href="{% url 'redirect-profile' user.pk %}">
                     My Profile
@@ -79,12 +79,12 @@
             <li>
                 <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Logout</a>
             </li>
-                        {% else %}
-                <li> &nbsp; </li>
-                <li><a href="{% url 'register' %}" class="">Register</a></li>
-                <li><a href="{% url 'index' %}" class="">Login</a></li>
-             
-            
+        {% else %}
+            <li> &nbsp;</li>
+            <li><a href="{% url 'register' %}" class="">Register</a></li>
+            <li><a href="{% url 'index' %}" class="">Login</a></li>
+
+
         {% endif %}
     </ul>
 </div>

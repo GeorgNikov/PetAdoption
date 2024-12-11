@@ -31,7 +31,7 @@ class TestUserProfileIntegrationTest(TestCase):
         # Test Shelter Profile Creation
         shelter_profile = ShelterProfile.objects.get(user=self.shelter_user)
         self.assertEqual(shelter_profile.user, self.shelter_user)
-        self.assertEqual(shelter_profile.slug, slugify(f"{self.shelter_user.username}-{self.shelter_user.pk}"))
+        self.assertEqual(shelter_profile.slug, slugify(f"shelter-{self.shelter_user.username}-{self.shelter_user.pk}"))
 
 
     def test__user_type_and_profile_association(self):

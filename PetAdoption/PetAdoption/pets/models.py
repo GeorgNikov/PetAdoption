@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.template.defaultfilters import slugify
 
+from PetAdoption.accounts.validators import validate_letters_only
 from PetAdoption.pets.choices import PetChoices, PetStatusChoices, AdoptionRequestStatusChoices, PetGenderChoices, \
     PetSizeChoices
 
@@ -11,8 +12,13 @@ UserModel = get_user_model()
 
 
 class TimeStampBaseModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
 
     class Meta:
         abstract = True
@@ -22,35 +28,49 @@ class Pet(TimeStampBaseModel):
     NAME_MAX_LENGTH = 30
     TYPE_MAX_LENGTH = 20
     BREED_MAX_LENGTH = 30
+    AGE_MIN_VALUE = 1
+    AGE_MAX_VALUE = 240
     GENDER_MAX_LENGTH = 6
     SIZE_MAX_LENGTH = 6
     STATUS_MAX_LENGTH = 10
     DESCRIPTION_MAX_LENGTH = 1500
-    IMG_UPLOAD_TO = 'pet_images/'
 
     name = models.CharField(
         max_length=NAME_MAX_LENGTH,
         default='No name',
+        validators=[
+            validate_letters_only
+        ],
+        error_messages={
+            'invalid': "The name must contain only letters."
+        }
     )
 
     # noinspection PyUnresolvedReferences
     type = models.CharField(
         max_length=TYPE_MAX_LENGTH,
-        choices=PetChoices.choices
+        choices=PetChoices.choices,
     )
 
     breed = models.CharField(
         max_length=BREED_MAX_LENGTH,
-        default='Unknown'
+        default='Unknown',
+        validators=[
+            validate_letters_only
+        ],
+        error_messages={
+            'invalid': "The breed must contain only letters."
+        }
     )
 
     age = models.PositiveSmallIntegerField(
-        validators=[
-            MinValueValidator(1),
-            MaxValueValidator(240),
-        ],
         default=1,
-    )  # In months
+        validators=[
+            MinValueValidator(AGE_MIN_VALUE, "Age must be greater than 0"),
+            MaxValueValidator(AGE_MAX_VALUE, "Age must be less than 240"),
+        ],
+        help_text="Age is represented in months."
+    )
 
     # noinspection PyUnresolvedReferences
     gender = models.CharField(
@@ -107,8 +127,8 @@ class Pet(TimeStampBaseModel):
     )
 
     def save(self, *args, **kwargs):
-        if not self.slug and self.id:  # Ensure slug is only created after id is assigned
-            self.slug = slugify(f"{self.name}-{self.id}")
+        if not self.slug and self.pk:  # Ensure slug is only created after id is assigned
+            self.slug = slugify(f"{self.name}-{self.pk}")
         super().save(*args, **kwargs)
 
     def total_likes(self):

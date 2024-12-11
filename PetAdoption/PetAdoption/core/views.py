@@ -17,6 +17,7 @@ from PetAdoption.pets.models import Pet, AdoptionRequest
 
 UserModel = get_user_model()
 
+
 # HOME PAGE
 def index(request):
     form = UserLoginForm(request.POST or None)
@@ -69,12 +70,12 @@ def about_view(request):
 def contact_view(request):
     if request.method == 'POST':
         form = ContactFormForm(request.POST)
+
         if form.is_valid():
             name = request.POST.get('name')
             email = request.POST.get('email')
             subject = request.POST.get('subject')
             message = request.POST.get('message')
-
 
             # Send email
             send_mail(
@@ -110,6 +111,7 @@ def contact_view(request):
         'contact_phone': settings.CONTACT_NUMBER,
         'contact_address': settings.CONTACT_ADDRESS,
     }
+
     return render(request, 'core/contacts.html', context)
 
 
@@ -161,7 +163,6 @@ class ShelterRatingView(LoginRequiredMixin, FormView):
     form_class = ShelterRatingForm
 
     def get_user_profile(self):
-
         return get_object_or_404(UserProfile, user=self.request.user)
 
     def dispatch(self, request, *args, **kwargs):
@@ -175,6 +176,7 @@ class ShelterRatingView(LoginRequiredMixin, FormView):
             adopter=self.request.user,
             status='Approved'  # Ensure the adoption is approved
         )
+
         self.shelter = self.adoption_request.pet.owner.shelter_profile  # Get shelter from adoption request
 
         # Check if the user has already rated the shelter for this adoption request
@@ -230,7 +232,6 @@ class AdoptionRequestsListView(LoginRequiredMixin, TemplateView):
 
         return super().dispatch(request, *args, **kwargs)
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -267,9 +268,11 @@ class UpdateAdoptionRequestStatusView(LoginRequiredMixin, View):
     def post(request, pk, request_pk):
         adoption_request = get_object_or_404(AdoptionRequest, pk=request_pk)
         status = request.POST.get('status')
+
         if status in ['Approved', 'Rejected']:
             adoption_request.status = status
             adoption_request.pet.status = 'Available' if status == 'Rejected' else 'Adopted'
             adoption_request.pet.save()
             adoption_request.save()
+
         return redirect('shelter adoption requests', pk=pk)

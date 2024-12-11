@@ -42,11 +42,13 @@
                                         <li class="adoption-requests pending">
                                             <div class="adoption-pet-image">
                                                 {% if adoption.pet.image.url %}
-                                                <img src="{{ adoption.pet.image.url }}" alt="{{ adoption.pet.name }}"
-                                                     class="pet-thumbnail">
+                                                    <img src="{{ adoption.pet.image.url }}"
+                                                         alt="{{ adoption.pet.name }}"
+                                                         class="pet-thumbnail">
                                                 {% else %}
-                                                <img src="{% static 'images/no.png' %}" alt="{{ adoption.pet.name }}"
-                                                     class="pet-thumbnail">
+                                                    <img src="{% static 'images/no.png' %}"
+                                                         alt="{{ adoption.pet.name }}"
+                                                         class="pet-thumbnail">
                                                 {% endif %}
                                             </div>
                                             <div class="adoption-pet-info">
@@ -81,7 +83,7 @@
                                                 <p class="adoption-pet-name">{{ adoption.pet.name }} {{ adoption.status|upper }}</p>
                                                 <p class="adoption-pet-status">
                                                     {{ adoption.updated_at|date:"j M Y" }}</p>
-                                        
+
                                                 {% if adoption.id in rated_adoptions %}
                                                     <p class="adoption-rated-message"> Already rate this adoption</p>
                                                 {% elif adoption.status == "Approved" %}

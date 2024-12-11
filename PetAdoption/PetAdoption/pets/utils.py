@@ -31,10 +31,10 @@ def check_profile_completion(request, message=None):
     return None  # If everything is fine, return None (meaning no redirection)
 
 
-def check_user_type(request):
-    user = request.user
-    if user.type_user == "Adopter":
-        return "Adopter"
-    elif user.type_user == "Shelter":
-        return "Shelter"
-    return None
+# def check_user_type(request):
+#     user = request.user
+#     if user.type_user == "Adopter":
+#         return "Adopter"
+#     elif user.type_user == "Shelter":
+#         return "Shelter"
+#     return None

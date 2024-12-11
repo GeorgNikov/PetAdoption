@@ -14,11 +14,11 @@ def validate_type_user(value):
         raise ValidationError(f"Invalid user type: {value}. Must be 'Adopter' or 'Shelter'.")
 
 
-def validate_letters_and_spaces_only(value):
-    if not all(char.isalpha() or char.isspace() for char in value):
-        raise ValidationError(
-            'This field can only contain letters and spaces!'
-        )
+# def validate_letters_and_spaces_only(value):
+#     if not all(char.isalpha() or char.isspace() for char in value):
+#         raise ValidationError(
+#             'This field can only contain letters and spaces!'
+#         )
 
 
 def validate_organization_name(value):

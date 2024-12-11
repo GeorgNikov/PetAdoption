@@ -45,7 +45,7 @@
                                     target="_blank"> {{ shelter_profile.website|default:"N/A" }}</a>
                             </p>
                             <p><strong>Established:</strong> {{ shelter_profile.created_at|date:"j M Y" }}</p>
-                        <br>
+                            <br>
                             <!-- Shelter ratings and feedback section -->
 
                             <h3>Recent 5 Feedbacks</h3>
@@ -54,9 +54,9 @@
                                     <div class="feedback-rating">
                                         <div class="feedback-rating-user">
                                             <div class="feedback-rating-image">
-                                            <img src="{{ review.adopter.user.user_profile.image.url }}"
-                                                 alt="{{ review.adopter.username }}'s profile image"
-                                                 class="pet-thumbnail-review">
+                                                <img src="{{ review.adopter.user.user_profile.image.url }}"
+                                                     alt="{{ review.adopter.username }}'s profile image"
+                                                     class="pet-thumbnail-review">
                                             </div>
                                             <div class="feedback-rating-user">
                                                 <strong>{{ review.adopter|truncatechars:16 }}</strong>
@@ -101,12 +101,12 @@
 
                         <h3>Rating</h3>
                         <p> &nbsp; &nbsp;{{ average_rating|floatformat:2 }} | {{ total_reviews }} Feedback(s)</p>
-                    &nbsp; &nbsp;
-                            <div class="shelter-stars">
+                        &nbsp; &nbsp;
+                        <div class="shelter-stars">
                                 <span class="shelter-stars-filled"
                                       style="width: {{ average_rating_percent }}%;">★★★★★</span>
-                                <span class="shelter-stars-empty">★★★★★</span>
-                            </div>
+                            <span class="shelter-stars-empty">★★★★★</span>
+                        </div>
                         <h3>Actions</h3>
 
                         <ul>
@@ -120,7 +120,7 @@
 
                             <li><a href="{% url 'dashboard' %}?shelter={{ shelter_profile.user.pk }}" class="button">View
                                 Adoptable Pets</a></li>
-{#                            <li><a href="#" class="button">Make a Donation</a></li>#}
+                            {#                            <li><a href="#" class="button">Make a Donation</a></li>#}
                         </ul>
 
                         <!-- Center Section: Shelter Geolocation map -->

@@ -45,7 +45,7 @@ class TestCustomUserIntegrationTest(TestCase):
 
         self.assertEqual(shelter_profile.user, self.shelter_user)
 
-        expected_slug = f"{slugify(self.shelter_user.username)}-{self.shelter_user.pk}"
+        expected_slug = f"shelter-{self.shelter_user.username}-{self.shelter_user.pk}"
         self.assertEqual(shelter_profile.slug, expected_slug)
 
     def test__user_type_validation(self):
@@ -66,5 +66,5 @@ class TestCustomUserIntegrationTest(TestCase):
 
     def test__shelter_profile_slug_based_on_username_and_pk(self):
         shelter_profile = ShelterProfile.objects.get(user=self.shelter_user)
-        expected_slug = f"{slugify(self.shelter_user.username)}-{self.shelter_user.pk}"
+        expected_slug = f"shelter-{self.shelter_user.username}-{self.shelter_user.pk}"
         self.assertEqual(shelter_profile.slug, expected_slug)

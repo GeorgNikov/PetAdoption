@@ -35,38 +35,43 @@ class ShelterEditProfileForm(forms.ModelForm):
                 attrs={
                     "id": "organization_name",
                     "placeholder": "Enter organization name",
-                    "class": "",
                 }
             ),
             "phone_number": forms.TextInput(
                 attrs={
                     "id": "phone_number",
                     "placeholder": "Enter phone number",
-                    "class": "",
                 }
             ),
             "province": forms.Select(
-                attrs={"id": "province", "class": "minimal"}
+                attrs={
+                    "id": "province",
+                    "class": "minimal"
+                }
             ),
             "city": forms.Select(
-                attrs={"id": "city", "class": "minimal"}
+                attrs={
+                    "id": "city",
+                    "class": "minimal"
+                }
             ),
             "address": forms.TextInput(
                 attrs={
                     "id": "address",
                     "placeholder": "Enter address",
-                    "class": "",
                 }
             ),
             "website": forms.URLInput(
                 attrs={
                     "id": "website",
                     "placeholder": "http://website.com",
-                    "class": "",
                 }
             ),
             "image": forms.ClearableFileInput(
-                attrs={"id": "image", "class": "custom-file-input"}
+                attrs={
+                    "id": "image",
+                    "class": "custom-file-input"
+                }
             ),
         }
 
@@ -75,8 +80,7 @@ class UserRegistrationForm(UserCreationForm):
     # noinspection PyUnresolvedReferences
     class Meta(UserCreationForm.Meta):
         model = UserModel
-        fields = ('email', 'username', 'password1', 'password2', 'type_user' )
-
+        fields = ('email', 'username', 'password1', 'password2', 'type_user')
 
 
 class UserLoginForm(forms.Form):
@@ -97,4 +101,3 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = UserModel
         fields = ('email', 'username', 'is_active', 'is_staff', 'groups', 'user_permissions')
-

@@ -2,23 +2,7 @@
 {% load static %}
 
 {% block content %}
-
-    {#    <div class="container">#}
-    {#    <div class="left-content">#}
-    {#        <h1>Adoption Requests</h1>#}
-    {#        {% for adoption_request in adoption_requests %}#}
-    {#            <div class="step">#}
-    {#                <div class="step-number">{{ adoption_request.id }}</div>#}
-    {#                <div class="step-text">{{ adoption_request.pet.name }} - {{ adoption_request.pet.breed }}#}
-    {#                    - {{ adoption_request.status }}#}
-    {#                    <a href="#" class="btn btn-primary">View Pet</a>#}
-    {#                    <a href="#" class="btn btn-danger">Cancel Request</a>#}
-    {#                </div>#}
-    {#            </div>#}
-    {#        {% endfor %}#}
-    {#    </div>#}
-    {#    </div>#}
-
+    
     <div class="container adoption-requests-container">
         <!-- Request Detail Section -->
 
@@ -30,25 +14,26 @@
                       class="request-detail-form">
                     {% csrf_token %}
                     <h3>Adoption Request Details</h3>
-<div class="adoption-request-item">
-    <!-- Pet Image and Name (Left) -->
-    <div class="item-left">
-        <img src="{{ request_detail.pet.image.url }}" alt="{{ request_detail.pet.name }}" class="pet-thumbnail">
-        <span>{{ request_detail.pet.name }}</span>
-    </div>
+                    <div class="adoption-request-item">
+                        <!-- Pet Image and Name (Left) -->
+                        <div class="item-left">
+                            <img src="{{ request_detail.pet.image.url }}" alt="{{ request_detail.pet.name }}"
+                                 class="pet-thumbnail">
+                            <span>{{ request_detail.pet.name }}</span>
+                        </div>
 
-    <!-- Chain Image (Center) -->
-    <div class="item-center">
-        <img src="{% static 'images/chain.png' %}" alt="chain" class="chain-icon">
-    </div>
+                        <!-- Chain Image (Center) -->
+                        <div class="item-center">
+                            <img src="{% static 'images/chain.png' %}" alt="chain" class="chain-icon">
+                        </div>
 
-    <!-- Adopter Name and Image (Right) -->
-    <div class="item-right">
-        <span>{{ request_detail.adopter.user_profile.full_name|default:request_detail.adopter.username }}</span>
-        <img src="{{ request_detail.adopter.user_profile.image.url }}" 
-             alt="{{ request_detail.adopter.username }}'s profile image" class="pet-thumbnail">
-    </div>
-</div>
+                        <!-- Adopter Name and Image (Right) -->
+                        <div class="item-right">
+                            <span>{{ request_detail.adopter.user_profile.full_name|default:request_detail.adopter.username }}</span>
+                            <img src="{{ request_detail.adopter.user_profile.image.url }}"
+                                 alt="{{ request_detail.adopter.username }}'s profile image" class="pet-thumbnail">
+                        </div>
+                    </div>
 
                     <p><strong>Message:</strong> {{ request_detail.message }}</p>
                     <div class="button-container">
@@ -70,8 +55,8 @@
                                 <div class="adoption-request-details">
                                     <strong>{{ request.pet.name }}</strong> is a
                                     <span class="{% if request.status == 'Approved' %}status-approved{% else %}status-rejected{% endif %}">
-                            {{ request.status }}
-                        </span>
+                                        {{ request.status }}
+                                    </span>
                                     <p>Adopter is
                                         <strong>{{ request.adopter.user_profile.full_name|default:request.adopter.username }}</strong>
                                         on {{ request.updated_at|date:"j M Y" }}</p>
@@ -108,21 +93,5 @@
         </div>
 
     </div>
-
-    {#{% if request_detail %}#}
-    {#    <div class="container">#}
-    {#<div class="request-detail-section">#}
-    {#    <h3>Adoption Request Details</h3>#}
-    {#    <p><strong>Pet:</strong> {{ request_detail.pet.name }}</p>#}
-    {#    <p><strong>Message:</strong> {{ request_detail.message }}</p>#}
-    {#    <p><strong>Adopter:</strong> {{ request_detail.adopter.user_profile.full_name|default:request_detail.adopter.username }}</p>#}
-    {#    <form method="POST" action="{% url 'update adoption request status' shelter.pk request_detail.id %}">#}
-    {#        {% csrf_token %}#}
-    {#        <button type="submit" name="status" value="Approved" class="btn-approve">Approve</button>#}
-    {#        <button type="submit" name="status" value="Rejected" class="btn-reject">Reject</button>#}
-    {#    </form>#}
-    {#</div>#}
-    {#    </div>#}
-    {#{% endif %}#}
 
 {% endblock %}

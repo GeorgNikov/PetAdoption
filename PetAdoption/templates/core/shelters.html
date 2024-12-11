@@ -9,44 +9,46 @@
         <div class="shelter-container">
             {% for shelter in shelters %}
                 {% if shelter.completed %}
-                <div class="shelter-card">
-                {% if shelter.shelter.image %}
-                {% cloudinary shelter.shelter.image quality='auto' width=410 height=200 crop='fit'  class='responsive-image'%}
-                {% else %}
-                    <img src="{% static 'images/no-pet-image.jpg' %}" alt="No Image" class="responsive-image" width="410" height="170">
-                {% endif %}
-                    <h2>{{ shelter.shelter.organization_name }}</h2>
-                    <p><strong>Address:</strong> {{ shelter.shelter }}</p>
-                    <p><strong>Phone:</strong> {{ shelter.shelter.phone_number }}</p>
-                    <p><strong>Email:</strong> {{ shelter.shelter.user.email }}</p>
-                    <p><strong>Website:</strong>
-                        {% if shelter.shelter.website %}
-                            <a href="{{ shelter.shelter.website }}">{{ shelter.shelter.website }}</a>
+                    <div class="shelter-card">
+                        {% if shelter.shelter.image %}
+                            {% cloudinary shelter.shelter.image quality='auto' width=410 height=200 crop='fit' class='responsive-image' %}
                         {% else %}
-                            N/A
+                            <img src="{% static 'images/no-pet-image.jpg' %}" alt="No Image" class="responsive-image"
+                                 width="410" height="170">
                         {% endif %}
-                    </p>
-                    <div class="shelter-star-rating">
-                        <div class="shelter-stars">
-                            <span class="shelter-stars-filled" style="width: {{ shelter.average_rating_percent }}%;">★★★★★</span>
-                            <span class="shelter-stars-empty">★★★★★</span>
+                        <h2>{{ shelter.shelter.organization_name }}</h2>
+                        <p><strong>Address:</strong> {{ shelter.shelter }}</p>
+                        <p><strong>Phone:</strong> {{ shelter.shelter.phone_number }}</p>
+                        <p><strong>Email:</strong> {{ shelter.shelter.user.email }}</p>
+                        <p><strong>Website:</strong>
+                            {% if shelter.shelter.website %}
+                                <a href="{{ shelter.shelter.website }}">{{ shelter.shelter.website }}</a>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </p>
+                        <div class="shelter-star-rating">
+                            <div class="shelter-stars">
+                                <span class="shelter-stars-filled"
+                                      style="width: {{ shelter.average_rating_percent }}%;">★★★★★</span>
+                                <span class="shelter-stars-empty">★★★★★</span>
+                            </div>
+
                         </div>
 
+                        <div class="button-container">
+                            <div class="available">
+                                <a href="{% url 'dashboard' %}?shelter={{ shelter.shelter.user.pk }}" id="available">
+                                    Available Pets: {{ shelter.available_pets_count }}
+                                </a>
+                            </div>
+                            <div class="visit">
+                                <a href="{% url 'shelter page preview' shelter.slug %}" id="visit">
+                                    Visit Shelter
+                                </a>
+                            </div>
+                        </div>
                     </div>
-
-<div class="button-container">
-    <div class="available">
-        <a href="{% url 'dashboard' %}?shelter={{ shelter.shelter.user.pk }}" id="available">
-            Available Pets: {{ shelter.available_pets_count }}
-        </a>
-    </div>
-    <div class="visit">
-        <a href="{% url 'shelter page preview' shelter.slug %}" id="visit">
-            Visit Shelter
-        </a>
-    </div>
-</div>
-                </div>
                 {% endif %}
             {% endfor %}
         </div>

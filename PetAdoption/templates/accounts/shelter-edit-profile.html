@@ -41,49 +41,47 @@
 
         <div class="right-content">
 
-           <form method="post" action="{% url 'shelter edit view' shelter_profile.pk %}" enctype="multipart/form-data">
-    {% csrf_token %}
+            <form method="post" action="{% url 'shelter edit view' shelter_profile.pk %}" enctype="multipart/form-data">
+                {% csrf_token %}
 
-    <!-- Non-field errors -->
-    {% if form.non_field_errors %}
-        <div class="custom-alert custom-alert-danger">
-            <ul>
-                {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
+                <!-- Non-field errors -->
+                {% if form.non_field_errors %}
+                    <div class="custom-alert custom-alert-danger">
+                        <ul>
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <!-- Loop through each form field -->
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="custom-label">{{ field.label }}</label>
+                        {% if field.help_text %}
+                            <small class="custom-form-text">{{ field.help_text }}</small>
+                        {% endif %}
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="custom-alert custom-alert-danger">
+                                <ul>
+                                    {% for error in field.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
                 {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
 
-    <!-- Loop through each form field -->
-    {% for field in form %}
-        <div class="form-group">
-            <label for="{{ field.id_for_label }}" class="custom-label">{{ field.label }}</label>
-            {% if field.help_text %}
-                <small class="custom-form-text">{{ field.help_text }}</small>
-            {% endif %}
-            {{ field }}
-            {% if field.errors %}
-                <div class="custom-alert custom-alert-danger">
-                    <ul>
-                        {% for error in field.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-        </div>
-    {% endfor %}
-
-    <button type="submit" class="custom-submit-btn">Save Changes</button>
-</form>
-
-
+                <button type="submit" class="custom-submit-btn">Save Changes</button>
+            </form>
+        
         </div>
     </div>
-
-
-    {#    Image Preview#}
+    
+    <!--    Image Preview  -->
     <script>
         const imageInput = document.querySelector('input[type="file"]');
         const imagePreview = document.getElementById('image-preview');
@@ -100,4 +98,5 @@
             }
         });
     </script>
+    
 {% endblock %}

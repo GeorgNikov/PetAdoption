@@ -27,49 +27,59 @@
 
                     <!-- Left Section: Shelter Details -->
                     <section class="shelter-details">
-
-                       
+                        
                         <h2> {{ shelterprofile.organization_name }}</h2>
                         <p>
                             <strong>Location:</strong> {{ shelter_profile.province }}, {{ shelter_profile.city }}, {{ shelter_profile.address }}
                         </p>
-                        <p><strong>Phone:</strong> <a
-                                href="tel:{{ shelter_profile.phone_number }}"> {{ shelter_profile.phone_number|default:"N/A" }}</a>
+                        <p>
+                            <strong>Phone:</strong> 
+                            <a href="tel:{{ shelter_profile.phone_number }}"> 
+                                {{ shelter_profile.phone_number|default:"N/A" }}
+                            </a>
                         </p>
-                        
-                        <p><strong>Email:</strong> <a
-                                href="mailto:{{ shelter_profile.user.email }}">{{ shelter_profile.user.email }}</a></p>
-                    <p><strong>Website:</strong> <a
-                                href="{{ shelter_profile.website }}" target="_blank"> {{ shelter_profile.website|default:"N/A" }}</a>
+
+                        <p>
+                            <strong>Email:</strong> 
+                            <a href="mailto:{{ shelter_profile.user.email }}">
+                                {{ shelter_profile.user.email }}
+                            </a>
+                        </p>
+                        <p><strong>Website:</strong> 
+                            <a href="{{ shelter_profile.website }}" target="_blank">
+                                {{ shelter_profile.website|default:"N/A" }}
+                            </a>
                         </p>
                         <p><strong>Established:</strong> {{ shelter_profile.created_at|date:"j M Y" }}</p>
-                                            
+
                     </section>
 
 
                     <!-- Right Section: Links and Actions -->
                     <section class="shelter-actions">
                         {% if request.user == shelter_profile.user %}
-                        <ul class="">
-                            {% if not adoption_requests %}
-                                <h3>Adoption Requests</h3>
-                                <li>No requests yet.</li>
-                            {% else %}
-                                <h3>Adoption Requests
-                                    <a class="btn-count-requests active">( {{ adoption_requests.count }} )</a>
-                                </h3>
-                                <li>
-                                    <a href="{% url 'shelter adoption requests' shelter_profile.pk %}" class="button">View Requests</a>
-                                </li>
-                            {% endif %}
-                        </ul>
+                            <ul class="">
+                                {% if not adoption_requests %}
+                                    <h3>Adoption Requests</h3>
+                                    <li>No requests yet.</li>
+                                {% else %}
+                                    <h3>Adoption Requests
+                                        <a class="btn-count-requests active">( {{ adoption_requests.count }} )</a>
+                                    </h3>
+                                    <li>
+                                        <a href="{% url 'shelter adoption requests' shelter_profile.pk %}"
+                                           class="button">View Requests</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
                         {% endif %}
 
-                    <h3>Actions</h3>
+                        <h3>Actions</h3>
                         <ul>
                             {% if request.user == shelter_profile.user %}
                                 <li>
-                                    <a href="{% url 'shelter page preview' shelter_profile.slug %}" class="button delete-button-success">
+                                    <a href="{% url 'shelter page preview' shelter_profile.slug %}"
+                                       class="button delete-button-success">
                                         Public Preview</a>
                                 </li>
                                 <li>
@@ -77,49 +87,51 @@
                                         Manage Profile</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'dashboard' %}?shelter={{ shelter_profile.user.pk }}" class="button">
+                                    <a href="{% url 'dashboard' %}?shelter={{ shelter_profile.user.pk }}"
+                                       class="button">
                                         Manage Pets</a>
                                 </li>
-                            
+
                                 <li>
-                                
-                                <div id="delete-container">
-                                    <!-- Initial DELETE PROFILE link -->
-                                    <a href="#" id="delete-profile" class="button delete-button-danger"
-                                       onclick="showOptions(event)">DELETE PROFILE</a>
 
-                                    <!-- Hidden confirmation options -->
-                                    
-                                    <div id="confirmation-options" style="display: none;">
-                                        <a href="{% url 'profile delete' pk=shelter_profile.user.pk %}"
-                                           class="button delete-button-danger">Yes,
-                                            delete</a>
-                                        <a href="#" class="button delete-button-success" onclick="hideOptions(event)">No,
-                                            cancel</a>
+                                    <div id="delete-container">
+                                        <!-- Initial DELETE PROFILE link -->
+                                        <a href="#" id="delete-profile" class="button delete-button-danger"
+                                           onclick="showOptions(event)">DELETE PROFILE</a>
+
+                                        <!-- Hidden confirmation options -->
+
+                                        <div id="confirmation-options" style="display: none;">
+                                            <a href="{% url 'profile delete' pk=shelter_profile.user.pk %}"
+                                               class="button delete-button-danger">Yes,
+                                                delete</a>
+                                            <a href="#" class="button delete-button-success"
+                                               onclick="hideOptions(event)">No,
+                                                cancel</a>
+                                        </div>
+                                        <script>
+                                            function showOptions(event) {
+                                                event.preventDefault(); // Prevent the default link behavior
+
+                                                // Hide the initial DELETE PROFILE link and show the confirmation options
+                                                document.getElementById('delete-profile').style.display = 'none';
+                                                document.getElementById('confirmation-options').style.display = 'block';
+                                            }
+
+                                            function hideOptions(event) {
+                                                event.preventDefault(); // Prevent the default link behavior
+
+                                                // Show the initial DELETE PROFILE link and hide the confirmation options
+                                                document.getElementById('delete-profile').style.display = 'block';
+                                                document.getElementById('confirmation-options').style.display = 'none';
+                                            }
+
+                                        </script>
                                     </div>
-                                    <script>
-                                        function showOptions(event) {
-                                            event.preventDefault(); // Prevent the default link behavior
-
-                                            // Hide the initial DELETE PROFILE link and show the confirmation options
-                                            document.getElementById('delete-profile').style.display = 'none';
-                                            document.getElementById('confirmation-options').style.display = 'block';
-                                        }
-
-                                        function hideOptions(event) {
-                                            event.preventDefault(); // Prevent the default link behavior
-
-                                            // Show the initial DELETE PROFILE link and hide the confirmation options
-                                            document.getElementById('delete-profile').style.display = 'block';
-                                            document.getElementById('confirmation-options').style.display = 'none';
-                                        }
-
-                                    </script>
-                                </div>
-                            </li>
+                                </li>
                             {% endif %}
 
-                            
+
                         </ul>
 
                         <!-- Center Section: Shelter Geolocation map -->
@@ -151,7 +163,3 @@
         </div>
     </div>
 {% endblock %}
-
-
-
-

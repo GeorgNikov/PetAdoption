@@ -3,9 +3,10 @@
 {% load user_tags %}
 
 {% block content %}
-<div class="dashboard-container">
-    {% include 'pets/pet-filter.html' %}
-</div>
+    <div class="dashboard-container">
+        {% include 'pets/pet-filter.html' %}
+    </div>
+    
     {% if user|is_shelter %}
         <!-- Shelter-specific content -->
         &nbsp;
@@ -13,15 +14,16 @@
             {% if user.is_authenticated %}
                 {% if user.shelter_profile.completed %}
                     <a href="{% url 'add pet' %}" class="add-pet-link" id="add-pet">
-                    <i class="fas fa-plus"></i>&nbsp; Add Pet for Adoption</a>
+                        <i class="fas fa-plus"></i>&nbsp; Add Pet for Adoption</a>
                 {% else %}
                     <a href="{% url 'shelter details view' user.pk %}" class="add-pet-link">
                         Complete Your Profile</a>
                 {% endif %}
             {% endif %}
         </div>
+        
     {% endif %}
-    
+
     <div class="dashboard-container">
 
         {% for pet in pets %}
@@ -31,7 +33,6 @@
                         {% if pet.image %}
                             {% load cloudinary %}
                             {% cloudinary pet.image quality='auto' width=130 height=125 crop='fit' %}
-                            {# <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="pet-box-image" loading="lazy">#}
                         {% else %}
                             <img src="{% static 'images/no.png' %}" alt="Pet" class="pet-box-image">
                         {% endif %}
@@ -41,7 +42,7 @@
                         <p>Breed: <b>{{ pet.breed }}</b></p>
                         <p>Age: <b>{{ pet.age }} months</b></p>
                         <p>Owner: <b>{{ pet.owner.username }} </b></p>
-                       
+
                     </div>
                     <div>
                         {# Like button #}
@@ -66,7 +67,6 @@
     </div>
 
     <!-- Pagination Controls -->
-
     <div class="pagination">
         {% if not page_obj.has_next and page_obj.number == 1 %}
             <p>That's all Folks!</p>
@@ -108,6 +108,5 @@
             </div>
         {% endif %}
     </div>
-
-
+    
 {% endblock %}

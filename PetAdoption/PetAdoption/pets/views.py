@@ -1,12 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.shortcuts import redirect, get_object_or_404, render
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
 from PetAdoption.accounts.models import UserProfile, ShelterProfile
-from PetAdoption.pets.forms import AddPetForm, EditPetForm, AdoptionRequestForm, PetFilterForm
+from PetAdoption.pets.forms import AddPetForm, EditPetForm, AdoptionRequestForm
 from PetAdoption.pets.mixins import UserAccessMixin, ShelterProfileRequiredMixin
 from PetAdoption.pets.models import Pet, AdoptionRequest
 
@@ -83,6 +83,7 @@ class Dashboard(ListView):
         context['pets'] = page_obj.object_list
         context['page_obj'] = page_obj
         context['paginator'] = paginator
+
         return context
 
 class AddPetView(ShelterProfileRequiredMixin, CreateView):
@@ -128,7 +129,6 @@ class PetDetailView(DetailView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        # Add context for share buttons
         context = super().get_context_data(**kwargs)
 
         # Check if the user has the required permission, either directly or via groups
@@ -174,7 +174,7 @@ class PetDeleteView(UserAccessMixin, DeleteView):
     model = Pet
     template_name = 'pets/delete-pet-confirm.html'  # A confirmation template
     slug_field = 'slug'
-    success_url = reverse_lazy('dashboard')  # Redirect after deletion
+    success_url = reverse_lazy('dashboard')
 
     raise_exception = True
     permission_required = 'pets.delete_pets'
@@ -221,13 +221,14 @@ class AdoptionRequestView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         pet_slug = self.kwargs.get('pet_slug')
         pet = get_object_or_404(Pet, slug=pet_slug)
+
         context['pet'] = get_object_or_404(Pet, slug=pet_slug)
         context['shelter_owner_profile'] = ShelterProfile.objects.get(user=pet.owner)
+
         return context
 
     def get_success_url(self):
         return reverse_lazy('redirect-profile', kwargs={'pk': self.request.user.pk})
-
 
 
 class AdoptionRequestDeleteView(LoginRequiredMixin, DeleteView):
@@ -273,33 +274,6 @@ class AdoptionRequestDeleteView(LoginRequiredMixin, DeleteView):
         # Ensure only the adopter who created the request can delete it
         adoption_request = self.get_object()
         return adoption_request.adopter == self.request.user
-
-
-# Pet Filter List View
-def pet_list(request):
-    # Get filter form
-    form = PetFilterForm(request.GET)
-
-    # Start with all pets
-    pets = Pet.objects.all()
-
-    # Apply filters based on selected options
-    if form.is_valid():
-        type = form.cleaned_data.get('type')
-        age = form.cleaned_data.get('age')
-        gender = form.cleaned_data.get('gender')
-        size = form.cleaned_data.get('size')
-
-        if type:
-            pets = pets.filter(type=type)
-        if age:
-            pets = pets.filter(age=age)
-        if gender:
-            pets = pets.filter(gender=gender)
-        if size:
-            pets = pets.filter(size=size)
-
-    return render(request, 'core/pet-list.html', {'form': form, 'pets': pets})
 
 
 # REST FRAMEWORK API

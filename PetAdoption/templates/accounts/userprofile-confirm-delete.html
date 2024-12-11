@@ -4,15 +4,15 @@
 {% block title %}Delete Profile{% endblock %}
 
 {% block content %}
-<div class="reset-password-form">
-    <h2>Delete Profile</h2>
-    <p>Are you sure you want to delete your profile? This action cannot be undone.</p>
-    <form method="post">
-        {% csrf_token %}
-        &nbsp;
-        <button type="submit" class="button button-danger">Yes, delete</button>
-        &nbsp;
-        <a href="{% url 'redirect-profile' user.pk %}" class="button button-success">No, cancel</a>
-    </form>
-</div>
+    <div class="reset-password-form">
+        <h2>Delete Profile</h2>
+        <p>Are you sure you want to delete your profile? This action cannot be undone.</p>
+        <form method="post">
+            {% csrf_token %}
+            &nbsp;
+            <button type="submit" class="button button-danger">Yes, delete</button>
+            &nbsp;
+            <a href="{% url 'redirect-profile' user.pk %}" class="button button-success">No, cancel</a>
+        </form>
+    </div>
 {% endblock %}

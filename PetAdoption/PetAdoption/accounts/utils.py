@@ -20,13 +20,13 @@ def load_bulgarian_cities():
     return city_choices
 
 
-def redirect_ot_profile(user):
-    if hasattr(user, 'adopter'):
-        return reverse_lazy('user_profile', kwargs={'pk': user.profile.pk})
-    elif hasattr(user, 'shelter'):
-        return reverse_lazy('shelter_profile', kwargs={'pk': user.shelter.pk})
-    else:
-        return reverse_lazy('index')
+# def redirect_to_profile(user):
+#     if hasattr(user, 'adopter'):
+#         return reverse_lazy('user_profile', kwargs={'pk': user.profile.pk})
+#     elif hasattr(user, 'shelter'):
+#         return reverse_lazy('shelter_profile', kwargs={'pk': user.shelter.pk})
+#     else:
+#         return reverse_lazy('index')
 
 
 def load_cities_and_provinces():

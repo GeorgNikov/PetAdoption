@@ -3,28 +3,38 @@
 {% block content %}
 
     {% if pet.image %}
-    <div class="image-container" style="--background-image: url('{{ pet.image.url }}');">
-        <!-- Foreground image dynamically loaded -->
-        <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
+        <div class="image-container" style="--background-image: url('{{ pet.image.url }}');">
+            <!-- Foreground image dynamically loaded -->
+            <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
 
-        <!-- Edit Pet Details link (visible only to the owner) -->
-{% if request.user == pet.owner %}
-    <a href="{% url 'edit pet' pet.slug %}" class="edit-button">Edit Pet Details</a>
-    &nbsp;
-    <a href="{% url 'delete pet' pet.slug %}" class="delete-button">Delete Pet </a>
-{% endif %}
-    </div>
+            <!-- Edit Pet Details link (visible only to the owner) -->
+            {% if request.user == pet.owner %}
+                <a href="{% url 'edit pet' pet.slug %}" class="edit-button">Edit Pet Details</a>
+                &nbsp;
+                <a href="{% url 'delete pet' pet.slug %}" class="delete-button">Delete Pet </a>
+            {% endif %}
+        </div>
     {% endif %}
 
     <div class="content-wrapper">
         <!-- Pet Edit Form Section -->
         <div class="pet-details-section">
             <h2>Edit Pet Information</h2>
-        
 
             <!-- Display form for editing pet details -->
             <form method="POST" enctype="multipart/form-data" class="pet-edit-form">
                 {% csrf_token %}
+
+                <!-- Non-field errors -->
+                {% if form.non_field_errors %}
+                    <div class="custom-alert custom-alert-danger">
+                        <ul>
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
 
                 <div class="form-container">
                     <!-- Left Section -->
@@ -33,20 +43,31 @@
                         <div class="form-group">
                             <label for="name">Pet Name</label>
                             <input type="text" id="name" name="name" value="{{ pet.name }}" required>
+                            {% if form.name.errors %}
+                                <div class="custom-alert custom-alert-danger">
+                                    <ul class="error-list">
+                                        {% for error in form.name.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
                         </div>
 
                         <div class="form-group">
                             <label for="breed">Breed</label>
                             <input type="text" id="breed" name="breed" value="{{ pet.breed }}" required>
+                            {% if form.breed.errors %}
+                                <div class="custom-alert custom-alert-danger">
+                                    <ul class="error-list">
+                                        {% for error in form.breed.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
                         </div>
-                        
-{#<div class="form-group">#}
-{#    <label for="gender">Select Gender</label>#}
-{#    <select id="gender" name="gender" class="minimal" required>#}
-{#        <option value="Male" {% if pet.gender == "Male" %}selected{% endif %}>Male</option>#}
-{#        <option value="Female" {% if pet.gender == "Female" %}selected{% endif %}>Female</option>#}
-{#    </select>#}
-{#</div>#}
+
                         <div class="form-group">
                             <label for="size">Select Size</label>
                             <select id="size" name="size" class="minimal" required>
@@ -59,9 +80,17 @@
                         <div class="form-group">
                             <label for="age">Age (in months)</label>
                             <input type="number" id="age" name="age" value="{{ pet.age }}" required>
+                            {% if form.age.errors %}
+                                <div class="custom-alert custom-alert-danger">
+                                    <ul class="error-list">
+                                        {% for error in form.age.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
                         </div>
-                        
-
+                    
                         <div class="form-group">
                             <label for="description" id="description">Description</label>
                             {{ form.description }}
@@ -76,7 +105,7 @@
                             {{ form.image }}
                             <div id="image-preview" class="image-preview">
                                 {% if pet.image %}
-                                <img src="{{ pet.image.url }}" alt="Current Pet Image" id="current-image-preview">
+                                    <img src="{{ pet.image.url }}" alt="Current Pet Image" id="current-image-preview">
                                 {% endif %}
                             </div>
                         </div>
@@ -85,7 +114,7 @@
 
                 <!-- Submit Button -->
                 <div class="form-group">
-                    <button type="submit" class="submit-button">Save Changes</button>
+                    <button type="submit" class="button">Save Changes</button>
                 </div>
             </form>
 
@@ -99,7 +128,7 @@
         </div>
     </div>
 
-    {#    Image Preview#}
+    <!--    Image Preview    -->
     <script>
         const imageInput = document.querySelector('input[type="file"]');
         const imagePreview = document.getElementById('image-preview');

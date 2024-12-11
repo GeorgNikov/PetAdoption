@@ -9,8 +9,8 @@ from PetAdoption.pets.models import Pet
 
 class ShelterProfileRequiredMixin:
     """
-    Mixin to ensure that only users with a ShelterProfile can access the view.
-    Redirect unauthenticated users or those without a ShelterProfile to the dashboard or index.
+        Mixin to ensure that only users with a ShelterProfile can access the view.
+        Redirect unauthenticated users or those without a ShelterProfile to the dashboard or index.
     """
 
     def dispatch(self, request, *args, **kwargs):
@@ -37,7 +37,9 @@ class UserAccessMixin(PermissionRequiredMixin):
     group_name = 'Content Moderator'  # Hardcoded group name. BAD DEV.
 
     def has_group_permission(self):
-        """Check if the user belongs to the specified group."""
+        """
+            Check if the user belongs to the specified group.
+        """
         try:
             return self.request.user.groups.filter(name=self.group_name).exists()
         except AttributeError:
@@ -45,12 +47,18 @@ class UserAccessMixin(PermissionRequiredMixin):
             return False
 
     def is_pet_owner(self):
-        """Check if the current user is the owner of the pet."""
+        """
+            Check if the current user is the owner of the pet.
+        """
+
         pet = get_object_or_404(Pet, slug=self.kwargs.get('pet_slug'))
         return pet.owner == self.request.user
 
     def has_permission(self):
-        """Check if the user has the required permissions (either as a superuser or group owner)."""
+        """
+            Check if the user has the required permissions (either as a superuser or group owner).
+        """
+
         if self.request.user.is_superuser:
             return True
 
@@ -58,7 +66,10 @@ class UserAccessMixin(PermissionRequiredMixin):
         return self.is_pet_owner() or self.has_group_permission()
 
     def dispatch(self, request, *args, **kwargs):
-        """Handle permission checks before proceeding with the view."""
+        """
+            Handle permission checks before proceeding with the view.
+        """
+
         # Ensure the user is authenticated
         if not request.user.is_authenticated:
             messages.error(request, "You need to log in to access this page.")
@@ -71,7 +82,7 @@ class UserAccessMixin(PermissionRequiredMixin):
         # Ensure user has required permissions
         if not self.has_permission():
             messages.error(request, "You are not authorized to access this page.")
-            return redirect('dashboard')  # Change 'dashboard' to the appropriate page
+            return redirect('dashboard')
 
         # Proceed with the original dispatch
         return super().dispatch(request, *args, **kwargs)

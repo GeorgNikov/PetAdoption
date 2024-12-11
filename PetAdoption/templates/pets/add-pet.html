@@ -14,15 +14,42 @@
                         <div class="form-group">
                             <label for="name">Pet Name</label>
                             <input type="text" id="name" name="name" placeholder="Enter pet's name" required>
+                            {% if form.name.errors %}
+                                <div class="custom-alert custom-alert-danger">
+                                    <ul class="error-list">
+                                        {% for error in form.name.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="breed">Breed</label>
                             <input type="text" id="breed" name="breed" placeholder="Enter pet's breed" required>
+                            {% if form.breed.errors %}
+                                <div class="custom-alert custom-alert-danger">
+                                    <ul class="error-list">
+                                        {% for error in form.breed.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="age">Age</label>
                             <input type="number" id="age" name="age" placeholder="Enter pet's age in months" min="0"
                                    required>
+                            {% if form.age.errors %}
+                                <div class="custom-alert custom-alert-danger">
+                                    <ul class="error-list">
+                                        {% for error in form.age.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -79,5 +106,6 @@
         <div class="right-content">
             {% include 'pets/add-pet-description.html' %}
         </div>
+
     </div>
 {% endblock %}

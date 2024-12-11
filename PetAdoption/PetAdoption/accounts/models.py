@@ -189,7 +189,6 @@ class ShelterProfile(BaseProfile):
     ORGANIZATION_NAME_MIN_LENGTH = 3
 
     WEBSITE_MAX_LENGTH = 100
-    IMG_UPLOAD_TO = 'shelter_profile_images/'  # Cloudinary
 
     organization_name = models.CharField(
         max_length=ORGANIZATION_NAME_MAX_LENGTH,

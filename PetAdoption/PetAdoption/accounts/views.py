@@ -49,7 +49,10 @@ class UserProfileView(LoginRequiredMixin, DetailView):
         context['rated_adoptions'] = rated_adoptions
 
         context['user_profile'] = self.get_object()  # This is the profile of the logged user
-        pets = Pet.objects.filter(owner=self.request.user).order_by('-created_at')
+        pets = Pet.objects.filter(
+            owner=self.request.user
+        ).order_by('-created_at')
+
         context['pets'] = pets
 
         return context
@@ -410,6 +413,7 @@ class PasswordResetConfirmView(View):
             uid = force_str(urlsafe_base64_decode(uidb64))
             user = UserModel.objects.get(pk=uid)
             token_generator = PasswordResetTokenGenerator()
+
             if token_generator.check_token(user, token):
                 return render(request, self.template_name, {'valid_token': True, 'user_id': uidb64, 'token': token})
             else:
@@ -422,6 +426,7 @@ class PasswordResetConfirmView(View):
     def post(self, request, uidb64, token, *args, **kwargs):
         new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm_password')
+
         if new_password != confirm_password:
             messages.error(request, "Passwords do not match.")
             return render(request, self.template_name, {
@@ -434,6 +439,7 @@ class PasswordResetConfirmView(View):
             uid = force_str(urlsafe_base64_decode(uidb64))
             user = UserModel.objects.get(pk=uid)
             token_generator = PasswordResetTokenGenerator()
+
             if token_generator.check_token(user, token):
                 user.set_password(new_password)
                 user.save()

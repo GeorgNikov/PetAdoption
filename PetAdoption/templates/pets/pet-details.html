@@ -3,26 +3,19 @@
 {% load user_tags %}
 {% block content %}
 
-    {% if pet.image %}
+    {% if pet.image.url %}
         <!-- Header Image Section -->
         <div class="image-container" style="--background-image: url('{{ pet.image.url }}');">
         <!-- Foreground image dynamically loaded -->
         <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
 
-
     {% else %}
-        <div class="image-container" style="--background-image: url('https://res.cloudinary.com/dlcpd3g8w/image/upload/v1732366108/ft7952ghfxe7b19qjhca.png');">
+        <div class="image-container"
+             style="--background-image: url('{% static "images/no-pet-image.jpg" %}');">
         <!-- Foreground image dynamically loaded -->
-
     {% endif %}
-<!-- Edit Pet Details link (visible only to the owner) -->
-{#{% if request.user == pet.owner %}#}
-{#    <a href="{% url 'edit pet' pet.slug %}" class="edit-button">Edit Pet Details</a>#}
-{#    &nbsp;#}
-{#    <a href="{% url 'delete pet' pet.slug %}" class="delete-button">Delete Pet </a>#}
-{#{% endif %}#}
-    
-    <!-- Edit Pet Details link (visible only to the owner, admin, or users with permissions) -->
+
+<!-- Edit Pet Details link (visible only to the owner, admin, or users with permissions) -->
 {% if request.user == pet.owner or request.user.is_superuser or has_permission %}
     <a href="{% url 'edit pet' pet.slug %}" class="edit-button">Edit Pet Details</a>
     &nbsp;
@@ -41,7 +34,7 @@
         <p><strong>Breed:</strong> {{ pet.breed }} </p>
         <p><strong>Gender:</strong> {{ pet.gender }}</p>
         <p><strong>Size:</strong> {{ pet.size }}</p>
-        
+
         <p><strong>Description:</strong> {{ pet.description }}</p>
     </div>
 
@@ -54,7 +47,8 @@
 
 
         <div class="owner-actions-container">
-            <a href="{% url 'shelter page preview' pet.owner.shelter_profile.slug %}" class="visit-link">MORE ABOUT US</a>
+            <a href="{% url 'shelter page preview' pet.owner.shelter_profile.slug %}" class="visit-link">MORE ABOUT
+                US</a>
 
             {% if user.is_authenticated %}
                 {% if has_requested_adoption %}
@@ -68,48 +62,50 @@
                 <p><a href="{% url 'login' %}">Log in</a> to request adoption.</p>
             {% endif %}
 
-<a href="#" class="donation-link" id="share-link">SHARE &nbsp;
-<i class="fas fa-chevron-down"></i></a>
-<div class="share-buttons-hide" id="share-buttons-hide">
-<div class="share-buttons" id="share-buttons">
-    <h3>Share on</h3>
+            <a href="#" class="donation-link" id="share-link">SHARE &nbsp;
+                <i class="fas fa-chevron-down"></i></a>
+            <div class="share-buttons-hide" id="share-buttons-hide">
+                <div class="share-buttons" id="share-buttons">
+                    <h3>Share on</h3>
 
-    <a href="https://www.facebook.com/sharer/sharer.php?u={{ page_url }}" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-facebook-square fa-2x"></i>
-    </a>
-    <a href="https://twitter.com/intent/tweet?url={{ page_url }}&text={{ page_title }}" target="_blank" rel="noopener noreferrer">
-        <i class="fa fa-twitter fa-2x"></i>
-    </a>
-    <a href="https://pinterest.com/pin/create/button/?url={{ page_url }}&media={{ image_url }}&description={{ page_title }}" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-pinterest-square fa-2x"></i>
-    </a>
-    <a href="https://wa.me/?text={{ page_title }}%20{{ page_url }}" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-whatsapp-square fa-2x"></i> 
-    </a>
-</div>
-</div>
-<script>
-    const shareLink = document.getElementById('share-link');
-    const shareButtons = document.getElementById('share-buttons-hide');
-    const arrowIcon = shareLink.querySelector('i'); // The arrow icon inside the link
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ page_url }}" target="_blank"
+                       rel="noopener noreferrer">
+                        <i class="fab fa-facebook-square fa-2x"></i>
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url={{ page_url }}&text={{ page_title }}" target="_blank"
+                       rel="noopener noreferrer">
+                        <i class="fa fa-twitter fa-2x"></i>
+                    </a>
+                    <a href="https://pinterest.com/pin/create/button/?url={{ page_url }}&media={{ image_url }}&description={{ page_title }}"
+                       target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-pinterest-square fa-2x"></i>
+                    </a>
+                    <a href="https://wa.me/?text={{ page_title }}%20{{ page_url }}" target="_blank"
+                       rel="noopener noreferrer">
+                        <i class="fab fa-whatsapp-square fa-2x"></i>
+                    </a>
+                </div>
+            </div>
+            <script>
+                const shareLink = document.getElementById('share-link');
+                const shareButtons = document.getElementById('share-buttons-hide');
+                const arrowIcon = shareLink.querySelector('i'); // The arrow icon inside the link
 
-    shareLink.addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent the default link action
+                shareLink.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent the default link action
 
-        // Toggle visibility of the share buttons
-        if (shareButtons.style.display === "none" || shareButtons.style.display === "") {
-            shareButtons.style.display = "block"; // Show the div
-            arrowIcon.classList.remove('fa-chevron-down');
-            arrowIcon.classList.add('fa-chevron-up'); // Change the arrow to up
-        } else {
-            shareButtons.style.display = "none"; // Hide the div
-            arrowIcon.classList.remove('fa-chevron-up');
-            arrowIcon.classList.add('fa-chevron-down'); // Change the arrow back to down
-        }
-    });
-</script>
-
-
+                    // Toggle visibility of the share buttons
+                    if (shareButtons.style.display === "none" || shareButtons.style.display === "") {
+                        shareButtons.style.display = "block"; // Show the div
+                        arrowIcon.classList.remove('fa-chevron-down');
+                        arrowIcon.classList.add('fa-chevron-up'); // Change the arrow to up
+                    } else {
+                        shareButtons.style.display = "none"; // Hide the div
+                        arrowIcon.classList.remove('fa-chevron-up');
+                        arrowIcon.classList.add('fa-chevron-down'); // Change the arrow back to down
+                    }
+                });
+            </script>
 
         </div>
     </div>
